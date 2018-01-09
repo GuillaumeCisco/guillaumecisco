@@ -1,0 +1,11 @@
+*
+!build
+!webpack/client.js
+!webpack/server.js
+!webpack/utils
+!Dockerfile
+!package.json
+!package-lock.json
+!config
+!.babelrc
+!src/common/routesMap.js
