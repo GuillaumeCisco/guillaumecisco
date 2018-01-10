@@ -41,6 +41,7 @@ export default class SuperNova extends Component {
 
         this.ctx = this.ellipse.getContext('2d');
         this.ctx.setTransform(1, 0, 0, 1, this.w / 2, this.h / 2);
+        this.ctx.rotate(- Math.PI/ 20);
 
         // uncomment this line for debugging
         //this.createEllipse();
@@ -131,7 +132,7 @@ export default class SuperNova extends Component {
             // set own alpha
             const alpha = random(0.4, 0.8);
             // set speed
-            const speed = random(0.5, 0.8);
+            const speed = random(0.5, 0.8) * -1;
             // get real carthesian coordonate
             // see https://www.mathopenref.com/coordparamellipse.html for understanding ellipse parametric equation
             let x = Math.cos(teta) * this.a,
