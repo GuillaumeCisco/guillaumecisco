@@ -15,6 +15,14 @@ const Wrapper = styled('div')`
     position: relative;
 `;
 
+const Canvas = styled('canvas')`
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+`;
+
 // get interpolation all over the circle
 const radians = interpolate(0, Math.PI * 2);
 
@@ -24,6 +32,7 @@ export default class SuperNova extends Component {
         // maybe put them in state, but no need to render for now
         this.stars = [];
         this.nbStars = 3000;
+        this.nbBackgroundStars = 100;
         this.radius = 200;
         this.a = 400;
         this.b = 150;
@@ -38,11 +47,17 @@ export default class SuperNova extends Component {
         // set to wrapper
         this.ellipse.width = this.w;
         this.ellipse.height = this.h;
+        this.background.width = this.w;
+        this.background.height = this.h;
 
         this.ctx = this.ellipse.getContext('2d');
         this.ctx.setTransform(1, 0, 0, 1, this.w / 2, this.h / 2);
-        this.ctx.rotate(- Math.PI/ 20);
+        this.ctx.rotate(-Math.PI / 20);
 
+        this.backgroundCtx = this.background.getContext('2d');
+        //this.backgroundCtx.setTransform(1, 0, 0, 1, this.w / 2, this.h / 2);
+
+        this.drawBackground();
         // uncomment this line for debugging
         //this.createEllipse();
         this.createStars();
@@ -69,8 +84,8 @@ export default class SuperNova extends Component {
     };
 
     createEllipse = () => {
-        let x = - this.w / 2,
-            y = - this.h / 2;
+        let x = -this.w / 2,
+            y = -this.h / 2;
         let kappa = .5522848,
             ox = (this.w / 2) * kappa, // control point offset horizontal
             oy = (this.h / 2) * kappa, // control point offset vertical
@@ -156,10 +171,22 @@ export default class SuperNova extends Component {
         });
     };
 
+    drawBackground = () => {
+        // draw particules
+        const padding = 10;
+        range(0, this.nbBackgroundStars).forEach(o => {
+            this.backgroundCtx.beginPath();
+            this.backgroundCtx.arc(random(padding, this.w - padding), random(padding, this.h - padding), random(1, 3), 0, Math.PI * 2);
+            this.backgroundCtx.fillStyle = `rgba(255, 255, 255, ${random(0.6, 0.9)})`;
+            this.backgroundCtx.fill();
+        });
+    };
+
     render() {
         return (
             <Wrapper innerRef={(e) => (this.wrapper = e)}>
-                <canvas ref={(e) => (this.ellipse = e)} />
+                <Canvas innerRef={(e) => (this.background = e)} />
+                <Canvas innerRef={(e) => (this.ellipse = e)} />
             </Wrapper>
         );
     }
