@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
-import {range} from 'lodash';
+import {range, random} from 'lodash';
 import {transition} from 'd3-transition';
 import {interpolate} from 'd3-interpolate';
 import {symbol} from 'd3-shape';
 import {timer} from 'd3-timer';
 import styled from 'react-emotion';
+
+import Star from './star';
 
 const Wrapper = styled('div')`
     height: 600px;
@@ -13,68 +15,8 @@ const Wrapper = styled('div')`
     position: relative;
 `;
 
-const Canvas = styled('canvas')`
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-`;
-
 // get interpolation all over the circle
 const radians = interpolate(0, Math.PI * 2);
-
-const getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
-
-const Star = function (nbStars, orbitA, orbitB) {
-
-    this.nbStars = nbStars;
-    this.orbitA = orbitA;
-    this.orbitB = orbitB;
-
-    const init = (teta, x, y, padX, padY, radius, alpha, speed) => {
-        this.teta = teta;
-        this.x = x;
-        this.y = y;
-        this.padX = padX;
-        this.padY = padY;
-        this.radius = radius;
-        this.alpha = alpha;
-        this.speed = speed;
-    };
-
-
-    const draw = (ctx) => {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);  // full centered circle
-        // create different light power
-        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-        ctx.fill();
-    };
-
-    const move = () => {
-        // move to + this.speed
-        const index = ((this.nbStars * this.teta) / (2 * Math.PI)) + this.speed;
-        // update with new angle
-        this.teta = ((index * 2 * Math.PI) / this.nbStars) % (2 * Math.PI);
-        let x = Math.cos(this.teta) * this.orbitA,
-            y = Math.sin(this.teta) * this.orbitB;
-
-
-        // update carthesian coordinate by respecting initial randomized padding
-        this.x = x + this.padX;
-        this.y = y + this.padY;
-
-        // make it randomly brite
-        this.alpha = this.alpha === 1 ? getRandomArbitrary(0.4, 0.8) : (Math.random() < 0.001 ? 1 : this.alpha);
-    };
-
-    return {
-        init,
-        draw,
-        move,
-    };
-};
 
 export default class SuperNova extends Component {
     constructor(props) {
@@ -101,7 +43,7 @@ export default class SuperNova extends Component {
         this.ctx.setTransform(1, 0, 0, 1, this.w / 2, this.h / 2);
 
         // uncomment this line for debugging
-        //this.createEllipse(ellipsectx);
+        //this.createEllipse();
         this.createStars();
         this.createCenter();
 
@@ -109,7 +51,7 @@ export default class SuperNova extends Component {
         this.timer = timer(this.animate);
     }
 
-    componentWillUnMount () {
+    componentWillUnMount() {
         this.timer.stop();
     }
 
@@ -117,7 +59,7 @@ export default class SuperNova extends Component {
         //console.log(elapsed);
         this.ctx.clearRect(-this.w, -this.h, 2 * this.w, 2 * this.h);
         this.stars.forEach(star => {
-            // move by +1 angle
+            // move by + speed angle
             star.move();
             // draw new position
             star.draw(this.ctx);
@@ -126,12 +68,43 @@ export default class SuperNova extends Component {
     };
 
     createEllipse = () => {
-        // create ellipse
+        let x = - this.w / 2,
+            y = - this.h / 2;
+        let kappa = .5522848,
+            ox = (this.w / 2) * kappa, // control point offset horizontal
+            oy = (this.h / 2) * kappa, // control point offset vertical
+            xe = x + this.w,           // x-end
+            ye = y + this.h,           // y-end
+            xm = x + this.w / 2,       // x-middle
+            ym = y + this.h / 2;       // y-middle
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(x, ym);
+        this.ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+        this.ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+        this.ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+        this.ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+        this.ctx.strokeStyle = 'rgb(255, 255, 255)';
+        this.ctx.lineWidth = 3;
+        //ctx.closePath(); // not used correctly, see comments (use to close off open path)
+        this.ctx.stroke();
+    };
+
+    createCircle = () => {
+        // create by symbol
+        this.ctx.strokeStyle = 'rgb(255, 255, 255)';
+        this.ctx.lineWidth = 3;
         const size = Math.PI * Math.pow(this.radius, 2);
         const sym = symbol();
         sym.size(size);
         sym.context(this.ctx);
         sym(); // will draw on context
+        this.ctx.stroke();
+
+        // create by cancas circle
+        this.ctx.beginPath();
+        this.ctx.arc(0, 0, this.radius, 0, Math.PI * 2);  // full centered circle
+        // create different light power
         this.ctx.strokeStyle = 'rgb(255, 255, 255)';
         this.ctx.lineWidth = 3;
         this.ctx.stroke();
@@ -154,19 +127,19 @@ export default class SuperNova extends Component {
             // get angle
             const teta = radians(o / this.nbStars);
             // set own radius
-            const radius = getRandomArbitrary(1, 3);
+            const radius = random(1, 3);
             // set own alpha
-            const alpha = getRandomArbitrary(0.4, 0.8);
+            const alpha = random(0.4, 0.8);
             // set speed
-            const speed = getRandomArbitrary(0.5, 0.8);
+            const speed = random(0.5, 0.8);
             // get real carthesian coordonate
-            // see https://www.mathopenref.com/coordparamellipse.html for undesrtanding ellipse parametric equation
+            // see https://www.mathopenref.com/coordparamellipse.html for understanding ellipse parametric equation
             let x = Math.cos(teta) * this.a,
                 y = Math.sin(teta) * this.b;
 
             // generate deltaed coordinate
-            const padX = (Math.random() > 0.5 ? 1 : -1) * getRandomArbitrary(0, this.padding);
-            const padY = (Math.random() > 0.5 ? 1 : -1) * getRandomArbitrary(0, this.padding);
+            const padX = (Math.random() > 0.5 ? 1 : -1) * random(0, this.padding);
+            const padY = (Math.random() > 0.5 ? 1 : -1) * random(0, this.padding);
 
             x += padX;
             y += padY;
@@ -185,7 +158,7 @@ export default class SuperNova extends Component {
     render() {
         return (
             <Wrapper innerRef={(e) => (this.wrapper = e)}>
-                <Canvas innerRef={(e) => (this.ellipse = e)} />
+                <canvas ref={(e) => (this.ellipse = e)} />
             </Wrapper>
         );
     }
