@@ -1,9 +1,9 @@
 import React from 'react';
 import {random} from 'lodash';
 
-const Star = function (nbStars, orbitA, orbitB) {
+const Star = function (size, orbitA, orbitB) {
 
-    this.nbStars = nbStars;
+    this.size = size;
     this.orbitA = orbitA;
     this.orbitB = orbitB;
 
@@ -18,7 +18,6 @@ const Star = function (nbStars, orbitA, orbitB) {
         this.speed = speed;
     };
 
-
     const draw = (ctx) => {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);  // full centered circle
@@ -29,9 +28,9 @@ const Star = function (nbStars, orbitA, orbitB) {
 
     const move = () => {
         // move to + this.speed
-        const index = ((this.nbStars * this.teta) / (2 * Math.PI)) + this.speed;
+        const index = ((this.size * this.teta) / (2 * Math.PI)) + this.speed;
         // update with new angle
-        this.teta = ((index * 2 * Math.PI) / this.nbStars) % (2 * Math.PI);
+        this.teta = ((index * 2 * Math.PI) / this.size) % (2 * Math.PI);
         let x = Math.cos(this.teta) * this.orbitA,
             y = Math.sin(this.teta) * this.orbitB;
 
