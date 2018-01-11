@@ -46,7 +46,6 @@ class Nav extends React.Component {
                     Guillaume Cisco
                 </Link>
             </h1>
-            {typeof window !== 'undefined' && <Supernova />}
             <Ul>
                 <li>
                     <Link to="/menu" className={this.link('RESUME')}>
@@ -54,6 +53,7 @@ class Nav extends React.Component {
                     </Link>
                 </li>
             </Ul>
+            <Supernova />
         </Container>);
     }
 }

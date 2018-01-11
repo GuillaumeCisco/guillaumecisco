@@ -1,22 +1,40 @@
 import React from 'react';
 import {random} from 'lodash';
 
-const Star = function (size, orbitA, orbitB) {
+const Star = function (w, h, size, orbitA, orbitB, teta, padding) {
 
+    this.originW = this.w = w;
+    this.originH = this.h = h;
     this.size = size;
     this.orbitA = orbitA;
     this.orbitB = orbitB;
 
-    const init = (teta, x, y, padX, padY, radius, alpha, speed) => {
-        this.teta = teta;
-        this.x = x;
-        this.y = y;
-        this.padX = padX;
-        this.padY = padY;
-        this.radius = radius;
-        this.alpha = alpha;
-        this.speed = speed;
-    };
+    // set own radius
+    const radius = random(1, 3);
+    // set own alpha
+    const alpha = random(0.4, 0.8);
+    // set speed
+    const speed = random(0.5, 0.8) * -1;
+    // get real carthesian coordonate
+    // see https://www.mathopenref.com/coordparamellipse.html for understanding ellipse parametric equation
+    let x = Math.cos(teta) * orbitA,
+        y = Math.sin(teta) * orbitB;
+
+    // generate deltaed coordinate
+    const padX = (Math.random() > 0.5 ? 1 : -1) * random(0, padding);
+    const padY = (Math.random() > 0.5 ? 1 : -1) * random(0, padding);
+
+    x += padX;
+    y += padY;
+
+    this.teta = teta;
+    this.x = x;
+    this.y = y;
+    this.padX = padX;
+    this.padY = padY;
+    this.radius = radius;
+    this.alpha = alpha;
+    this.speed = speed;
 
     const draw = (ctx) => {
         ctx.beginPath();
@@ -34,7 +52,6 @@ const Star = function (size, orbitA, orbitB) {
         let x = Math.cos(this.teta) * this.orbitA,
             y = Math.sin(this.teta) * this.orbitB;
 
-
         // update carthesian coordinate by respecting initial randomized padding
         this.x = x + this.padX;
         this.y = y + this.padY;
@@ -43,10 +60,15 @@ const Star = function (size, orbitA, orbitB) {
         this.alpha = this.alpha === 1 ? random(0.4, 0.8) : (Math.random() < 0.001 ? 1 : this.alpha);
     };
 
+    const update = (a, b) => {
+        this.orbitA = a;
+        this.orbitB = b;
+    };
+
     return {
-        init,
         draw,
         move,
+        update,
     };
 };
 

@@ -1,12 +1,14 @@
 import React from 'react';
 import {random} from 'lodash';
 
-const ShootingStar = function (teta, x, y) {
+const ShootingStar = function (w, h) {
 
+    this.originW = w;
+    this.originH = h;
     this.radius = 1;
-    this.teta = teta;
-    this.originX = this.x = x;
-    this.originY = this.y = y;
+    this.teta =  5 * Math.PI / 8;
+    this.originX = this.x = random(0, w);
+    this.originY = this.y = random(0, h / 2);
     this.step = 0;
 
     const draw = (ctx) => {
@@ -26,12 +28,20 @@ const ShootingStar = function (teta, x, y) {
         this.y = Math.sin(this.teta) * this.radius + this.originY;
     };
 
+    const update = (w, h) => {
+        this.originX = this.originX * w / this.originW;
+        this.originY = this.originY * h / this.originH;
+        this.originW = w;
+        this.originH = h;
+    };
+
     const getStep = () => this.step;
 
     return {
         draw,
         move,
         getStep,
+        update,
     };
 };
 

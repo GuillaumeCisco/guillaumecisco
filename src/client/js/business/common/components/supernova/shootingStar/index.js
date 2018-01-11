@@ -4,9 +4,9 @@ import {timer} from 'd3-timer';
 import {onlyUpdateForKeys} from 'recompose';
 
 import Canvas from '../canvas';
-import ShootingStar from './shootingStar';
+import Star from './star';
 
-class ShootingStars extends Component {
+class Stars extends Component {
     constructor(props) {
         super(props);
         this.shootingStars = [];
@@ -14,15 +14,21 @@ class ShootingStars extends Component {
         this.maxSteps = 30;
     }
 
-    componentWillReceiveProps = (nextProps) => {
-        this.create(nextProps);
+    componentDidMount() {
+        this.init();
+    }
+
+    componentWillReceiveProps = () => {
+        this.resize(); // redraw on resize
     };
 
     componentWillUnMount() {
         this.timer.stop();
     }
 
-    create = ({w, h}) => {
+    init = () => {
+        const {w, h} = this.props;
+
         this.canvas.width = w;
         this.canvas.height = h;
         this.ctx = this.canvas.getContext('2d');
@@ -36,7 +42,7 @@ class ShootingStars extends Component {
 
         // launch a dice, if 100, add a shootingStar
         if (random(1, this.luck) === this.luck) { // add shootingStar
-            this.shootingStars.push(new ShootingStar(5 * Math.PI / 8, random(0, w), random(0, h / 2)));
+            this.shootingStars.push(new Star(w, h));
         }
         // remove finished shootingStars
         this.shootingStars = this.shootingStars.filter(star => star.getStep() <= this.maxSteps);
@@ -49,9 +55,19 @@ class ShootingStars extends Component {
         });
     };
 
+    resize = () => {
+        const {w, h} = this.props;
+
+        this.canvas.width = w;
+        this.canvas.height = h;
+        this.shootingStars.forEach(star => {
+            star.update(w, h);
+        });
+    };
+
     render() {
         return <Canvas innerRef={e => this.canvas = e} />;
     }
 }
 
-export default onlyUpdateForKeys(['w', 'h'])(ShootingStars);
+export default onlyUpdateForKeys(['w', 'h'])(Stars);
