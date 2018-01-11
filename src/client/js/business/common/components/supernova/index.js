@@ -53,7 +53,7 @@ import SpaceShift from './spaceshift';
 // };
 
 
-export default class SuperNova extends Component {
+class SuperNova extends Component {
     state = {
         over: false,
         loaded: false,
@@ -145,15 +145,6 @@ export default class SuperNova extends Component {
         `;
     };
 
-    spaceshiftStyle = () => {
-        return {
-            zIndex: 1,
-            position: 'absolute',
-            top: this.state.h - 48,
-            left: this.state.w / 2 - 48 / 2,
-        };
-    };
-
     render() {
         return (
             <div ref={e => this.wrapper = e}
@@ -174,7 +165,8 @@ export default class SuperNova extends Component {
                              b={this.state.b}
                              padding={this.padding}
                     />
-                    <SpaceShift style={this.spaceshiftStyle()}
+                    <SpaceShift w={this.state.w}
+                                h={this.state.h}
                                 width={48}
                                 height={48}
                     />
@@ -183,3 +175,5 @@ export default class SuperNova extends Component {
         );
     }
 }
+
+export default SuperNova;
