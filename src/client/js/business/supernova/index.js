@@ -1,6 +1,5 @@
 import React, {Component, Fragment} from 'react';
 import {range, random} from 'lodash';
-import {symbol} from 'd3-shape';
 import {clientPoint} from 'd3-selection';
 import {css} from 'react-emotion';
 
@@ -11,48 +10,10 @@ import Ellipse from './ellipse/index';
 import SpaceShift from './spaceshift';
 import Planet from './planet';
 
-// createEllipse = () => {
-//     let x = -this.w / 2,
-//         y = -this.h / 2;
-//     let kappa = .5522848,
-//         ox = (this.w / 2) * kappa, // control point offset horizontal
-//         oy = (this.h / 2) * kappa, // control point offset vertical
-//         xe = x + this.w,           // x-end
-//         ye = y + this.h,           // y-end
-//         xm = x + this.w / 2,       // x-middle
-//         ym = y + this.h / 2;       // y-middle
-//
-//     this.ctx.beginPath();
-//     this.ctx.moveTo(x, ym);
-//     this.ctx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
-//     this.ctx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
-//     this.ctx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-//     this.ctx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
-//     this.ctx.strokeStyle = 'rgb(255, 255, 255)';
-//     this.ctx.lineWidth = 3;
-//     //ctx.closePath(); // not used correctly, see comments (use to close off open path)
-//     this.ctx.stroke();
-// };
-// createCircle = () => {
-//     // create by symbol
-//     this.ctx.strokeStyle = 'rgb(255, 255, 255)';
-//     this.ctx.lineWidth = 3;
-//     const size = Math.PI * Math.pow(this.radius, 2);
-//     const sym = symbol();
-//     sym.size(size);
-//     sym.context(this.ctx);
-//     sym(); // will draw on context
-//     this.ctx.stroke();
-//
-//     // create by cancas circle
-//     this.ctx.beginPath();
-//     this.ctx.arc(0, 0, this.radius, 0, Math.PI * 2);  // full centered circle
-//     // create different light power
-//     this.ctx.strokeStyle = 'rgb(255, 255, 255)';
-//     this.ctx.lineWidth = 3;
-//     this.ctx.stroke();
-// };
-
+import mars from './planet/mars.png';
+import ring from './planet/ring.png';
+import blue from './planet/blue.png';
+import white from './planet/white.png';
 
 class SuperNova extends Component {
     state = {
@@ -222,6 +183,7 @@ class SuperNova extends Component {
                             b={this.state.redPlanet.b}
                             intervals={4000}
                             teta={Math.PI / 2}
+                            img={mars}
                             ref={x => this.redPlanet = x}/>
                     <Planet w={this.state.w}
                             h={this.state.h}
@@ -231,7 +193,7 @@ class SuperNova extends Component {
                             b={this.state.bluePlanet.b}
                             intervals={3500}
                             teta={-Math.PI / 2}
-                            isSelectable={this.isInBluePlanet}
+                            img={blue}
                             ref={x => this.bluePlanet = x}/>
                     <Planet w={this.state.w}
                             h={this.state.h}
@@ -241,6 +203,7 @@ class SuperNova extends Component {
                             b={this.state.orangePlanet.b}
                             intervals={2000}
                             teta={0}
+                            img={white}
                             ref={x => this.orangePlanet = x}/>
                 </Fragment>}
             </div>
