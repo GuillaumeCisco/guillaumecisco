@@ -11,7 +11,7 @@ class Stars extends Component {
         super(props);
         this.shootingStars = [];
         this.luck = 100;
-        this.maxSteps = 30;
+        this.maxSteps = 70;
     }
 
     componentDidMount() {

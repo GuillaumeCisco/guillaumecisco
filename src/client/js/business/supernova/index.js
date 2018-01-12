@@ -4,11 +4,12 @@ import {symbol} from 'd3-shape';
 import {clientPoint} from 'd3-selection';
 import {css} from 'react-emotion';
 
-import Background from './background';
-import ShootingStars from './shootingStar';
+import Background from './background/index';
+import ShootingStars from './shootingStar/index';
 import Core from './core';
-import Ellipse from './ellipse';
+import Ellipse from './ellipse/index';
 import SpaceShift from './spaceshift';
+import Planet from './planet';
 
 // createEllipse = () => {
 //     let x = -this.w / 2,
@@ -88,9 +89,24 @@ class SuperNova extends Component {
     resize() {
         const w = this.wrapper.offsetWidth,
             h = this.wrapper.offsetHeight,
-            a = w / 4,
+            a = w / 6,
             b = a / 2,
-            coreRadius = (a - b) / 6;
+            coreRadius = (a - b) / 4,
+            redPlanet = {
+                radius: (a - b) / 8,
+                a: 4 * a / 7,
+                b: (4 * a / 7) / 2,
+            },
+            bluePlanet = {
+                radius: (a - b) / 5,
+                a: 18 * a / 8,
+                b: (18 * a / 8) / 2,
+            },
+            orangePlanet = {
+                radius: (a - b) / 6,
+                a: 13 * a / 8,
+                b: (13 * a / 8) / 2,
+            };
 
         this.setState({
             ...this.state,
@@ -100,12 +116,24 @@ class SuperNova extends Component {
             a,
             b,
             coreRadius,
+            redPlanet,
+            bluePlanet,
+            orangePlanet,
         });
     }
 
-    isInCenter = (x, y) => {
+    // x, y are the coordinate of the center of circle, r is the radius, a, b the coordinate to test
+    isInCircle = (x, y, r, a, b) => Math.pow(a - x, 2) + Math.pow(b - y, 2) < Math.pow(r, 2);
+
+    isInCore = (x, y) => {
         // core surface
-        return Math.pow(x - this.state.w / 2, 2) + Math.pow(y - this.state.h / 2, 2) < Math.pow(this.radius, 2);
+        return this.isInCircle(this.state.w / 2, this.state.h / 2, this.state.coreRadius, x, y);
+    };
+
+    isInPlanet = (a, b, planet, radius) => {
+        // get center of planet in current referential
+        const {x, y} = planet.getCoordinate();
+        return this.isInCircle(a, b, radius, x, y);
     };
 
     centerClick = (e) => {
@@ -113,8 +141,20 @@ class SuperNova extends Component {
         const x = point[0];
         const y = point[1];
 
-        if (this.isInCenter(x, y)) {
+        if (this.isInCore(x, y)) {
             console.log('clicked');
+        }
+
+        if (this.isInPlanet(x, y, this.redPlanet, this.state.redPlanet.radius)) {
+            console.log('red planet clicked');
+        }
+
+        if (this.isInPlanet(x, y, this.orangePlanet, this.state.orangePlanet.radius)) {
+            console.log('orange planet clicked');
+        }
+
+        if (this.isInPlanet(x, y, this.bluePlanet, this.state.bluePlanet.radius)) {
+            console.log('blue planet clicked');
         }
     };
 
@@ -123,7 +163,10 @@ class SuperNova extends Component {
         const x = point[0];
         const y = point[1];
 
-        if (this.isInCenter(x, y)) {
+        if (this.isInCore(x, y) ||
+            this.isInPlanet(x, y, this.redPlanet, this.state.redPlanet.radius) ||
+            this.isInPlanet(x, y, this.orangePlanet, this.state.orangePlanet.radius) ||
+            this.isInPlanet(x, y, this.bluePlanet, this.state.bluePlanet.radius)) {
             if (!this.state.over) {
                 this.setState({...this.state, over: true});
             }
@@ -137,7 +180,8 @@ class SuperNova extends Component {
 
     wrapperCss = () => {
         return css`
-            height: 600px;
+            height: 100%;
+            overflow: hidden;
             background-color: black;
             width: 100%;
             position: relative;
@@ -170,6 +214,34 @@ class SuperNova extends Component {
                                 width={48}
                                 height={48}
                     />
+                    <Planet w={this.state.w}
+                            h={this.state.h}
+                            color={'#97140c'}
+                            radius={this.state.redPlanet.radius}
+                            a={this.state.redPlanet.a}
+                            b={this.state.redPlanet.b}
+                            intervals={4000}
+                            teta={Math.PI / 2}
+                            ref={x => this.redPlanet = x}/>
+                    <Planet w={this.state.w}
+                            h={this.state.h}
+                            color={'#7399b8'}
+                            radius={this.state.bluePlanet.radius}
+                            a={this.state.bluePlanet.a}
+                            b={this.state.bluePlanet.b}
+                            intervals={3500}
+                            teta={-Math.PI / 2}
+                            isSelectable={this.isInBluePlanet}
+                            ref={x => this.bluePlanet = x}/>
+                    <Planet w={this.state.w}
+                            h={this.state.h}
+                            color={'#8a451f'}
+                            radius={this.state.orangePlanet.radius}
+                            a={this.state.orangePlanet.a}
+                            b={this.state.orangePlanet.b}
+                            intervals={2000}
+                            teta={0}
+                            ref={x => this.orangePlanet = x}/>
                 </Fragment>}
             </div>
         );

@@ -4,7 +4,7 @@ import styled, {css} from 'react-emotion';
 import Link from 'redux-first-router-link';
 import {connect} from 'react-redux';
 
-import Supernova from './supernova';
+import Supernova from '../../supernova';
 
 const Container = styled('div')`
     text-align: center;    
@@ -41,18 +41,6 @@ class Nav extends React.Component {
 
     render() {
         return (<Container>
-            <h1>
-                <Link to="/" className={link}>
-                    Guillaume Cisco
-                </Link>
-            </h1>
-            <Ul>
-                <li>
-                    <Link to="/menu" className={this.link('RESUME')}>
-                        Resume
-                    </Link>
-                </li>
-            </Ul>
             <Supernova />
         </Container>);
     }

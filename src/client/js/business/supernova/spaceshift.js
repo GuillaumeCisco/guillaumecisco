@@ -27,14 +27,14 @@ class SpaceShift extends React.Component {
     }
 
     init = () => {
-        const {h, w} = this.props;
-        this.luck = 300;
-        this.i = interpolate(-48, h);
+        const {h, w, width, height} = this.props;
+        this.luck = 1000;
+        this.i = interpolate(-width, h);
         this.originW = this.w = w;
         this.originH = this.h = h;
 
         this.setX();
-        this.y = h - 48;
+        this.y = h - height;
 
         this.setState({
             style: {
@@ -52,7 +52,8 @@ class SpaceShift extends React.Component {
     };
 
     setX = () => {
-        this.x = random(48, this.w - 48);
+        const {width} = this.props;
+        this.x = random(width, this.w - width);
         return this.x;
     };
 
@@ -72,7 +73,7 @@ class SpaceShift extends React.Component {
                     ...this.state,
                     style: {
                         ...this.state.style,
-                        top: this.h - 48 - this.i(this.state.step / 100),
+                        top: this.h - this.props.height - this.i(this.state.step / 100),
                         left: this.state.step === 100 ? this.setX() : this.getX(),
                     },
                     step: this.state.step === 100 ? 0 : this.state.step + 1,

@@ -6,7 +6,7 @@ import {TransitionGroup, Transition} from 'transition-group';
 import HomeRoutes from '../../../home/routes/electron';
 
 import './index.css';
-import Nav from '../nav';
+import Supernova from '../../../supernova'
 
 const getComponent = (page) => {
     switch (page) {
@@ -37,21 +37,21 @@ const Container = styled('div')`
 
 const Switcher = ({page}) =>
     (<div className={style}>
-        <Nav />
-        <TransitionGroup
-            component={'div'}
-            className={group}
-            prefix="fade"
-            duration={300}
-            enterDelay={300}
-            leaveDelay={0}
-        >
-            <Transition key={page}>
-                <Container>
-                    {getComponent(page)}
-                </Container>
-            </Transition>
-        </TransitionGroup>
+        <Supernova />
+        {/*<TransitionGroup*/}
+            {/*component={'div'}*/}
+            {/*className={group}*/}
+            {/*prefix="fade"*/}
+            {/*duration={300}*/}
+            {/*enterDelay={300}*/}
+            {/*leaveDelay={0}*/}
+        {/*>*/}
+            {/*<Transition key={page}>*/}
+                {/*<Container>*/}
+                    {/*{getComponent(page)}*/}
+                {/*</Container>*/}
+            {/*</Transition>*/}
+        {/*</TransitionGroup>*/}
     </div>);
 
 
