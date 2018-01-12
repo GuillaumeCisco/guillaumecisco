@@ -89,23 +89,23 @@ class SuperNova extends Component {
     resize() {
         const w = this.wrapper.offsetWidth,
             h = this.wrapper.offsetHeight,
-            a = w / 6,
-            b = a / 2,
-            coreRadius = (a - b) / 4,
+            a = w / (2.5),
+            b = a / 2.3,
+            coreRadius = (a - b) / 5,
             redPlanet = {
-                radius: (a - b) / 8,
-                a: 4 * a / 7,
-                b: (4 * a / 7) / 2,
+                radius: (a - b) / 12,
+                a: 3 * a / 8,
+                b: (3 * a / 8) / 2,
             },
             bluePlanet = {
-                radius: (a - b) / 5,
-                a: 18 * a / 8,
-                b: (18 * a / 8) / 2,
+                radius: (a - b) / 8,
+                a: 9 * a / 8,
+                b: (9 * a / 8) / 2,
             },
             orangePlanet = {
-                radius: (a - b) / 6,
-                a: 13 * a / 8,
-                b: (13 * a / 8) / 2,
+                radius: (a - b) / 9,
+                a: 4 * a / 8,
+                b: (4 * a / 8) / 2,
             };
 
         this.setState({
