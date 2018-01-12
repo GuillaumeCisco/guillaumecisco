@@ -73,13 +73,13 @@ class Planet extends React.Component {
         // center
         const {radius, color} = this.props;
 
-        this.ctx.beginPath();
+        //this.ctx.beginPath();
         //this.ctx.arc(x, y, radius, 0, Math.PI * 2); // full centered circle
-        this.ctx.rotate(-this.canvasRotation);
+        //this.ctx.rotate(-this.canvasRotation);
         this.ctx.drawImage(this.img, x - radius, y - radius, radius * 2, radius * 2);
-        this.ctx.rotate(this.canvasRotation);
-        this.ctx.shadowBlur = 50;
-        this.ctx.shadowColor = color;
+        //this.ctx.rotate(this.canvasRotation);
+        // this.ctx.shadowBlur = 50;
+        // this.ctx.shadowColor = color;
         // this.ctx.strokeStyle = color;
         // this.ctx.stroke();
     };
