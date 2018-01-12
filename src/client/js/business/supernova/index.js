@@ -97,7 +97,7 @@ class SuperNova extends Component {
         return this.isInCircle(a, b, radius, x, y);
     };
 
-    centerClick = (e) => {
+    click = (e) => {
         const point = clientPoint(this.wrapper, e);
         const x = point[0];
         const y = point[1];
@@ -119,7 +119,8 @@ class SuperNova extends Component {
         }
     };
 
-    centerMouseMove = (e) => {
+    mouseMove = (e) => {
+        e.persist();
         const point = clientPoint(this.wrapper, e);
         const x = point[0];
         const y = point[1];
@@ -154,8 +155,8 @@ class SuperNova extends Component {
         return (
             <div ref={e => this.wrapper = e}
                  className={this.wrapperCss()}
-                 onClick={this.centerClick}
-                 onMouseMove={this.centerMouseMove}>
+                 onClick={this.click}
+                 onMouseMove={this.mouseMove}>
                 {this.state.loaded &&
                 <Fragment>
                     <Background w={this.state.w} h={this.state.h} size={this.nbBackgroundStars} />

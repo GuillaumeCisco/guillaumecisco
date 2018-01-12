@@ -30,7 +30,7 @@ class Core extends Component {
 
         this.ctx.beginPath();
         this.ctx.arc(0, 0, radius, 0, Math.PI * 2); // full centered circle
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        this.ctx.fillStyle = 'rgba(255, 250, 250, 0.9)';
         this.ctx.shadowBlur = 50;
         this.ctx.shadowColor = 'white';
         this.ctx.fill();
