@@ -1,5 +1,4 @@
 import React, {Component, Fragment} from 'react';
-import {range, random} from 'lodash';
 import {clientPoint} from 'd3-selection';
 import {css} from 'react-emotion';
 
@@ -32,8 +31,8 @@ class SuperNova extends Component {
         this.nbBackgroundStars = 100;
 
         // ellipse
-        this.nbStars = 3000;
-        this.padding = 30;
+        this.nbStars = 1000;
+        this.padding = 50;
     }
 
     componentDidMount() {
@@ -86,10 +85,10 @@ class SuperNova extends Component {
     // x, y are the coordinate of the center of circle, r is the radius, a, b the coordinate to test
     isInCircle = (x, y, r, a, b) => Math.pow(a - x, 2) + Math.pow(b - y, 2) < Math.pow(r, 2);
 
-    isInCore = (x, y) => {
+    isInCore = (x, y) =>
         // core surface
-        return this.isInCircle(this.state.w / 2, this.state.h / 2, this.state.coreRadius, x, y);
-    };
+        this.isInCircle(this.state.w / 2, this.state.h / 2, this.state.coreRadius, x, y)
+    ;
 
     isInPlanet = (a, b, planet, radius) => {
         // get center of planet in current referential
@@ -133,79 +132,87 @@ class SuperNova extends Component {
                 this.setState({...this.state, over: true});
             }
         }
-        else {
-            if (this.state.over) {
-                this.setState({...this.state, over: false});
-            }
+        else if (this.state.over) {
+            this.setState({...this.state, over: false});
         }
     };
 
-    wrapperCss = () => {
-        return css`
+    wrapperCss = () => css`
             height: 100%;
             overflow: hidden;
-            background-color: black;
+            background-color: #111;
             width: 100%;
             position: relative;
             cursor: ${this.state.over ? 'pointer' : 'default'};
         `;
-    };
 
     render() {
         return (
-            <div ref={e => this.wrapper = e}
-                 className={this.wrapperCss()}
-                 onClick={this.click}
-                 onMouseMove={this.mouseMove}>
+            <div
+                ref={e => this.wrapper = e}
+                className={this.wrapperCss()}
+                onClick={this.click}
+                onMouseMove={this.mouseMove}
+            >
                 {this.state.loaded &&
                 <Fragment>
                     <Background w={this.state.w} h={this.state.h} size={this.nbBackgroundStars} />
                     <ShootingStars w={this.state.w} h={this.state.h} />
-                    <Core w={this.state.w}
-                          h={this.state.h}
-                          radius={this.state.coreRadius} />
-                    <Ellipse w={this.state.w}
-                             h={this.state.h}
-                             size={this.nbStars}
-                             a={this.state.a}
-                             b={this.state.b}
-                             padding={this.padding}
+                    <Core
+                        w={this.state.w}
+                        h={this.state.h}
+                        radius={this.state.coreRadius}
                     />
-                    <SpaceShift w={this.state.w}
-                                h={this.state.h}
-                                width={48}
-                                height={48}
+                    <Ellipse
+                        w={this.state.w}
+                        h={this.state.h}
+                        size={this.nbStars}
+                        a={this.state.a}
+                        b={this.state.b}
+                        padding={this.padding}
                     />
-                    <Planet w={this.state.w}
-                            h={this.state.h}
-                            color={'#97140c'}
-                            radius={this.state.redPlanet.radius}
-                            a={this.state.redPlanet.a}
-                            b={this.state.redPlanet.b}
-                            intervals={4000}
-                            teta={Math.PI / 2}
-                            img={mars}
-                            ref={x => this.redPlanet = x}/>
-                    <Planet w={this.state.w}
-                            h={this.state.h}
-                            color={'#7399b8'}
-                            radius={this.state.bluePlanet.radius}
-                            a={this.state.bluePlanet.a}
-                            b={this.state.bluePlanet.b}
-                            intervals={3500}
-                            teta={-Math.PI / 2}
-                            img={blue}
-                            ref={x => this.bluePlanet = x}/>
-                    <Planet w={this.state.w}
-                            h={this.state.h}
-                            color={'#8a451f'}
-                            radius={this.state.orangePlanet.radius}
-                            a={this.state.orangePlanet.a}
-                            b={this.state.orangePlanet.b}
-                            intervals={2000}
-                            teta={0}
-                            img={white}
-                            ref={x => this.orangePlanet = x}/>
+                    <SpaceShift
+                        w={this.state.w}
+                        h={this.state.h}
+                        width={48}
+                        height={48}
+                    />
+                    <Planet
+                        w={this.state.w}
+                        h={this.state.h}
+                        color="#97140c"
+                        radius={this.state.redPlanet.radius}
+                        a={this.state.redPlanet.a}
+                        b={this.state.redPlanet.b}
+                        intervals={4000}
+                        teta={Math.PI / 2}
+                        img={mars}
+                        ref={x => this.redPlanet = x}
+                    />
+                    <Planet
+                        w={this.state.w}
+                        h={this.state.h}
+                        color="#7399b8"
+                        radius={this.state.bluePlanet.radius}
+                        a={this.state.bluePlanet.a}
+                        b={this.state.bluePlanet.b}
+                        intervals={3500}
+                        teta={-Math.PI / 2}
+                        img={blue}
+                        ref={x => this.bluePlanet = x}
+                    />
+                    <Planet
+                        w={this.state.w}
+                        h={this.state.h}
+                        color="#8a451f"
+                        radius={this.state.orangePlanet.radius}
+                        a={this.state.orangePlanet.a}
+                        b={this.state.orangePlanet.b}
+                        intervals={2000}
+                        teta={0}
+                        img={white}
+                        ref={x => this.orangePlanet = x}
+                    />
                 </Fragment>}
             </div>
         );

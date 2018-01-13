@@ -1,5 +1,5 @@
 import React from 'react';
-import {range, random} from 'lodash';
+import {random} from 'lodash';
 
 const Star = function (w, h) {
     const padding = 10;
@@ -19,7 +19,9 @@ const Star = function (w, h) {
     const draw = (ctx) => {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+        ctx.fillStyle = `rgba(255, ${random(150, 255)}, ${random(150, 255)}, ${this.alpha})`;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = 'white';
         ctx.fill();
     };
 
