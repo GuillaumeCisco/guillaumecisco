@@ -1,3 +1,3 @@
 module.exports = {
-    appName: 'Restaurant de la poste Staging',
+    appName: 'Guillaume Cisco Staging',
 };

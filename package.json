@@ -1,13 +1,13 @@
 {
-    "name": "restaurantdelaposte",
-    "productName": "Restaurant de la Poste",
+    "name": "guillaumecisco",
+    "productName": "Guillaume Cisco Website",
     "author": "Guillaume Cisco <guillaumecisco@gmail.com>",
     "version": "0.0.1",
     "license": "MIT",
-    "description": "Restaurant de la Poste (Chez Robert)",
+    "description": "Guillaume Cisco's website",
     "repository": {
         "type": "git",
-        "url": "https://github.com/GuillaumeCisco/restaurantdelaposte"
+        "url": "https://github.com/GuillaumeCisco/guillaumecisco"
     },
     "engines": {
         "node": ">=8.4.0",
@@ -48,8 +48,8 @@
     "browserslist": "electron 1.6",
     "main": "./build/electron/index.js",
     "build": {
-        "appId": "org.guillaumecisco.restaurantdelaposte",
-        "productName": "Restaurant de la Poste",
+        "appId": "org.guillaumecisco.website",
+        "productName": "Guillaume Cisco's website",
         "directories": {
             "buildResources": "resources",
             "output": "release"

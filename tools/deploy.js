@@ -3,7 +3,7 @@ const shell = require('shelljs');
 
 const timestamp = new Date().getTime();
 const registry = '984406419997.dkr.ecr.eu-central-1.amazonaws.com';
-const name = 'restaurantdelaposte';
+const name = 'guillaumecisco';
 
 console.log(`Deploying ${registry}/${name}:${timestamp}`);
 
