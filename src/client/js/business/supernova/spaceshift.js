@@ -91,7 +91,7 @@ class SpaceShift extends React.Component {
     };
 
     render() {
-        const {width, height} = this.props;
+        const {width, height, onClick} = this.props;
 
         return this.state.isSpaceShift ? <svg
             version="1.1"
@@ -100,6 +100,7 @@ class SpaceShift extends React.Component {
             height={height}
             viewBox="0 0 512 512"
             style={this.state.style}
+            onClick={onClick}
         >
             <circle fill="#FFDA44" cx="256" cy="428.973" r="55.351" />
             <path fill="#FF9811"

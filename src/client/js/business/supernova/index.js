@@ -1,6 +1,11 @@
 import React, {Component, Fragment} from 'react';
 import {clientPoint} from 'd3-selection';
 import {css} from 'react-emotion';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
+import modalActions from '../modal/actions';
+import generalActions from '../../../../common/actions';
 
 import Background from './background/index';
 import ShootingStars from './shootingStar/index';
@@ -10,9 +15,10 @@ import SpaceShift from './spaceshift';
 import Planet from './planet';
 
 import mars from './planet/mars.png';
-import ring from './planet/ring.png';
 import blue from './planet/blue.png';
 import white from './planet/white.png';
+
+//import ring from './planet/ring.png';
 
 class SuperNova extends Component {
     state = {
@@ -92,8 +98,10 @@ class SuperNova extends Component {
 
     isInPlanet = (a, b, planet, radius) => {
         // get center of planet in current referential
-        const {x, y} = planet.getCoordinate();
-        return this.isInCircle(a, b, radius, x, y);
+        if (planet) {
+            const {x, y} = planet.getCoordinate();
+            return this.isInCircle(a, b, radius, x, y);
+        }
     };
 
     click = (e) => {
@@ -102,19 +110,20 @@ class SuperNova extends Component {
         const y = point[1];
 
         if (this.isInCore(x, y)) {
-            console.log('clicked');
+            this.props.setComponent('core');
+            this.props.setIntro(true);
         }
 
         if (this.isInPlanet(x, y, this.redPlanet, this.state.redPlanet.radius)) {
-            console.log('red planet clicked');
+            this.props.setComponent('hobbies');
         }
 
         if (this.isInPlanet(x, y, this.orangePlanet, this.state.orangePlanet.radius)) {
-            console.log('orange planet clicked');
+            this.props.setComponent('awards');
         }
 
         if (this.isInPlanet(x, y, this.bluePlanet, this.state.bluePlanet.radius)) {
-            console.log('blue planet clicked');
+            this.props.setComponent('experience');
         }
     };
 
@@ -137,6 +146,11 @@ class SuperNova extends Component {
         }
     };
 
+    spaceshiftClick = (e) => {
+        console.log('clicked');
+        this.props.setComponent('spaceshift');
+    };
+
     wrapperCss = () => css`
             height: 100%;
             overflow: hidden;
@@ -147,6 +161,9 @@ class SuperNova extends Component {
         `;
 
     render() {
+
+        const {intro} = this.props;
+
         return (
             <div
                 ref={e => this.wrapper = e}
@@ -176,47 +193,61 @@ class SuperNova extends Component {
                         h={this.state.h}
                         width={48}
                         height={48}
+                        onClick={this.spaceshiftClick}
                     />
-                    <Planet
-                        w={this.state.w}
-                        h={this.state.h}
-                        color="#97140c"
-                        radius={this.state.redPlanet.radius}
-                        a={this.state.redPlanet.a}
-                        b={this.state.redPlanet.b}
-                        intervals={4000}
-                        teta={Math.PI / 2}
-                        img={mars}
-                        ref={x => this.redPlanet = x}
-                    />
-                    <Planet
-                        w={this.state.w}
-                        h={this.state.h}
-                        color="#7399b8"
-                        radius={this.state.bluePlanet.radius}
-                        a={this.state.bluePlanet.a}
-                        b={this.state.bluePlanet.b}
-                        intervals={3500}
-                        teta={-Math.PI / 2}
-                        img={blue}
-                        ref={x => this.bluePlanet = x}
-                    />
-                    <Planet
-                        w={this.state.w}
-                        h={this.state.h}
-                        color="#8a451f"
-                        radius={this.state.orangePlanet.radius}
-                        a={this.state.orangePlanet.a}
-                        b={this.state.orangePlanet.b}
-                        intervals={2000}
-                        teta={0}
-                        img={white}
-                        ref={x => this.orangePlanet = x}
-                    />
+                    {intro && <Fragment>
+                        <Planet
+                            w={this.state.w}
+                            h={this.state.h}
+                            color="#97140c"
+                            radius={this.state.redPlanet.radius}
+                            a={this.state.redPlanet.a}
+                            b={this.state.redPlanet.b}
+                            intervals={4000}
+                            teta={Math.PI / 2}
+                            img={mars}
+                            ref={x => this.redPlanet = x}
+                        />
+                        <Planet
+                            w={this.state.w}
+                            h={this.state.h}
+                            color="#7399b8"
+                            radius={this.state.bluePlanet.radius}
+                            a={this.state.bluePlanet.a}
+                            b={this.state.bluePlanet.b}
+                            intervals={3500}
+                            teta={-Math.PI / 2}
+                            img={blue}
+                            ref={x => this.bluePlanet = x}
+                        />
+                        <Planet
+                            w={this.state.w}
+                            h={this.state.h}
+                            color="#8a451f"
+                            radius={this.state.orangePlanet.radius}
+                            a={this.state.orangePlanet.a}
+                            b={this.state.orangePlanet.b}
+                            intervals={2000}
+                            teta={0}
+                            img={white}
+                            ref={x => this.orangePlanet = x}
+                        />
+                    </Fragment>
+                    }
                 </Fragment>}
             </div>
         );
     }
 }
 
-export default SuperNova;
+const mapStateToProps = (state, ownProps) => ({
+    visible: state.modal.visible,
+    intro: state.general.intro,
+});
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    setComponent: modalActions.component.set,
+    setIntro: generalActions.intro.set,
+}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(SuperNova);

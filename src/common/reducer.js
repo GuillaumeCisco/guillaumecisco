@@ -1,6 +1,11 @@
 import {actionTypes} from './actions';
+import modal from '../client/js/business/modal/reducer';
 
-const initialState = {error: ''};
+
+const initialState = {
+    error: '',
+    intro: false,
+};
 
 export const general = (state = initialState, {type, payload}) => {
     switch (type) {
@@ -9,6 +14,11 @@ export const general = (state = initialState, {type, payload}) => {
             ...state,
             error: payload,
         };
+    case actionTypes.intro.SET:
+        return {
+            ...state,
+            intro: payload,
+        };
     default:
         return state;
     }
@@ -16,4 +26,5 @@ export const general = (state = initialState, {type, payload}) => {
 
 export default {
     general,
+    modal,
 };

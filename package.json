@@ -107,6 +107,7 @@
         "react-keydown": "1.6.5",
         "react-redux": "5.0.6",
         "react-tap-event-plugin": "3.0.2",
+        "react-typist": "^2.0.4",
         "react-universal-component": "2.8.0",
         "recompose": "0.26.0",
         "redux": "3.7.2",
