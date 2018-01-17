@@ -52,6 +52,13 @@ const Skills = props =>
             </ul>
         </Block>
         <Block>
+            <h3>SQL</h3>
+            <ul>
+                <li>PostGreSQL</li>
+                <li>ElasticSearch</li>
+            </ul>
+        </Block>
+        <Block>
             <h3>Blockchain</h3>
             <ul>
                 <li>Fabric Hyperledger</li>
@@ -72,7 +79,6 @@ const Skills = props =>
             <ul>
                 <li>Git</li>
                 <li>Python</li>
-                <li>PostGreSQL</li>
                 <li>C/C++</li>
                 <li>Adobe Photoshop</li>
                 <li>Shell Scripting: sh, bash, zsh</li>
