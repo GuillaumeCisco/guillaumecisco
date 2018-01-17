@@ -24,6 +24,12 @@ const Container = styled('div')`
     font-size: 24px;
     padding: 3%;
     color: #000;
+    
+`;
+
+const Wrapper = styled('div')`
+    overflow: auto;
+    height: 100%;
 `;
 
 const Close = styled('div')`
@@ -58,7 +64,9 @@ class Modal extends React.Component {
     render() {
         const {visible, component} = this.props;
         return visible ? <Container>
-            {getComponent(component)}
+            <Wrapper>
+                {getComponent(component)}
+            </Wrapper>
             <Close onClick={this.close}>X</Close>
         </Container> : null;
     }

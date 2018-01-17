@@ -32,7 +32,7 @@ const Awards = props =>
         <p>For rewarding you, you can now access to an old and mystic knowledge only reserved to the braves!</p>
         <br/>
         <p>
-            <a href="https://github.com/GuillaumeCisco/guillaumecisco">Here</a> you can find the code for making this website!
+            <a href="https://github.com/GuillaumeCisco/guillaumecisco" target="_blank">Here</a> you can find the code for making this website!
         </p>
     </Container>;
 
