@@ -1,38 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 
-const color = '#333';
-
-const Container = styled('div')`
-    color: ${color};
-`;
-
-const H3 = styled('h3')`
-    margin: 10px;
-`;
-
-const P = styled('p')`
-    text-align: justify;
-    margin: 20px auto;
-    display: inline-block;
-`;
-
-const Ul = styled('ul')`
-    list-style: none;
-    padding: 0 200px;
-    margin: 80px 0;
-`;
-
-const Li = styled('li')`
-    margin: 30px 0;
-    text-align: left;
-    font-size: 20px;
-`;
-
-const A = styled('a')`
-    text-decoration: none;
-    color: ${color};
-`;
+import {Container, H3, P, Ul, Li, A} from '../common';
 
 const Title = styled('span')`
     font-weight: bold;
@@ -57,7 +26,7 @@ const Core = props =>
         <H3>I'm passionate about computer science</H3>
         <P>
             Currently I'm a Senior Lead FullStack Developer and work mainly in python and javascript in web
-            architecures.
+            architectures.
             <br />
             Creating websites, softwares or algorithm for both internal and external tools ;
             on different platforms: desktop, mobile, electronic terminal.

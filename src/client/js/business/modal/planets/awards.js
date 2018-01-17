@@ -1,35 +1,36 @@
 import React from 'react';
 import styled from 'react-emotion';
 
+import {Container} from '../common';
+
 const color = '#333';
 
-const Container = styled('div')`
+const Cont = styled(Container)`
     color: ${color};
-`;
-
-const H3 = styled('h3')`
-    margin: 10px;
-`;
-
-const P = styled('p')`
-    text-align: justify;
-    margin: 20px auto;
+    text-align: left;
+    margin: 0 auto;
     display: inline-block;
 `;
 
-const Ul = styled('ul')`
-    list-style: none;
-`;
-
-const A = styled('a')`
-    text-decoration: none;
-    color: ${color};
-`;
 
 const Awards = props =>
-    <Container>
+    <Cont>
         <h1>Awards</h1>
-    </Container>;
+            <ul>
+                <li>+2000 reputation on stackoverflow</li>
+                <li>Member of the Django French translation team 2012-2014</li>
+                <li>Member of Mensa Association (High Intellectual Potential People)</li>
+            </ul>
+        <h1>Hobbies</h1>
+            <ul>
+                <li>French gastronomy</li>
+                <li>Oenology and bierology</li>
+                <li>Musculation and swimming</li>
+                <li>Sportive gun shooting</li>
+                <li>Technical books</li>
+                <li>Politic, Geopolitic, Economy</li>
+            </ul>
+    </Cont>;
 
 
 export default Awards;

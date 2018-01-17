@@ -1,30 +1,5 @@
 import React from 'react';
-import styled from 'react-emotion';
-
-const color = '#333';
-
-const Container = styled('div')`
-    color: ${color};
-`;
-
-const H3 = styled('h3')`
-    margin: 10px;
-`;
-
-const P = styled('p')`
-    text-align: justify;
-    margin: 20px auto;
-    display: inline-block;
-`;
-
-const Ul = styled('ul')`
-    list-style: none;
-`;
-
-const A = styled('a')`
-    text-decoration: none;
-    color: ${color};
-`;
+import {container} from './common';
 
 const Awards = props =>
     <Container>
@@ -34,6 +9,7 @@ const Awards = props =>
         <p>
             <a href="https://github.com/GuillaumeCisco/guillaumecisco" target="_blank">Here</a> you can find the code for making this website!
         </p>
+        <p>And guess what? If you love so much this website, a desktop version thanks to electron is available, clone the repo and launch the npm scripts for creating os packages, you can either install them!</p>
     </Container>;
 
 

@@ -4,12 +4,11 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import actions from './actions';
 
-import Core from '../core/index';
+import Core from './core/index';
 import Experience from './planets/experience';
 import Awards from './planets/awards';
-import Hobbies from './planets/hobbies';
+import Skills from './planets/skills';
 import Spaceshift from './spaceshift';
-
 
 const Container = styled('div')`
     position: absolute;
@@ -47,8 +46,8 @@ const getComponent = type => {
         return <Experience />;
     case 'awards':
         return <Awards />;
-    case 'hobbies':
-        return <Hobbies />;
+    case 'skills':
+        return <Skills />;
     case 'spaceshift':
         return <Spaceshift />;
     default:

@@ -115,7 +115,7 @@ class SuperNova extends Component {
         }
 
         if (this.isInPlanet(x, y, this.redPlanet, this.state.redPlanet.radius)) {
-            this.props.setComponent('hobbies');
+            this.props.setComponent('skills');
         }
 
         if (this.isInPlanet(x, y, this.orangePlanet, this.state.orangePlanet.radius)) {
