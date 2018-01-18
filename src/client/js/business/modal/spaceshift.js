@@ -1,5 +1,5 @@
 import React from 'react';
-import {container} from './common';
+import {Container} from './common';
 
 const Awards = props =>
     <Container>
