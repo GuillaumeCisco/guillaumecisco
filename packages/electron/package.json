@@ -1,0 +1,56 @@
+{
+    "browserslist": "electron 1.6",
+    "main": "./build/electron/index.js",
+    "build": {
+        "appId": "org.guillaumecisco.website",
+        "productName": "Guillaume Cisco's website",
+        "directories": {
+            "buildResources": "resources",
+            "output": "release"
+        },
+        "files": [
+            "build/electron/**/*"
+        ],
+        "linux": {
+            "target": [
+                "deb",
+                "AppImage"
+            ]
+        },
+        "mac": {
+            "target": "dmg"
+        },
+        "win": {
+            "target": "nsis"
+        },
+        "nsis": {
+            "artifactName": "${productName}_${version}_win.${ext}"
+        },
+        "dmg": {
+            "artifactName": "${productName}_${version}_mac.${ext}",
+            "contents": [
+                {
+                    "x": 130,
+                    "y": 220
+                },
+                {
+                    "x": 410,
+                    "y": 220,
+                    "type": "link",
+                    "path": "/Applications"
+                }
+            ]
+        }
+    },
+    "dependencies": {
+        "html-webpack-plugin": "2.30.1"
+    },
+    "devDependencies": {
+        "devtron": "1.4.0",
+        "electron": "1.7.10",
+        "electron-builder": "19.49.2",
+        "electron-debug": "1.4.0",
+        "electron-devtools-installer": "2.2.3"
+
+    }
+}

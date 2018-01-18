@@ -3,6 +3,7 @@ FROM node:8.4.0
 WORKDIR /usr/src/app
 
 COPY . .
+COPY packages/base/package.json package.json
 RUN npm install && npm cache clean --force
 
 # setting NODE_ENV need to be AFTER npm install
