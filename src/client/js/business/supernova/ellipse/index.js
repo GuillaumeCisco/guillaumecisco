@@ -27,7 +27,9 @@ class Stars extends Component {
     }
 
     init = () => {
-        const {w, h, size, a, b, padding} = this.props;
+        const {
+            w, h, size, a, b, padding,
+        } = this.props;
 
         this.canvas.width = w;
         this.canvas.height = h;
@@ -39,7 +41,7 @@ class Stars extends Component {
         const radians = interpolate(0, Math.PI * 2);
 
         // create x gravitational stars
-        range(0, size).forEach(o => {
+        range(0, size).forEach((o) => {
             // get angle
             const teta = radians(o / size);
             const star = new Star(w, h, size, a, b, teta, padding);
@@ -53,9 +55,9 @@ class Stars extends Component {
     animate = (elapsed) => {
         const {w, h} = this.props;
 
-        //console.log(elapsed);
+        // console.log(elapsed);
         this.ctx.clearRect(-w, -h, 2 * w, 2 * h);
-        this.stars.forEach(star => {
+        this.stars.forEach((star) => {
             // move by + speed angle
             star.move();
             // draw new position
@@ -64,12 +66,14 @@ class Stars extends Component {
     };
 
     resize = () => {
-        const {w, h, a, b} = this.props;
+        const {
+            w, h, a, b,
+        } = this.props;
         this.canvas.width = w;
         this.canvas.height = h;
         this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
         this.ctx.rotate(-Math.PI / 20);
-        this.stars.forEach(star => {
+        this.stars.forEach((star) => {
             star.update(a, b);
         });
     };

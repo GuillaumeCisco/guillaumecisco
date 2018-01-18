@@ -12,6 +12,6 @@ export const actionTypes = {
 export default {
     visible: createAction(actionTypes.visible),
     component: {
-        set: createAction(actionTypes.component.SET)
+        set: createAction(actionTypes.component.SET),
     },
 };

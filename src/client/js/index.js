@@ -42,10 +42,9 @@ const renderApp = (RootElement) => {
 
 if (process.env.NODE_ENV !== 'production' && module.hot) {
     // load devTools
-    render(
-        <Provider store={store}>
-            <DevTools/>
-        </Provider>, devTools);
+    render(<Provider store={store}>
+        <DevTools />
+    </Provider>, devTools);
 
     module.hot.accept('./app/Root', () => {
         const app = require('./app/Root').default;

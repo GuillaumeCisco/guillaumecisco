@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, {css} from 'react-emotion';
+import styled from 'react-emotion';
 import {Container, Ul, H3, A, P} from '../common';
 
 import Github from './github';
@@ -11,7 +11,7 @@ const Span = styled('span')`
 `;
 
 const Core = props =>
-    <Container>
+    (<Container>
         <h1>Hey there!</h1>
         <H3>My name is Guillaume Cisco</H3>
         <P>
@@ -47,7 +47,7 @@ const Core = props =>
             <br />
             I promess you a lot of fun and I will make you one of the most skilled developper in this universe ;)
         </P>
-    </Container>;
+    </Container>);
 
 
 export default Core;

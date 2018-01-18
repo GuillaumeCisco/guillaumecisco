@@ -18,12 +18,8 @@ const res = p => path.resolve(__dirname, p);
 // within Webpack and can properly make connections to client modules:
 const externals = fs
     .readdirSync(res('../node_modules'))
-    .filter(
-        x =>
-            !/\.bin|react-universal-component|require-universal-module|webpack-flush-chunks/.test(
-                x,
-            ),
-    )
+    .filter(x =>
+        !/\.bin|react-universal-component|require-universal-module|webpack-flush-chunks/.test(x))
     .reduce((ext, mod) => ({
         ...ext,
         [mod]: `commonjs ${mod}`,

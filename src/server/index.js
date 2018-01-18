@@ -65,8 +65,7 @@ if (DEVELOPMENT) {
         // keeps serverRender updated with arg: { clientStats, outputPath }
         webpackHotServerMiddleware(multiCompiler, {
             serverRendererOptions: {outputPath},
-        }),
-    );
+        }));
 }
 else {
     const clientStats = require('../../build/client/stats.json'); // eslint-disable-line import/no-unresolved

@@ -1,6 +1,6 @@
 import {createAction} from 'redux-actions';
 
-const prefix = `GENERAL`;
+const prefix = 'GENERAL';
 
 export const actionTypes = {
     error: {

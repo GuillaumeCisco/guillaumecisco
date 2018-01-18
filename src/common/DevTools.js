@@ -25,7 +25,6 @@ const DevTools = createDevTools(
             <LogMonitor theme="tomorrow" />
         </FilterMonitor>
         <SliderMonitor keyboardEnabled />
-    </DockMonitor>,
-);
+    </DockMonitor>);
 
 export default DevTools;

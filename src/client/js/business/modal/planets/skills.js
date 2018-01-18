@@ -17,7 +17,7 @@ const Block = styled('div')`
 `;
 
 const Skills = props =>
-    <Cont>
+    (<Cont>
         <h1>Skills</h1>
         <Block>
             <H3>Frontend</H3>
@@ -84,7 +84,7 @@ const Skills = props =>
                 <li>Shell Scripting: sh, bash, zsh</li>
             </ul>
         </Block>
-    </Cont>;
+     </Cont>);
 
 
 export default Skills;

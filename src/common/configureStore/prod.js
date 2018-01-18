@@ -8,7 +8,9 @@ import rootReducer from '../reducer';
 import routesMap from '../routesMap';
 
 const configureStore = (history, initialState) => {
-    const {reducer, middleware, enhancer, thunk, initialDispatch} = connectRoutes(history, routesMap, {
+    const {
+        reducer, middleware, enhancer, thunk, initialDispatch,
+    } = connectRoutes(history, routesMap, {
         initialDispatch: false,
         ...options,
     }); // yes, 5 redux aspects

@@ -79,7 +79,7 @@ export default env => [
                 babelrc: false,
                 plugins: [
                     ['universal-import', {
-                        'disableWarnings': true
+                        disableWarnings: true,
                     }],
                     'transform-runtime',
                     'emotion',
@@ -110,20 +110,18 @@ export default env => [
     ...(DEBUG ? [new BundleAnalyzerPlugin({
         analyzerMode: 'static',
     })] : []),
-    ...(PRODUCTION ? [new SWPrecacheWebpackPlugin(
-        {
-            cacheId: config.appName,
-            filename: 'service-worker.js',
-            minify: false,
-            dynamicUrlToDependencies: Object.keys(routesMap).reduce((p, c) => [...p, routesMap[c].path], []).reduce((p, c) =>
-                ({
-                    ...p,
-                    [c]: [
-                        path.resolve(__dirname, '../../src/client/js/index.js'),
-                    ],
-                }), {}),
-            navigateFallback: PRODUCTION_BASE_NAME,
-            staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-        },
-    )] : []),
+    ...(PRODUCTION ? [new SWPrecacheWebpackPlugin({
+        cacheId: config.appName,
+        filename: 'service-worker.js',
+        minify: false,
+        dynamicUrlToDependencies: Object.keys(routesMap).reduce((p, c) => [...p, routesMap[c].path], []).reduce((p, c) =>
+            ({
+                ...p,
+                [c]: [
+                    path.resolve(__dirname, '../../src/client/js/index.js'),
+                ],
+            }), {}),
+        navigateFallback: PRODUCTION_BASE_NAME,
+        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+    })] : []),
 ];

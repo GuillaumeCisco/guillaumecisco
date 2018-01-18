@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {css} from 'react-emotion';
 
 import Supernova from '../supernova/index';
-import Modal from '../modal'
+import Modal from '../modal';
 import Intro from './intro';
 
 const style = css`
@@ -12,11 +12,11 @@ const style = css`
 
 
 const Splash = ({page}) =>
-    <div className={style}>
+    (<div className={style}>
         <Intro />
         <Supernova />
-        <Modal/>
-    </div>;
+        <Modal />
+     </div>);
 
 
 Splash.propTypes = {

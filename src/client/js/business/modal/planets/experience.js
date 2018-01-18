@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 
-import {Container, H3, P, Ul, Li, A} from '../common';
+import {Container, H3, P, Ul, Li} from '../common';
 
 const Title = styled('span')`
     font-weight: bold;
@@ -21,7 +21,7 @@ const Location = styled('span')`
 `;
 
 const Core = props =>
-    <Container>
+    (<Container>
         <h1>Professional Experience</h1>
         <H3>I'm passionate about computer science</H3>
         <P>
@@ -80,7 +80,8 @@ const Core = props =>
                     <li>Lead Front-end Developer on major TF1 websites (First French TV Channel).</li>
                     <li>Mainly Responsive Design based website working on web/mobile/tablet + Web App</li>
                     <li>Technologies: HTML5, CSS3, Javascript: Backbone/Marionette, require.js, react,js,
-                Grunt, jQuery - Twig (Django template engine for PHP) – node.js.</li>
+                Grunt, jQuery - Twig (Django template engine for PHP) – node.js.
+                    </li>
                 </ul>
             </Li>
             <Li>
@@ -98,7 +99,7 @@ const Core = props =>
             </Li>
         </Ul>
         <p>You can directly access to all these informations by downloading my <a href="https://drive.google.com/file/d/0Bwji_-hi-VLiWDVwaDFGYjhvTy0yeG1kZ3Yxbm5UMnRBckxj/view?usp=sharing" target="_blank">resume</a></p>
-    </Container>;
+     </Container>);
 
 
 export default Core;

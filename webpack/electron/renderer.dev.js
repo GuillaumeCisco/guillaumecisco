@@ -1,9 +1,7 @@
 import path from 'path';
-import fs from 'fs';
 import webpack from 'webpack';
-import chalk from 'chalk';
 import merge from 'webpack-merge';
-import {spawn, execSync} from 'child_process';
+import {spawn} from 'child_process';
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import HappyPack from 'happypack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
@@ -50,7 +48,7 @@ export default merge.smart(baseConfig, {
                     cacheDirectory: true,
                     plugins: [
                         ['universal-import', {
-                            'disableWarnings': true
+                            disableWarnings: true,
                         }],
                         'emotion',
                         'transform-runtime',

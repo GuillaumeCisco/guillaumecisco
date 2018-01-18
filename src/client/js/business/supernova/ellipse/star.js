@@ -2,7 +2,6 @@ import React from 'react';
 import {random} from 'lodash';
 
 const Star = function (w, h, size, orbitA, orbitB, teta, padding) {
-
     this.originW = this.w = w;
     this.originH = this.h = h;
     this.size = size;
@@ -38,7 +37,7 @@ const Star = function (w, h, size, orbitA, orbitB, teta, padding) {
 
     const draw = (ctx) => {
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);  // full centered circle
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); // full centered circle
         // create different light power
         ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
         ctx.fill();
