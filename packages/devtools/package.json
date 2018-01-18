@@ -1,5 +1,5 @@
 {
-    "name": "devtools",
+    "name": "devtools-package",
     "version": "0.0.1",
     "devDependencies": {
         "redux-devtools": "3.4.1",

@@ -27,6 +27,7 @@
         "eslint": "cd packages/eslint && npm run eslint",
 
         "dev": "cd packages/electron && npm run dev",
+        "start-main-dev": "cd packages/electron && npm run start-main-dev",
         "start:electron": "cd packages/electron && npm run start:electron",
         "build:electron": "cd packages/electron && npm run build:electron",
         "package": "cd packages/electron && npm run package",
@@ -40,9 +41,6 @@
     },
     "resolutions": {
         "webpack-sources": "1.0.1"
-    },
-    "devDependencies": {
-        "electron": "1.7.10"
     },
     "pre-commit": [
         "precommit-msg",

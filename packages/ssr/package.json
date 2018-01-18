@@ -1,5 +1,5 @@
 {
-    "name": "ssr",
+    "name": "ssr-package",
     "version": "0.0.1",
     "dependencies": {
         "babel-runtime": "6.26.0",
