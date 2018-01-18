@@ -32,7 +32,7 @@ import Routes from '../../../common/routes';
 
 const Root = ({store}) =>
     (<Provider store={store}>
-        <Routes/>
+        <Routes />
     </Provider>);
 
 

@@ -15,7 +15,7 @@ const Routes = ({location, visible}) =>
     (<Container>
         <ServiceWorker />
         {Object.keys(routes).includes(location.type) ?
-            <Splash page={location.type}/> :
+            <Splash page={location.type} /> :
             <h1>Not Found</h1>}
     </Container>);
 
@@ -25,7 +25,7 @@ Routes.propTypes = {
 
 const mapStateToProps = (state, ownProps) => ({
     location: state.location,
-    ...ownProps
+    ...ownProps,
 });
 
 export default connect(mapStateToProps)(Routes);

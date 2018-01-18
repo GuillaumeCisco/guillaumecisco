@@ -38,7 +38,7 @@ const Close = styled('div')`
     cursor: pointer;
 `;
 
-const getComponent = type => {
+const getComponent = (type) => {
     switch (type) {
     case 'core':
         return <Core />;

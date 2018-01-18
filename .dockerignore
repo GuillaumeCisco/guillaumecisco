@@ -4,7 +4,7 @@
 !webpack/server.js
 !webpack/utils
 !Dockerfile
-!packages/base/package.json
+!packages/ssr/package.json
 !config
 !.babelrc
 !src/common/routesMap.js

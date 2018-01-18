@@ -55,11 +55,13 @@ export default class MenuBuilder {
               {label: 'Hide Others', accelerator: 'Command+Shift+H', selector: 'hideOtherApplications:'},
               {label: 'Show All', selector: 'unhideAllApplications:'},
               {type: 'separator'},
-              {label: 'Quit',
+              {
+                  label: 'Quit',
                   accelerator: 'Command+Q',
                   click: () => {
                       app.quit();
-                  }},
+                  },
+              },
           ],
       };
       const subMenuEdit = {
@@ -77,31 +79,39 @@ export default class MenuBuilder {
       const subMenuViewDev = {
           label: 'View',
           submenu: [
-              {label: 'Reload',
+              {
+                  label: 'Reload',
                   accelerator: 'Command+R',
                   click: () => {
                       this.mainWindow.webContents.reload();
-                  }},
-              {label: 'Toggle Full Screen',
+                  },
+              },
+              {
+                  label: 'Toggle Full Screen',
                   accelerator: 'Ctrl+Command+F',
                   click: () => {
                       this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-                  }},
-              {label: 'Toggle Developer Tools',
+                  },
+              },
+              {
+                  label: 'Toggle Developer Tools',
                   accelerator: 'Alt+Command+I',
                   click: () => {
                       this.mainWindow.toggleDevTools();
-                  }},
+                  },
+              },
           ],
       };
       const subMenuViewProd = {
           label: 'View',
           submenu: [
-              {label: 'Toggle Full Screen',
+              {
+                  label: 'Toggle Full Screen',
                   accelerator: 'Ctrl+Command+F',
                   click: () => {
                       this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen());
-                  }},
+                  },
+              },
           ],
       };
       const subMenuWindow = {
@@ -116,22 +126,30 @@ export default class MenuBuilder {
       const subMenuHelp = {
           label: 'Help',
           submenu: [
-              {label: 'Learn More',
+              {
+                  label: 'Learn More',
                   click() {
                       shell.openExternal('http://electron.atom.io');
-                  }},
-              {label: 'Documentation',
+                  },
+              },
+              {
+                  label: 'Documentation',
                   click() {
                       shell.openExternal('https://github.com/atom/electron/tree/master/docs#readme');
-                  }},
-              {label: 'Community Discussions',
+                  },
+              },
+              {
+                  label: 'Community Discussions',
                   click() {
                       shell.openExternal('https://discuss.atom.io/c/electron');
-                  }},
-              {label: 'Search Issues',
+                  },
+              },
+              {
+                  label: 'Search Issues',
                   click() {
                       shell.openExternal('https://github.com/atom/electron/issues');
-                  }},
+                  },
+              },
           ],
       };
 

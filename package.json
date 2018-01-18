@@ -18,37 +18,78 @@
         "packages/*"
     ],
     "scripts": {
-        "start": "npm run clean && cross-env NODE_ENV=development babel-watch src/server/index.js",
-        "start:prod": "npm run build:main && npm run serve",
-        "serve": "cross-env NODE_ENV=production babel-node build/server/index.js",
-        "build:main": "npm run build:client && npm run build:server && npm run build:node",
-        "build:client": "rimraf build/client && cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --progress --config webpack/client.js",
-        "build:server": "rimraf build/server && cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --progress --config webpack/server.js",
-        "build:node": "cross-env NODE_ENV=production babel src/server/index.js -o build/server/index.js",
+        "start": "cd packages/ssr && npm run start",
+        "start:prod": "cd packages/ssr && npm run start:prod",
+
+        "test": "cd packages/test && npm run test",
+        "cover": "cd packages/test && npm run cover",
+
+        "eslint": "cd packages/eslint && npm run eslint",
+
+        "dev": "cd packages/electron && npm run dev",
+        "start:electron": "cd packages/electron && npm run start:electron",
+        "build:electron": "cd packages/electron && npm run build:electron",
+        "package": "cd packages/electron && npm run package",
+        "package-all": "cd packages/electron && npm run package-all",
+        "package-linux": "cd packages/electron && npm run package-linux",
+        "package-win": "cd packages/electron && npm run package-win",
+        "build-electron": "node $NODE_DEBUG_OPTION ./node_modules/.bin/build --publish never",
+
         "deploy": "tools/deploy.js",
-        "electron-package": "tools/electron-package.js",
-        "clean": "rimraf build",
-        "test": "cross-env NODE_ENV=development ./node_modules/.bin/mocha --compilers js:babel-register \"./src/**/*.spec.js\"",
-        "cover": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-register \"./src/frontend/js/**/*.spec.js\"",
-        "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
-        "eslint": "./node_modules/.bin/eslint --fix src webpack",
-        "dev": "cross-env IS_ELECTRON=1 START_HOT=1 npm run start-renderer-dev",
-        "start-main-dev": "cross-env IS_ELECTRON=1 HOT=1 NODE_ENV=development electron -r babel-register --require babel-polyfill ./src/electron/main",
-        "start-renderer-dev": "cross-env IS_ELECTRON=1 NODE_ENV=development babel-node ./node_modules/webpack-dev-server/bin/webpack-dev-server --config ./webpack/electron/renderer.dev.js",
-        "start:electron": "cross-env IS_ELECTRON=1 NODE_ENV=production electron ./build/electron/index.js",
-        "build:electron": "concurrently \"npm run build-main\" \"npm run build-renderer\"",
-        "build-main": "cross-env IS_ELECTRON=1 NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --progress --config webpack/electron/main.js --colors",
-        "build-renderer": "cross-env IS_ELECTRON=1 NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --progress --config webpack/electron/renderer.prod.js --colors",
-        "package": "npm run build:electron && build --publish never",
-        "package-all": "npm run build:electron && build -mwl",
-        "package-linux": "npm run build:electron && build --linux",
-        "package-win": "npm run build:electron && build --win --x64",
-        "build-electron": "build --publish never"
-    },
-    "dependencies": {
-        "webpack-sources": "1.0.1"
+        "precommit-msg": "echo 'Pre-commit checks...' && exit 0"
     },
     "resolutions": {
         "webpack-sources": "1.0.1"
+    },
+    "devDependencies": {
+        "electron": "1.7.10"
+    },
+    "pre-commit": [
+        "precommit-msg",
+        "test",
+        "eslint"
+    ],
+    "browserslist": "electron 1.6",
+    "main": "./build/electron/index.js",
+    "build": {
+        "appId": "org.guillaumecisco.website",
+        "productName": "Guillaume Cisco's website",
+        "directories": {
+            "buildResources": "resources",
+            "output": "release"
+        },
+        "files": [
+            "build/electron/**/*"
+        ],
+        "linux": {
+            "target": [
+                "deb",
+                "AppImage"
+            ]
+        },
+        "mac": {
+            "target": "dmg"
+        },
+        "win": {
+            "target": "nsis"
+        },
+        "nsis": {
+            "artifactName": "${productName}_${version}_win.${ext}"
+        },
+        "dmg": {
+            "artifactName": "${productName}_${version}_mac.${ext}",
+            "contents": [
+                {
+                    "x": 130,
+                    "y": 220
+                },
+                {
+                    "x": 410,
+                    "y": 220,
+                    "type": "link",
+                    "path": "/Applications"
+                }
+            ]
+        }
     }
 }

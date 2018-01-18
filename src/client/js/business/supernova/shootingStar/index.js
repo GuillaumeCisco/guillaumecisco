@@ -47,7 +47,7 @@ class Stars extends Component {
         // remove finished shootingStars
         this.shootingStars = this.shootingStars.filter(star => star.getStep() <= this.maxSteps);
 
-        this.shootingStars.forEach(star => {
+        this.shootingStars.forEach((star) => {
             // move by one step
             star.move();
             // draw new position
@@ -60,7 +60,7 @@ class Stars extends Component {
 
         this.canvas.width = w;
         this.canvas.height = h;
-        this.shootingStars.forEach(star => {
+        this.shootingStars.forEach((star) => {
             star.update(w, h);
         });
     };

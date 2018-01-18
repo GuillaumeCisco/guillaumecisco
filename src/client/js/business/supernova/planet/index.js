@@ -26,7 +26,9 @@ class Planet extends React.Component {
     }
 
     init = () => {
-        const {w, h, a, b, intervals, teta, img} = this.props;
+        const {
+            w, h, a, b, intervals, teta, img,
+        } = this.props;
 
         this.originW = this.w = w;
         this.originH = this.h = h;
@@ -73,26 +75,26 @@ class Planet extends React.Component {
         // center
         const {radius, color} = this.props;
 
-        //this.ctx.beginPath();
-        //this.ctx.arc(x, y, radius, 0, Math.PI * 2); // full centered circle
-        //this.ctx.rotate(-this.canvasRotation);
+        // this.ctx.beginPath();
+        // this.ctx.arc(x, y, radius, 0, Math.PI * 2); // full centered circle
+        // this.ctx.rotate(-this.canvasRotation);
         this.ctx.drawImage(this.img, x - radius, y - radius, radius * 2, radius * 2);
-        //this.ctx.rotate(this.canvasRotation);
+        // this.ctx.rotate(this.canvasRotation);
         // this.ctx.shadowBlur = 50;
         // this.ctx.shadowColor = color;
         // this.ctx.strokeStyle = color;
         // this.ctx.stroke();
     };
 
-    getCoordinate = () => {
-        return {
-            x: (this.y * Math.sin(-this.canvasRotation) + this.x * Math.cos(-this.canvasRotation)) + this.w / 2,
-            y: (this.y * Math.cos(-this.canvasRotation) - this.x * Math.sin(-this.canvasRotation)) + this.h / 2,
-        };
-    };
+    getCoordinate = () => ({
+        x: (this.y * Math.sin(-this.canvasRotation) + this.x * Math.cos(-this.canvasRotation)) + this.w / 2,
+        y: (this.y * Math.cos(-this.canvasRotation) - this.x * Math.sin(-this.canvasRotation)) + this.h / 2,
+    });
 
     resize = () => {
-        const {w, h, a, b} = this.props;
+        const {
+            w, h, a, b,
+        } = this.props;
         this.canvas.width = w;
         this.canvas.height = h;
         this.ctx.clearRect(-w, -h, 2 * w, 2 * h);

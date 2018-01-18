@@ -2,18 +2,17 @@ import React from 'react';
 import {random} from 'lodash';
 
 const ShootingStar = function (w, h) {
-
     this.originW = w;
     this.originH = h;
     this.radius = 1;
-    this.teta =  5 * Math.PI / 8;
+    this.teta = 5 * Math.PI / 8;
     this.originX = this.x = random(0, w);
     this.originY = this.y = random(0, h / 2);
     this.step = 0;
 
     const draw = (ctx) => {
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);  // full centered circle
+        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2); // full centered circle
         // create different light power
         ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
         ctx.fill();

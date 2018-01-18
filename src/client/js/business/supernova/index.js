@@ -18,7 +18,7 @@ import mars from './planet/mars.png';
 import blue from './planet/blue.png';
 import white from './planet/white.png';
 
-//import ring from './planet/ring.png';
+// import ring from './planet/ring.png';
 
 class SuperNova extends Component {
     state = {
@@ -161,7 +161,6 @@ class SuperNova extends Component {
         `;
 
     render() {
-
         const {intro} = this.props;
 
         return (

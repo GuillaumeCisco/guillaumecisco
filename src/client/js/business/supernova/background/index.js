@@ -26,7 +26,7 @@ class Background extends Component {
         this.canvas.height = h;
         this.ctx = this.canvas.getContext('2d');
 
-        range(0, size).forEach(_ => {
+        range(0, size).forEach((_) => {
             const star = new Star(w, h);
             this.stars.push(star);
             star.draw(this.ctx);
@@ -38,7 +38,7 @@ class Background extends Component {
         this.canvas.width = w;
         this.canvas.height = h;
         this.ctx.clearRect(-w, -h, 2 * w, 2 * h);
-        this.stars.forEach(star => {
+        this.stars.forEach((star) => {
             star.update(w, h);
             star.draw(this.ctx);
         });
