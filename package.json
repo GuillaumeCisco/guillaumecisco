@@ -20,6 +20,7 @@
     "scripts": {
         "start": "cd packages/ssr && npm run start",
         "start:prod": "cd packages/ssr && npm run start:prod",
+        "build:main": "cd packages/ssr && npm run build:main",
 
         "test": "cd packages/test && npm run test",
         "cover": "cd packages/test && npm run cover",
@@ -34,7 +35,7 @@
         "package-all": "cd packages/electron && npm run package-all",
         "package-linux": "cd packages/electron && npm run package-linux",
         "package-win": "cd packages/electron && npm run package-win",
-        "build-electron": "node $NODE_DEBUG_OPTION ./node_modules/.bin/build --publish never",
+        "build-electron": "build --publish never",
 
         "deploy": "tools/deploy.js",
         "precommit-msg": "echo 'Pre-commit checks...' && exit 0"
