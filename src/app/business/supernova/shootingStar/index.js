@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {range, random} from 'lodash';
+import PropTypes from 'prop-types';
+import {random} from 'lodash';
 import {timer} from 'd3-timer';
 import {onlyUpdateForKeys} from 'recompose';
 
@@ -22,7 +23,7 @@ class Stars extends Component {
         this.resize(); // redraw on resize
     };
 
-    componentWillUnMount() {
+    componentWillUnmount() {
         this.timer.stop();
     }
 
@@ -66,8 +67,16 @@ class Stars extends Component {
     };
 
     render() {
-        return <Canvas innerRef={e => this.canvas = e} />;
+        return (<Canvas innerRef={(e) => {
+ this.canvas = e;
+}}
+        />);
     }
 }
+
+Stars.propTypes = {
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+};
 
 export default onlyUpdateForKeys(['w', 'h'])(Stars);

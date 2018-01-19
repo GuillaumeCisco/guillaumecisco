@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const LinkedIn = ({width, height}) =>
     (<svg
@@ -13,6 +14,16 @@ const LinkedIn = ({width, height}) =>
                 fill="#0097D3"
             />
         </g>
-     </svg>);
+    </svg>);
+
+LinkedIn.propTypes = {
+    width: PropTypes.number,
+    height: PropTypes.number,
+};
+
+LinkedIn.defaultProps = {
+    width: 48,
+    height: 48,
+};
 
 export default LinkedIn;

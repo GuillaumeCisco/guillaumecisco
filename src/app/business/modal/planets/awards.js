@@ -30,7 +30,7 @@ const Awards = props =>
             <li>Technical books</li>
             <li>Politic, Geopolitic, Economy</li>
         </ul>
-     </Cont>);
+    </Cont>);
 
 
 export default Awards;

@@ -1,7 +1,9 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+
 import actions from './actions';
 
 import Core from './core/index';
@@ -70,6 +72,18 @@ class Modal extends React.Component {
         </Container> : null;
     }
 }
+
+Modal.propTypes = {
+    setVisible: PropTypes.func.isRequired,
+    visible: PropTypes.bool,
+    component: PropTypes.string,
+};
+
+Modal.defaultProps = {
+    visible: false,
+    component: '',
+};
+
 
 const mapStateToProps = (state, ownProps) => ({
     visible: state.modal.visible,

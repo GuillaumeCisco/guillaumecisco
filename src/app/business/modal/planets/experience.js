@@ -98,8 +98,8 @@ const Core = props =>
                 </ul>
             </Li>
         </Ul>
-        <p>You can directly access to all these informations by downloading my <a href="https://drive.google.com/file/d/0Bwji_-hi-VLiWDVwaDFGYjhvTy0yeG1kZ3Yxbm5UMnRBckxj/view?usp=sharing" target="_blank">resume</a></p>
-     </Container>);
+        <p>You can directly access to all these informations by downloading my <a href="https://drive.google.com/file/d/0Bwji_-hi-VLiWDVwaDFGYjhvTy0yeG1kZ3Yxbm5UMnRBckxj/view?usp=sharing" target="_blank" rel="noopener noreferrer">resume</a></p>
+    </Container>);
 
 
 export default Core;

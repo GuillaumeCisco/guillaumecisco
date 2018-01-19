@@ -1,7 +1,6 @@
 import {actionTypes} from './actions';
 import modal from './business/modal/reducer';
 
-
 const initialState = {
     error: '',
     intro: false,

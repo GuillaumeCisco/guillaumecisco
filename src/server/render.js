@@ -22,12 +22,10 @@ const createApp = (App, store) => (
 
 
 // TODO: handle [hash]
-const flushDll = (clientStats) => Object.keys(Dll._originalSettings.entry).map(o =>
-    `<script type="text/javascript" src="${clientStats.publicPath}${Dll._originalSettings.filename.replace(/\[name\]/, o)}" defer></script>`,
-).join('\n');
+const flushDll = clientStats => Object.keys(Dll._originalSettings.entry).map(o =>
+    `<script type="text/javascript" src="${clientStats.publicPath}${Dll._originalSettings.filename.replace(/\[name\]/, o)}" defer></script>`).join('\n');
 
 export default ({clientStats}) => async (req, res, next) => {
-
     const store = await configureStore(req, res);
     if (!store) return; // no store means redirect was already served
 
@@ -43,8 +41,7 @@ export default ({clientStats}) => async (req, res, next) => {
     console.log('REQUESTED PATH:', req.path);
     console.log('CHUNK NAMES', chunkNames);
 
-    return res.send(
-        `<!doctype html>
+    return res.send(`<!doctype html>
       <html>
         <head>
           <meta charset="utf-8">
@@ -68,6 +65,5 @@ export default ({clientStats}) => async (req, res, next) => {
           ${js}
           ${serviceWorker}
         </body>
-      </html>`,
-    );
+      </html>`);
 };

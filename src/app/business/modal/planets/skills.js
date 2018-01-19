@@ -84,7 +84,7 @@ const Skills = props =>
                 <li>Shell Scripting: sh, bash, zsh</li>
             </ul>
         </Block>
-     </Cont>);
+    </Cont>);
 
 
 export default Skills;

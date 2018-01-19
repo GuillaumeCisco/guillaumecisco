@@ -1,6 +1,6 @@
 import {random} from 'lodash';
 
-const Star = function (w, h) {
+const Star = function Star(w, h) {
     const padding = 10;
 
     this.originW = this.w = w;

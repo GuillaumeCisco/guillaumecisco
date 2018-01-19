@@ -19,7 +19,7 @@ const Intro = props =>
         Welcome into (my) space.
         <br />
         Please click on the core star for instructions.
-     </Typist>);
+    </Typist>);
 
 
 export default Intro;

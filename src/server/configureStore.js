@@ -17,7 +17,7 @@ export default async (req, res) => {
     // if not using onBeforeChange + jwTokens, you can also async authenticate
     // here against your db (i.e. using req.cookies.sessionId)
 
-    let location = store.getState().location;
+    const {location} = store.getState();
     if (doesRedirect(location, res)) return false;
 
     // using redux-thunk perhaps request and dispatch some app-wide state as well, e.g:
@@ -25,10 +25,10 @@ export default async (req, res) => {
 
     await thunk(store); // THE PAYOFF BABY!
 
-    location = store.getState().location; // remember: state has now changed
-    if (doesRedirect(location, res)) return false; // only do this again if ur thunks have redirects
+    const {loc} = store.getState(); // remember: state has now changed
+    if (doesRedirect(loc, res)) return false; // only do this again if ur thunks have redirects
 
-    const status = location.type === NOT_FOUND ? 404 : 200;
+    const status = loc.type === NOT_FOUND ? 404 : 200;
     res.status(status);
     return store;
 };

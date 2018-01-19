@@ -16,7 +16,7 @@ const Splash = ({page}) =>
         <Intro />
         <Supernova />
         <Modal />
-     </div>);
+    </div>);
 
 
 Splash.propTypes = {

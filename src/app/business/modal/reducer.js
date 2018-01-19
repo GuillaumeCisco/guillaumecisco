@@ -5,7 +5,7 @@ const initialState = {
     component: null,
 };
 
-export const modal = (state = initialState, {type, payload}) => {
+const modal = (state = initialState, {type, payload}) => {
     switch (type) {
     case actionTypes.visible:
         return {

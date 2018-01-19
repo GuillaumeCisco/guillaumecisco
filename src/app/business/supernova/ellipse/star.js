@@ -1,7 +1,6 @@
-import React from 'react';
 import {random} from 'lodash';
 
-const Star = function (w, h, size, orbitA, orbitB, teta, padding) {
+const Star = function Stars(w, h, size, orbitA, orbitB, teta, padding) {
     this.originW = this.w = w;
     this.originH = this.h = h;
     this.size = size;
@@ -48,7 +47,7 @@ const Star = function (w, h, size, orbitA, orbitB, teta, padding) {
         const index = ((this.size * this.teta) / (2 * Math.PI)) + this.speed;
         // update with new angle
         this.teta = ((index * 2 * Math.PI) / this.size) % (2 * Math.PI);
-        let x = Math.cos(this.teta) * this.orbitA,
+        const x = Math.cos(this.teta) * this.orbitA,
             y = Math.sin(this.teta) * this.orbitB;
 
         // update carthesian coordinate by respecting initial randomized padding

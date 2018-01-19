@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {range, random} from 'lodash';
 import {onlyUpdateForKeys} from 'recompose';
+import PropTypes from 'prop-types';
 
 import Canvas from './canvas';
 
@@ -46,8 +46,17 @@ class Core extends Component {
     };
 
     render() {
-        return <Canvas innerRef={e => this.canvas = e} />;
+        return (<Canvas innerRef={(e) => {
+ this.canvas = e;
+}}
+        />);
     }
 }
+
+Core.propTypes = {
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+    radius: PropTypes.number.isRequired,
+};
 
 export default onlyUpdateForKeys(['w', 'h', 'radius'])(Core);

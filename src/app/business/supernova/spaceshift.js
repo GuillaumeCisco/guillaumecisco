@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {random} from 'lodash';
 import {interpolate} from 'd3-interpolate';
 import {timer} from 'd3-timer';
@@ -22,9 +23,17 @@ class SpaceShift extends React.Component {
         this.resize(); // redraw on resize
     };
 
-    componentWillUnMount() {
+    componentWillUnmount() {
         this.timer.stop();
     }
+
+    getX = () => this.w * this.x / this.originW;
+
+    setX = () => {
+        const {width} = this.props;
+        this.x = random(width, this.w - width);
+        return this.x;
+    };
 
     init = () => {
         const {
@@ -47,14 +56,6 @@ class SpaceShift extends React.Component {
         });
 
         this.timer = timer(this.animate);
-    };
-
-    getX = () => this.w * this.x / this.originW;
-
-    setX = () => {
-        const {width} = this.props;
-        this.x = random(width, this.w - width);
-        return this.x;
     };
 
     animate = (elapsed) => {
@@ -155,5 +156,13 @@ class SpaceShift extends React.Component {
         </svg> : null;
     }
 }
+
+SpaceShift.propTypes = {
+    w: PropTypes.number.isRequired,
+    h: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    onClick: PropTypes.func.isRequired,
+};
 
 export default SpaceShift;

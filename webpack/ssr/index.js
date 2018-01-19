@@ -75,12 +75,10 @@ if (DEVELOPMENT) {
         headers: clientConfig.devServer.headers,
     }));
     app.use(webpackHotMiddleware(clientCompiler));
-    app.use(
-        // keeps serverRender updated with arg: { clientStats, outputPath }
-        webpackHotServerMiddleware(multiCompiler, {
-            serverRendererOptions: {outputPath},
-        }),
-    );
+    // keeps serverRender updated with arg: { clientStats, outputPath }
+    app.use(webpackHotServerMiddleware(multiCompiler, {
+        serverRendererOptions: {outputPath},
+    }));
 }
 else {
     const clientStats = require('../../build/ssr/client/stats.json'); // eslint-disable-line import/no-unresolved

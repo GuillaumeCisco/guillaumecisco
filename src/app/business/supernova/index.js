@@ -1,4 +1,7 @@
+/* global window */
+
 import React, {Component, Fragment} from 'react';
+import PropTypes from 'prop-types';
 import {clientPoint} from 'd3-selection';
 import {css} from 'react-emotion';
 import {connect} from 'react-redux';
@@ -21,15 +24,6 @@ import white from './planet/white.png';
 // import ring from './planet/ring.png';
 
 class SuperNova extends Component {
-    state = {
-        over: false,
-        loaded: false,
-        w: 0, // width
-        h: 0, // height
-        a: 0, // ellipse horizontal axis
-        b: 0, // ellipse vertical axis
-    };
-
     constructor(props) {
         super(props);
 
@@ -40,6 +34,15 @@ class SuperNova extends Component {
         this.nbStars = 1000;
         this.padding = 50;
     }
+
+    state = {
+        over: false,
+        loaded: false,
+        w: 0, // width
+        h: 0, // height
+        a: 0, // ellipse horizontal axis
+        b: 0, // ellipse vertical axis
+    };
 
     componentDidMount() {
         // render with correct width and size
@@ -89,7 +92,7 @@ class SuperNova extends Component {
     }
 
     // x, y are the coordinate of the center of circle, r is the radius, a, b the coordinate to test
-    isInCircle = (x, y, r, a, b) => Math.pow(a - x, 2) + Math.pow(b - y, 2) < Math.pow(r, 2);
+    isInCircle = (x, y, r, a, b) => ((a - x) ** 2) + ((b - y) ** 2) < (r ** 2);
 
     isInCore = (x, y) =>
         // core surface
@@ -147,7 +150,6 @@ class SuperNova extends Component {
     };
 
     spaceshiftClick = (e) => {
-        console.log('clicked');
         this.props.setComponent('spaceshift');
     };
 
@@ -165,7 +167,9 @@ class SuperNova extends Component {
 
         return (
             <div
-                ref={e => this.wrapper = e}
+                ref={(e) => {
+ this.wrapper = e;
+}}
                 className={this.wrapperCss()}
                 onClick={this.click}
                 onMouseMove={this.mouseMove}
@@ -205,7 +209,9 @@ class SuperNova extends Component {
                             intervals={4000}
                             teta={Math.PI / 2}
                             img={mars}
-                            ref={x => this.redPlanet = x}
+                            ref={(x) => {
+this.redPlanet = x;
+}}
                         />
                         <Planet
                             w={this.state.w}
@@ -217,7 +223,9 @@ class SuperNova extends Component {
                             intervals={3500}
                             teta={-Math.PI / 2}
                             img={blue}
-                            ref={x => this.bluePlanet = x}
+                            ref={(x) => {
+ this.bluePlanet = x;
+}}
                         />
                         <Planet
                             w={this.state.w}
@@ -229,7 +237,9 @@ class SuperNova extends Component {
                             intervals={2000}
                             teta={0}
                             img={white}
-                            ref={x => this.orangePlanet = x}
+                            ref={(x) => {
+ this.orangePlanet = x;
+}}
                         />
                     </Fragment>
                     }
@@ -239,8 +249,21 @@ class SuperNova extends Component {
     }
 }
 
+const noop = () => {};
+
+SuperNova.propTypes = {
+    intro: PropTypes.bool,
+    setComponent: PropTypes.func,
+    setIntro: PropTypes.func,
+};
+
+SuperNova.defaultProps = {
+    intro: false,
+    setComponent: noop,
+    setIntro: noop,
+};
+
 const mapStateToProps = (state, ownProps) => ({
-    visible: state.modal.visible,
     intro: state.general.intro,
 });
 

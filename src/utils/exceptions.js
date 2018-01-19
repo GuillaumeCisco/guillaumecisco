@@ -39,4 +39,6 @@ class ExtendableError extends ES6Error {
 }
 
 
-export default {};
+export default {
+    ExtendableError,
+};

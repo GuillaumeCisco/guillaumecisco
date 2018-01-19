@@ -1,7 +1,6 @@
-import React from 'react';
 import {random} from 'lodash';
 
-const ShootingStar = function (w, h) {
+const ShootingStar = function ShootingStar(w, h) {
     this.originW = w;
     this.originH = h;
     this.radius = 1;

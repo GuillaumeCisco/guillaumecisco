@@ -32,9 +32,10 @@ const root = document.getElementById('root');
 const devTools = document.getElementById('devTools');
 
 const renderApp = (RootElement) => {
-    const app = (<ReactHotLoader>
-        <RootElement {...{store}} />
-    </ReactHotLoader>);
+    const app = (
+        <ReactHotLoader>
+            <RootElement {...{store}} />
+        </ReactHotLoader>);
 
     // render for electron, hydrate for SSR
     return process.env.IS_ELECTRON !== 'false' ? render(app, root) : hydrate(app, root);
@@ -42,10 +43,9 @@ const renderApp = (RootElement) => {
 
 if (process.env.NODE_ENV !== 'production' && module.hot) {
     // load devTools
-    render(
-        <Provider store={store}>
-            <DevTools/>
-        </Provider>, devTools);
+    render(<Provider store={store}>
+        <DevTools />
+    </Provider>, devTools);
 
     module.hot.accept('./root', () => {
         const app = require('./root').default;
