@@ -20,7 +20,7 @@ import dll from '../utils/dll';
 export default merge.smart(baseConfig, {
     devtool: 'source-map',
     target: 'electron-renderer',
-    entry: './src/client/js/index',
+    entry: './src/client/index',
     output: {
         path: path.join(__dirname, '../../build/electron/dist'),
         publicPath: './',
@@ -39,7 +39,7 @@ export default merge.smart(baseConfig, {
                     babelrc: false,
                     plugins: [
                         ['universal-import', {
-                            disableWarnings: true,
+                            'disableWarnings': true
                         }],
                         'emotion',
                         'transform-runtime',

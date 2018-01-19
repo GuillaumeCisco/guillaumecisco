@@ -32,18 +32,15 @@ export default new AutoDllPlugin({
             'redux',
             'redux-actions',
             'redux-first-router',
-            'redux-first-router-link',
             'redux-reducers-injector',
             'redux-saga',
             'redux-sagas-injector',
         ],
         commonVendors: [
             'fastclick',
-            'google-map-react',
             'history',
             'react-helmet',
             'recompose',
-            'transition-group',
         ],
     },
 });

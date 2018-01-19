@@ -32,7 +32,7 @@ export default merge.smart(baseConfig, {
                     babelrc: false,
                     plugins: [
                         ['universal-import', {
-                            disableWarnings: true,
+                            'disableWarnings': true
                         }],
                         'emotion',
                         'transform-runtime',
