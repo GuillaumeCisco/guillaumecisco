@@ -22,7 +22,8 @@ const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
     PRODUCTION_BASE_NAME = config.apps.frontend.baseName.production;
 
 export default env => [
-    ...(env === 'frontend' ? [
+    ...(env === 'client' ? [
+        //https://webpack.js.org/plugins/commons-chunk-plugin/#manifest-file
         new webpack.optimize.CommonsChunkPlugin({
             names: ['bootstrap'], // needed to put webpack bootstrap code before chunks
             filename: '[name].js',
@@ -84,7 +85,7 @@ export default env => [
                     'transform-runtime',
                     'emotion',
                     'lodash',
-                    ...(PRODUCTION && env === 'frontend' ? [
+                    ...(PRODUCTION && env === 'client' ? [
                         'transform-class-properties',
                         'transform-es2015-classes',
                         'transform-react-constant-elements',

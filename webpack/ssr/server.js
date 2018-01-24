@@ -36,15 +36,15 @@ export default {
         'fetch-everywhere',
         res('../../src/server/render.js'),
     ],
+    module: {
+        rules: rules(),
+    },
     externals,
     output: {
         path: res('../../build/ssr/server'),
         filename: '[name].js',
         libraryTarget: 'commonjs2',
         publicPath: DEBUG ? DEBUG_BASE_NAME : PRODUCTION_BASE_NAME,
-    },
-    module: {
-        rules: rules(),
     },
     resolve: resolve(),
     plugins: plugins('backend'),

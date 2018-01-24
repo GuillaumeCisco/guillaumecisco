@@ -53,7 +53,6 @@ export default ({clientStats}) => async (req, res, next) => {
           <meta name="keywords" content="${META_KEYWORDS}" />
           ${styles}
           <style type="text/css">${css}</style>
-          <link rel="preload" href="/font/ShadedLarch_PERSONAL_USE.ttf" as="font" crossorigin>
         </head>
         <body>
           <script>window.REDUX_STATE = ${stateJson}</script>

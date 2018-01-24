@@ -13,6 +13,7 @@ const DEBUG = !(['production', 'development', 'staging'].includes(process.env.NO
 export default {
     name: 'client',
     target: 'web',
+    devtool: DEBUG ? 'source-map' : (DEVELOPMENT ? 'cheap-module-source-map' : '#hidden-source-map'),
     entry: {
         vendor: [
             'babel-polyfill',
@@ -46,7 +47,6 @@ export default {
         path: path.resolve(__dirname, '../../build/ssr/client'),
         publicPath: DEBUG ? DEBUG_BASE_NAME : PRODUCTION_BASE_NAME,
     },
-    devtool: DEBUG ? 'source-map' : (DEVELOPMENT ? 'cheap-module-source-map' : '#hidden-source-map'),
     plugins: plugins('frontend'),
     resolve: resolve(),
     ...(DEVELOPMENT ? {
