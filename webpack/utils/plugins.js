@@ -66,7 +66,7 @@ export default env => [
             maxChunks: 1,
         }),
     ]),
-    ...(DEVELOPMENT ? [new webpack.NamedModulesPlugin()] : []),
+    ...(DEVELOPMENT ? [new webpack.NamedModulesPlugin()] : [new webpack.HashedModuleIdsPlugin()]),
     definePlugin(),
     new LodashModuleReplacementPlugin({
         shorthands: true,
