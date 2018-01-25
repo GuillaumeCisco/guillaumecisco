@@ -13,8 +13,8 @@ class Planet extends React.Component {
         this.init();
     }
 
-    componentWillReceiveProps = () => {
-        this.resize(); // redraw on resize
+    componentWillReceiveProps = (nextProps) => {
+        this.resize(nextProps); // redraw on resize
     };
 
     componentWillUnmount() {
@@ -87,10 +87,10 @@ class Planet extends React.Component {
         }, false);
     };
 
-    resize = () => {
+    resize = (props) => {
         const {
             w, h, a, b,
-        } = this.props;
+        } = props;
         this.canvas.width = w;
         this.canvas.height = h;
         this.ctx.clearRect(-w, -h, 2 * w, 2 * h);
@@ -116,7 +116,7 @@ Planet.propTypes = {
     b: PropTypes.number.isRequired,
     intervals: PropTypes.number.isRequired,
     teta: PropTypes.number.isRequired,
-    img: PropTypes.func.isRequired,
+    img: PropTypes.string.isRequired,
     radius: PropTypes.number.isRequired,
 };
 

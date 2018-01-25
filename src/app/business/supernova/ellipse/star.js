@@ -10,7 +10,7 @@ const Star = function Stars(w, h, size, orbitA, orbitB, teta, padding) {
     // set own radius
     const radius = random(1, 3);
     // set own alpha
-    const alpha = random(0.4, 0.8);
+    const alpha = random(0.5, 0.9);
     // set speed
     const speed = random(0.5, 0.8) * -1;
     // get real carthesian coordonate
@@ -55,7 +55,7 @@ const Star = function Stars(w, h, size, orbitA, orbitB, teta, padding) {
         this.y = y + this.padY;
 
         // make it randomly brite
-        this.alpha = this.alpha === 1 ? random(0.4, 0.8) : (Math.random() < 0.001 ? 1 : this.alpha);
+        this.alpha = this.alpha === 1 ? random(0.5, 0.9) : (Math.random() < 0.01 ? 1 : this.alpha);
     };
 
     const update = (a, b) => {

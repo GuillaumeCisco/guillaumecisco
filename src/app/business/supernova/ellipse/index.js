@@ -19,8 +19,8 @@ class Stars extends Component {
         this.init();
     }
 
-    componentWillReceiveProps = () => {
-        this.resize(); // redraw on resize
+    componentWillReceiveProps = (nextProps) => {
+        this.resize(nextProps); // redraw on resize
     };
 
     componentWillUnmount() {
@@ -66,10 +66,10 @@ class Stars extends Component {
         });
     };
 
-    resize = () => {
+    resize = (props) => {
         const {
             w, h, a, b,
-        } = this.props;
+        } = props;
         this.canvas.width = w;
         this.canvas.height = h;
         this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);

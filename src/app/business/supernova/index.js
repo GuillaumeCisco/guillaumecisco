@@ -56,6 +56,7 @@ class SuperNova extends Component {
     }
 
     resize() {
+
         const w = this.wrapper.offsetWidth,
             h = this.wrapper.offsetHeight,
             a = w / (2.5),
@@ -168,8 +169,8 @@ class SuperNova extends Component {
         return (
             <div
                 ref={(e) => {
- this.wrapper = e;
-}}
+                    this.wrapper = e;
+                }}
                 className={this.wrapperCss()}
                 onClick={this.click}
                 onMouseMove={this.mouseMove}
@@ -210,8 +211,8 @@ class SuperNova extends Component {
                             teta={Math.PI / 2}
                             img={mars}
                             ref={(x) => {
-this.redPlanet = x;
-}}
+                                this.redPlanet = x;
+                            }}
                         />
                         <Planet
                             w={this.state.w}
@@ -224,8 +225,8 @@ this.redPlanet = x;
                             teta={-Math.PI / 2}
                             img={blue}
                             ref={(x) => {
- this.bluePlanet = x;
-}}
+                                this.bluePlanet = x;
+                            }}
                         />
                         <Planet
                             w={this.state.w}
@@ -238,8 +239,8 @@ this.redPlanet = x;
                             teta={0}
                             img={white}
                             ref={(x) => {
- this.orangePlanet = x;
-}}
+                                this.orangePlanet = x;
+                            }}
                         />
                     </Fragment>
                     }
@@ -249,7 +250,8 @@ this.redPlanet = x;
     }
 }
 
-const noop = () => {};
+const noop = () => {
+};
 
 SuperNova.propTypes = {
     intro: PropTypes.bool,

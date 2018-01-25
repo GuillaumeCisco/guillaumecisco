@@ -19,8 +19,8 @@ class Stars extends Component {
         this.init();
     }
 
-    componentWillReceiveProps = () => {
-        this.resize(); // redraw on resize
+    componentWillReceiveProps = (nextProps) => {
+        this.resize(nextProps); // redraw on resize
     };
 
     componentWillUnmount() {
@@ -56,8 +56,8 @@ class Stars extends Component {
         });
     };
 
-    resize = () => {
-        const {w, h} = this.props;
+    resize = (props) => {
+        const {w, h} = props;
 
         this.canvas.width = w;
         this.canvas.height = h;
@@ -68,8 +68,8 @@ class Stars extends Component {
 
     render() {
         return (<Canvas innerRef={(e) => {
- this.canvas = e;
-}}
+            this.canvas = e;
+        }}
         />);
     }
 }

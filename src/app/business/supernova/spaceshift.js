@@ -19,8 +19,8 @@ class SpaceShift extends React.Component {
         this.init();
     }
 
-    componentWillReceiveProps = () => {
-        this.resize(); // redraw on resize
+    componentWillReceiveProps = (nextProps) => {
+        this.resize(nextProps); // redraw on resize
     };
 
     componentWillUnmount() {
@@ -39,54 +39,68 @@ class SpaceShift extends React.Component {
         const {
             h, w, width, height,
         } = this.props;
-        this.luck = 1000;
+
+        this.luck = 1000; // the higher, the rarest
+        this.step = 0;
+        this.speed = 100; // the higher, the slower
+
         this.i = interpolate(-width, h);
         this.originW = this.w = w;
         this.originH = this.h = h;
 
-        this.setX();
-        this.y = h - height;
+        this.height = height;
+        this.width = width;
 
-        this.setState({
-            style: {
-                ...this.state.style,
-                top: this.y,
-                left: this.x,
-            },
-        });
+        this.originX = this.x = random(width, this.w - width);
+        this.y = h - height;
 
         this.timer = timer(this.animate);
     };
 
     animate = (elapsed) => {
         if (!this.state.isSpaceShift) {
-            if (random(0, this.luck) === this.luck && this.state.step <= 100) {
-                this.setState({
-                    ...this.state,
-                    isSpaceShift: true,
-                });
+            if (random(0, this.luck) === this.luck) {
+                this.step = 0;
+                this.draw();
             }
         }
-        else if (this.state.step <= 100) {
-            // console.log(this.state.step, this.i(this.state.step / 100));
-            this.setState({
-                ...this.state,
-                style: {
-                    ...this.state.style,
-                    top: this.h - this.props.height - this.i(this.state.step / 100),
-                    left: this.state.step === 100 ? this.setX() : this.getX(),
-                },
-                step: this.state.step === 100 ? 0 : this.state.step + 1,
-                isSpaceShift: this.state.step < 100,
-            });
+        else if (this.step <= this.speed) {
+            this.move();
+            this.draw();
+            this.step += 1;
         }
     };
 
-    resize = () => {
-        const {w, h} = this.props;
+    move = () => {
+        this.y = this.originH - this.height - this.i(this.step / this.speed);
+        this.x = this.originX = this.step === this.speed ? random(this.width, this.originW - this.width) : this.originX;
+    };
 
-        this.w = w;
-        this.h = h;
+    draw = () => {
+        this.setState({
+            ...this.state,
+            style: {
+                ...this.state.style,
+                top: this.y,
+                left: this.x,
+            },
+            isSpaceShift: this.step < this.speed,
+        });
+    };
+
+    resize = (props) => {
+        const {w, h, width} = props;
+
+        // reinit if needed
+        if (!this.w || !this.h) {
+            this.originW = w;
+            this.originH = h;
+            this.i = interpolate(-width, h);
+        }
+
+        this.originX = this.originX * w / this.originW;
+        this.originW = w;
+        this.originH = h;
     };
 
     render() {
