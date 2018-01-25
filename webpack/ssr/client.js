@@ -47,7 +47,7 @@ export default {
         path: path.resolve(__dirname, '../../build/ssr/client'),
         publicPath: DEBUG ? DEBUG_BASE_NAME : PRODUCTION_BASE_NAME,
     },
-    plugins: plugins('frontend'),
+    plugins: plugins('client'),
     resolve: resolve(),
     ...(DEVELOPMENT ? {
         devServer: {

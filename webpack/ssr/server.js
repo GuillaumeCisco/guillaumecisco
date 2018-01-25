@@ -47,5 +47,5 @@ export default {
         publicPath: DEBUG ? DEBUG_BASE_NAME : PRODUCTION_BASE_NAME,
     },
     resolve: resolve(),
-    plugins: plugins('backend'),
+    plugins: plugins('server'),
 };
