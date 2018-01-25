@@ -23,7 +23,7 @@ const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
 
 export default env => [
     ...(env === 'client' ? [
-        //https://webpack.js.org/plugins/commons-chunk-plugin/#manifest-file
+        // https://webpack.js.org/plugins/commons-chunk-plugin/#manifest-file
         new webpack.optimize.CommonsChunkPlugin({
             names: ['bootstrap'], // needed to put webpack bootstrap code before chunks
             filename: '[name].js',

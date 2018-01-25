@@ -105,7 +105,8 @@ class Planet extends React.Component {
     render() {
         return (<Canvas innerRef={(e) => {
             this.canvas = e;
-        }} />);
+        }}
+        />);
     }
 }
 

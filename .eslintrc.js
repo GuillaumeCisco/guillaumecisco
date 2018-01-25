@@ -38,6 +38,7 @@ module.exports = {
         "jsx-a11y/no-static-element-interactions": [0],
         "no-multi-assign": [0],
         "no-mixed-operators": [0],
+        "prefer-destructuring": [0],
 
         // helper for fixing common lint errors
         "func-names": [2],
