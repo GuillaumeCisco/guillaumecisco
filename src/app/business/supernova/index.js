@@ -49,10 +49,12 @@ class SuperNova extends Component {
         this.resize();
 
         window.addEventListener('resize', this.resize.bind(this));
+        window.addEventListener('deviceorientation', this.resize.bind(this));
     }
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.resize.bind(this));
+        window.removeEventListener('deviceorientation', this.resize.bind(this));
     }
 
     resize() {
