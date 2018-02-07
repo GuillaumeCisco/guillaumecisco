@@ -21,7 +21,7 @@ const flushDll = clientStats => {
     return clientStats.assets.reduce((p, c) => [
         ...p,
         ...(c.name.endsWith('dll.js') ? [`<script type="text/javascript" src="/${c.name}" defer></script>`] : [])
-    ], []);
+    ], []).join('\n');
 };
 
 const earlyChunk = (styles, stateJson) => `
