@@ -32,7 +32,7 @@ const Core = props =>
             on different platforms: desktop, mobile, electronic terminal.
             <br />
             Each development is different but has strong fundamentals like responsiveness, ux friendly, quick and
-            confortable.
+            comfortable.
         </P>
         <p>Here are my main last experiences:</p>
         <Ul>
@@ -98,7 +98,7 @@ const Core = props =>
                 </ul>
             </Li>
         </Ul>
-        <p>You can directly access to all these informations by downloading my <a href="https://drive.google.com/file/d/0Bwji_-hi-VLiWDVwaDFGYjhvTy0yeG1kZ3Yxbm5UMnRBckxj/view?usp=sharing" target="_blank" rel="noopener noreferrer">resume</a></p>
+        <p>You can directly access to all these data by downloading my <a href="https://drive.google.com/file/d/0Bwji_-hi-VLiWDVwaDFGYjhvTy0yeG1kZ3Yxbm5UMnRBckxj/view?usp=sharing" target="_blank" rel="noopener noreferrer">resume</a></p>
     </Container>);
 
 

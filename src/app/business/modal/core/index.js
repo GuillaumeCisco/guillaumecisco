@@ -45,7 +45,7 @@ const Core = props =>
             I also give computer science lessons. If you'd like to understand how the matrix works, feel free to contact
             me via linkedin.
             <br />
-            I promess you a lot of fun and I will make you one of the most skilled developper in this universe ;)
+            I promise you a lot of fun and I will make you one of the most skilled developer in this universe ;)
         </P>
     </Container>);
 

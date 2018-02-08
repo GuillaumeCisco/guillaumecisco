@@ -82,7 +82,7 @@ const Skills = props =>
                 <li>PHPStorm</li>
                 <li>WebStorm</li>
                 <li>Intellij IDEA</li>
-                <li>Gogland</li>
+                <li>GoLand</li>
             </ul>
         </Block>
         <Block>
