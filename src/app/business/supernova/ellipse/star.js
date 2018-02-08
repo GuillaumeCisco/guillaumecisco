@@ -31,7 +31,7 @@ const Star = function Stars(w, h, size, orbitA, orbitB, teta, padding) {
     this.padX = padX;
     this.padY = padY;
     this.radius = radius;
-    this.alpha = alpha;
+    this.originAlpha = this.alpha = alpha;
     this.speed = speed;
 
     const draw = (ctx) => {
@@ -55,7 +55,7 @@ const Star = function Stars(w, h, size, orbitA, orbitB, teta, padding) {
         this.y = y + this.padY;
 
         // make it randomly brite
-        this.alpha = this.alpha === 1 ? random(0.5, 0.9) : (Math.random() < 0.01 ? 1 : this.alpha);
+        this.alpha = this.alpha === 1 ? this.originAlpha : (Math.random() < 0.03 ? 1 : this.alpha);
     };
 
     const update = (a, b) => {

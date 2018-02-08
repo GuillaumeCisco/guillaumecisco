@@ -1,6 +1,6 @@
 import styled from 'react-emotion';
 
-const color = '#333';
+const color = '#ddd';
 
 export const Container = styled('div')`
     color: ${color};

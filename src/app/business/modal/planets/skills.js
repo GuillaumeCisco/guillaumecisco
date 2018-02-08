@@ -6,14 +6,13 @@ import {Container, H3} from '../common';
 const Cont = styled(Container)`
     text-align: center;
     margin: 0 auto;
-    display: inline-block;
 `;
 
 const Block = styled('div')`
     text-align: left;
     display: inline-block;
     vertical-align: top;
-    margin: 1% 5%;
+    margin: 1% 3%;
 `;
 
 const Skills = props =>
@@ -31,37 +30,49 @@ const Skills = props =>
                 <li>WebRTC</li>
                 <li>PRPL Pattern</li>
                 <li>Electron</li>
+                <li>Http Stream</li>
             </ul>
         </Block>
         <Block>
             <H3>Backend</H3>
             <ul>
+                <li>Django (1.3 ~ 2.0)</li>
+                <li>Django Rest Framework</li>
                 <li>Node.js</li>
                 <li>Socket-io.js</li>
-                <li>Django (1.3 ~ 1.11)</li>
                 <li>Redis</li>
             </ul>
         </Block>
         <Block>
             <H3>Devops</H3>
             <ul>
-                <li>Amazon Web Services</li>
+                <li>
+                    <ul>
+                        <h4>Amazon Web Services</h4>
+                        <ul>
+                            <li>EC2</li>
+                            <li>ECS</li>
+                            <li>Route 53</li>
+                        </ul>
+                    </ul>
+                </li>
                 <li>Kubernetes</li>
                 <li>Docker</li>
                 <li>Kong</li>
             </ul>
         </Block>
         <Block>
-            <h3>SQL</h3>
+            <H3>SQL</H3>
             <ul>
                 <li>PostGreSQL</li>
                 <li>ElasticSearch</li>
             </ul>
         </Block>
         <Block>
-            <h3>Blockchain</h3>
+            <H3>Blockchain</H3>
             <ul>
                 <li>Fabric Hyperledger</li>
+                <li><a href="https://github.com/MorpheoOrg" rel="noopener noreferrer" target="_blank">Morpheo Open Source project</a></li>
             </ul>
         </Block>
         <Block>
@@ -80,11 +91,13 @@ const Skills = props =>
                 <li>Git</li>
                 <li>Python</li>
                 <li>C/C++</li>
+                <li>ffmpeg</li>
                 <li>Adobe Photoshop</li>
                 <li>Shell Scripting: sh, bash, zsh</li>
             </ul>
         </Block>
-    </Cont>);
+    </Cont>
+);
 
 
 export default Skills;

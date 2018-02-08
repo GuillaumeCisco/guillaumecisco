@@ -3,10 +3,7 @@ import styled from 'react-emotion';
 
 import {Container} from '../common';
 
-const color = '#333';
-
 const Cont = styled(Container)`
-    color: ${color};
     text-align: left;
     margin: 0 auto;
     display: inline-block;

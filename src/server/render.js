@@ -4,7 +4,7 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import {renderToNodeStream} from 'react-dom/server';
 import {renderStylesToNodeStream} from 'emotion-server';
-import {flushChunkNames} from 'react-universal-component/server';
+import {clearChunks, flushChunkNames} from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 
 import App from '../app';
@@ -17,12 +17,10 @@ const createApp = (App, store) => (
     </Provider>
 );
 
-const flushDll = clientStats => {
-    return clientStats.assets.reduce((p, c) => [
+const flushDll = clientStats => clientStats.assets.reduce((p, c) => [
         ...p,
         ...(c.name.endsWith('dll.js') ? [`<script type="text/javascript" src="/${c.name}" defer></script>`] : []),
     ], []).join('\n');
-};
 
 const earlyChunk = (styles, stateJson) => `
     <!doctype html>
@@ -51,6 +49,8 @@ const earlyChunk = (styles, stateJson) => `
   `;
 
 export default ({clientStats}) => async (req, res, next) => {
+    clearChunks();
+
     const store = await configureStore(req, res);
     if (!store) return; // no store means redirect was already served
 
@@ -61,7 +61,7 @@ export default ({clientStats}) => async (req, res, next) => {
     const stateJson = JSON.stringify(store.getState());
 
     /* In this project, we do not use css module in chunks, so we know our only main chunk, no need to call flushChunks */
-    //const {styles} = flushChunks(clientStats);
+    // const {styles} = flushChunks(clientStats);
     const styles = '<link rel=\'stylesheet\' href=\'/main.css\' />';
 
     res.set('Content-Type', 'text/html');
@@ -72,7 +72,6 @@ export default ({clientStats}) => async (req, res, next) => {
 
     stream.pipe(res, {end: false});
     stream.on('end', () => {
-
         const chunkNames = flushChunkNames();
         const {js, cssHash} = flushChunks(clientStats, {chunkNames});
         const dll = flushDll(clientStats);

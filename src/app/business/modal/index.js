@@ -12,6 +12,8 @@ import Awards from './planets/awards';
 import Skills from './planets/skills';
 import Spaceshift from './spaceshift';
 
+import Close from './close';
+
 const Container = styled('div')`
     position: absolute;
     top: 5%;
@@ -20,11 +22,11 @@ const Container = styled('div')`
     bottom: 5%;
     z-index: 2;
     text-align:center;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 0, 0, 0.9);
     border-radius: 10px;
     font-size: 24px;
     padding: 3%;
-    color: #000;
+    color: #fff;
     
 `;
 
@@ -33,10 +35,10 @@ const Wrapper = styled('div')`
     height: 100%;
 `;
 
-const Close = styled('div')`
+const CloseComponent = styled('div')`
     position: absolute;
-    top 5px;
-    right: 5px;
+    top 15px;
+    right: 15px;
     cursor: pointer;
 `;
 
@@ -68,7 +70,7 @@ class Modal extends React.Component {
             <Wrapper>
                 {getComponent(component)}
             </Wrapper>
-            <Close onClick={this.close}>X</Close>
+            <CloseComponent onClick={this.close}><Close /></CloseComponent>
         </Container> : null;
     }
 }

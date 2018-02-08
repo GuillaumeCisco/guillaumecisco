@@ -58,7 +58,6 @@ class SuperNova extends Component {
     }
 
     resize() {
-
         const w = this.wrapper.offsetWidth,
             h = this.wrapper.offsetHeight,
             a = w / (2.5),
