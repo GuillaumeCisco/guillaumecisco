@@ -12,4 +12,4 @@ ENV NODE_PORT 8000
 
 EXPOSE $NODE_PORT
 
-CMD ["./node_modules/.bin/babel-node", "./build/server/index.js"]
+CMD ["./node_modules/.bin/babel-node", "./build/ssr/index.js"]
