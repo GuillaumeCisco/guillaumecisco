@@ -1,14 +1,14 @@
 /* global APP_NAME META_DESCRIPTION META_KEYWORDS */
 
 import React from 'react';
+import {Provider} from 'react-redux';
 import {renderToNodeStream} from 'react-dom/server';
 import {renderStylesToNodeStream} from 'emotion-server';
-import {Provider} from 'react-redux';
 import {flushChunkNames} from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
-import configureStore from './configureStore';
 
 import App from '../app';
+import configureStore from './configureStore';
 import serviceWorker from './serviceWorker';
 
 const createApp = (App, store) => (
@@ -20,7 +20,7 @@ const createApp = (App, store) => (
 const flushDll = clientStats => {
     return clientStats.assets.reduce((p, c) => [
         ...p,
-        ...(c.name.endsWith('dll.js') ? [`<script type="text/javascript" src="/${c.name}" defer></script>`] : [])
+        ...(c.name.endsWith('dll.js') ? [`<script type="text/javascript" src="/${c.name}" defer></script>`] : []),
     ], []).join('\n');
 };
 
@@ -42,7 +42,7 @@ const earlyChunk = (styles, stateJson) => `
           <div id="root">`,
     lateChunk = (cssHash, js, dll) => `</div>
           ${process.env.NODE_ENV === 'development' ? '<div id="devTools"></div>' : ''}
-          ${cssHash}       
+          ${cssHash}
           ${dll}
           ${js}
           ${serviceWorker}
@@ -59,10 +59,10 @@ export default ({clientStats}) => async (req, res, next) => {
 
     // Grab the CSS from our sheetsRegistry.
     const stateJson = JSON.stringify(store.getState());
-    const chunkNames = flushChunkNames();
-    const {js, styles, cssHash} = flushChunks(clientStats, {chunkNames});
-    const dll = flushDll(clientStats);
 
+    /* In this project, we do not use css module in chunks, so we know our only main chunk, no need to call flushChunks */
+    //const {styles} = flushChunks(clientStats);
+    const styles = '<link rel=\'stylesheet\' href=\'/main.css\' />';
 
     res.set('Content-Type', 'text/html');
     // flush the head with css & js resource tags first so the download starts immediately
@@ -70,11 +70,16 @@ export default ({clientStats}) => async (req, res, next) => {
     res.write(early);
     res.flush();
 
-    console.log('REQUESTED PATH:', req.path);
-    console.log('CHUNK NAMES', chunkNames);
-
     stream.pipe(res, {end: false});
     stream.on('end', () => {
+
+        const chunkNames = flushChunkNames();
+        const {js, cssHash} = flushChunks(clientStats, {chunkNames});
+        const dll = flushDll(clientStats);
+
+        console.log('REQUESTED PATH:', req.path);
+        console.log('CHUNK NAMES', chunkNames);
+
         const late = lateChunk(cssHash, js, dll);
         res.write(late);
         res.end();
