@@ -46,3 +46,26 @@ For displaying covering:
 
 For displaying lint errors:
 `yarn eslint`
+
+
+### Encryption files creation
+
+For creating your own self signed certificates
+
+https://blog.didierstevens.com/2008/12/30/howto-make-your-own-cert-with-openssl/
+```shell
+cd encryption
+openssl genrsa -out ca.key 4096
+openssl req -new -x509 -days 1826 -key ca.key -out ca.crt
+openssl genrsa -out ia.key 4096
+openssl req -new -key ia.key -out ia.csr
+openssl x509 -req -days 730 -in ia.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out ia.crt
+```
+
+
+With let's encrypt
+
+```shell
+sudo certbot certonly --manual -d guillaumecisco.com -d www.guillaumecisco.com
+```
+

@@ -1,8 +1,12 @@
+import fs from 'fs';
 import compression from 'compression';
 import config from 'config';
 import cookieParser from 'cookie-parser';
 import express from 'express';
-//import helmet from 'helmet';
+import http from 'http';
+import https from 'https';
+import forceSsl from 'express-force-ssl';
+import helmet from 'helmet';
 import path from 'path';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -28,9 +32,8 @@ const publicPath = DEBUG ? (
 );
 const outputPath = path.resolve(__dirname, '../../build/ssr/client');
 
-
 const app = express();
-//app.use(helmet());
+app.use(helmet());
 app.use(cookieParser());
 app.use(compression());
 
@@ -90,6 +93,24 @@ else {
     app.use(serverRender({clientStats, outputPath}));
 }
 
-app.listen(config.apps.frontend.api_port, () => {
-    console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`);
-});
+// app.listen(config.apps.frontend.api_port, () => {
+//     console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`);
+// });
+app.use(forceSsl);
+
+const key = fs.readFileSync('./encryption/ca.key');
+const cert = fs.readFileSync( './encryption/ca.crt' );
+const ca = fs.readFileSync( './encryption/ia.crt' );
+
+const options = {
+    key,
+    cert,
+    ca,
+};
+https.createServer(options, app).listen(config.apps.frontend.secure_api_port, () =>
+    console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`)
+);
+
+http.createServer(app).listen(config.apps.frontend.api_port, () =>
+    console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`)
+);
