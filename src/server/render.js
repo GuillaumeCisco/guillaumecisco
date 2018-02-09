@@ -4,6 +4,7 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import {renderToNodeStream} from 'react-dom/server';
 import {renderStylesToNodeStream} from 'emotion-server';
+import {ReportChunks} from 'react-universal-component';
 import {clearChunks, flushChunkNames} from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 
@@ -11,16 +12,18 @@ import App from '../app';
 import configureStore from './configureStore';
 import serviceWorker from './serviceWorker';
 
-const createApp = (App, store) => (
-    <Provider store={store}>
-        <App />
-    </Provider>
+const createApp = (App, store, chunkNames) => (
+    <ReportChunks report={chunkName => chunkNames.push(chunkName)}>
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </ReportChunks>
 );
 
 const flushDll = clientStats => clientStats.assets.reduce((p, c) => [
-        ...p,
-        ...(c.name.endsWith('dll.js') ? [`<script type="text/javascript" src="/${c.name}" defer></script>`] : []),
-    ], []).join('\n');
+    ...p,
+    ...(c.name.endsWith('dll.js') ? [`<script type="text/javascript" src="/${c.name}" defer></script>`] : []),
+], []).join('\n');
 
 const earlyChunk = (styles, stateJson) => `
     <!doctype html>
@@ -54,9 +57,6 @@ export default ({clientStats}) => async (req, res, next) => {
     const store = await configureStore(req, res);
     if (!store) return; // no store means redirect was already served
 
-    const app = createApp(App, store);
-    const stream = renderToNodeStream(app).pipe(renderStylesToNodeStream());
-
     // Grab the CSS from our sheetsRegistry.
     const stateJson = JSON.stringify(store.getState());
 
@@ -70,9 +70,12 @@ export default ({clientStats}) => async (req, res, next) => {
     res.write(early);
     res.flush();
 
+    const chunkNames = [];
+    const app = createApp(App, store, chunkNames);
+    const stream = renderToNodeStream(app).pipe(renderStylesToNodeStream());
+
     stream.pipe(res, {end: false});
     stream.on('end', () => {
-        const chunkNames = flushChunkNames();
         const {js, cssHash} = flushChunks(clientStats, {chunkNames});
         const dll = flushDll(clientStats);
 
