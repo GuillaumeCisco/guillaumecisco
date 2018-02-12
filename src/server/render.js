@@ -11,6 +11,7 @@ import flushChunks from 'webpack-flush-chunks';
 import App from '../app';
 import configureStore from './configureStore';
 import serviceWorker from './serviceWorker';
+import raven from './raven';
 
 const createApp = (App, store, chunkNames) => (
     <ReportChunks report={chunkName => chunkNames.push(chunkName)}>
@@ -37,16 +38,18 @@ const earlyChunk = (styles, stateJson) => `
           <meta name="description" content="${META_DESCRIPTION}"/>
           <meta name="keywords" content="${META_KEYWORDS}" />
           ${styles}
+          <script src="https://cdn.ravenjs.com/3.22.2/raven.min.js" crossorigin="anonymous"></script>
         </head>
       <body>
           <script>window.REDUX_STATE = ${stateJson}</script>
           <div id="root">`,
-    lateChunk = (cssHash, js, dll) => `</div>
+    lateChunk = (cssHash, js, dll, raven) => `</div>
           ${process.env.NODE_ENV === 'development' ? '<div id="devTools"></div>' : ''}
           ${cssHash}
           ${dll}
           ${js}
           ${serviceWorker}
+          ${raven}
         </body>
     </html>
   `;
@@ -82,7 +85,7 @@ export default ({clientStats}) => async (req, res, next) => {
         console.log('REQUESTED PATH:', req.path);
         console.log('CHUNK NAMES', chunkNames);
 
-        const late = lateChunk(cssHash, js, dll);
+        const late = lateChunk(cssHash, js, dll, raven);
         res.write(late);
         res.end();
     });

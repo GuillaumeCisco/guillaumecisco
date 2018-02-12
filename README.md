@@ -74,6 +74,9 @@ Then places the generated files to the `encryption` folder.
 
 The certificates will only last for 90 days, so be sure to create a cronjob with the command
 ```shell
-certbot renew
+sudo certbot renew
 ```
-for issuing new certificates and rebuild and deploy your app.
+for issuing new certificates and rebuild and deploy your docker app.
+
+You should run these commands on the server running the docker app i.e the EC2 instance
+https://www.digitalocean.com/community/tutorials/how-to-use-certbot-standalone-mode-to-retrieve-let-s-encrypt-ssl-certificates

@@ -10,6 +10,7 @@ RUN npm install && npm cache clean --force
 ENV NODE_ENV production
 ENV NODE_PORT 8000
 ENV SECURE_NODE_PORT 8443
+ENV RAVEN_URL https://b3cdd83872f448ca857649a0e610c1cd@sentry.io/286729
 
 EXPOSE $NODE_PORT
 EXPOSE $SECURE_NODE_PORT

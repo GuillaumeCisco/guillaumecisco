@@ -1,5 +1,6 @@
 const apiPort = process.env.NODE_PORT || 3000;
 const secureApiPort = process.env.SECURE_NODE_PORT || 3443;
+const ravenUrl = process.env.RAVEN_URL || '';
 
 module.exports = {
     appName: 'Guillaume Cisco',
@@ -14,7 +15,8 @@ module.exports = {
             meta: {
                 description: 'Guillaume Cisco Resume',
                 keywords: 'guillaume cisco'
-            }
+            },
+            raven_url: ravenUrl,
         },
     }
 };
