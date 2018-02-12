@@ -69,3 +69,11 @@ With let's encrypt
 sudo certbot certonly --manual -d guillaumecisco.com -d www.guillaumecisco.com
 ```
 
+Places the files in the folder `./well-known/acme-challenge` and build and deploy your website, then continue the process for validating the ownership of the website.
+Then places the generated files to the `encryption` folder.
+
+The certificates will only last for 90 days, so be sure to create a cronjob with the command
+```shell
+certbot renew
+```
+for issuing new certificates and rebuild and deploy your app.

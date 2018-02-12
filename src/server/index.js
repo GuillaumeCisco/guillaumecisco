@@ -38,6 +38,10 @@ app.use(cookieParser());
 app.use(compression());
 
 
+// let's encrypt config
+const resolve = p => path.resolve(__dirname, p);
+app.use('/.well-known', express.static((resolve('../../.well-known'))));
+
 // UNIVERSAL HMR + STATS HANDLING GOODNESS:
 if (DEVELOPMENT) {
     const multiCompiler = webpack([clientConfig, serverConfig]);
@@ -93,20 +97,28 @@ else {
     app.use(serverRender({clientStats, outputPath}));
 }
 
-// app.listen(config.apps.frontend.api_port, () => {
-//     console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`);
-// });
 app.use(forceSsl);
 
-const key = fs.readFileSync('./encryption/ca.key');
-const cert = fs.readFileSync( './encryption/ca.crt' );
-const ca = fs.readFileSync( './encryption/ia.crt' );
+// self signed
+// const key = fs.readFileSync('./encryption/ca.key');
+// const cert = fs.readFileSync( './encryption/ca.crt' );
+// const ca = fs.readFileSync( './encryption/ia.crt' );
+// const options = {
+//     key,
+//     cert,
+//     ca,
+// };
+
+// let's encrypted generated files
+const key = fs.readFileSync('./encryption/privkey.pem');
+const cert = fs.readFileSync( './encryption/fullchain.pem' );
 
 const options = {
     key,
     cert,
-    ca,
 };
+
+
 https.createServer(options, app).listen(config.apps.frontend.secure_api_port, () =>
     console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`)
 );
