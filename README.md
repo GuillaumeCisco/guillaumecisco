@@ -63,7 +63,9 @@ openssl x509 -req -days 730 -in ia.csr -CA ca.crt -CAkey ca.key -set_serial 01 -
 ```
 
 
-With let's encrypt
+##### With let's encrypt
+
+###### Dev mode
 
 ```shell
 sudo certbot certonly --manual -d guillaumecisco.com -d www.guillaumecisco.com
@@ -78,5 +80,48 @@ sudo certbot renew
 ```
 for issuing new certificates and rebuild and deploy your docker app.
 
+###### Ec2
+
 You should run these commands on the server running the docker app i.e the EC2 instance
 https://www.digitalocean.com/community/tutorials/how-to-use-certbot-standalone-mode-to-retrieve-let-s-encrypt-ssl-certificates
+https://medium.freecodecamp.org/going-https-on-amazon-ec2-ubuntu-14-04-with-lets-encrypt-certbot-on-nginx-696770649e76
+
+Be sure you can access you ec2 instance with ssh, then
+
+on your ec2 instance, follow these steps:
+```shell
+$> yum install wget python27-virtualenv
+$> wget https://dl.eff.org/certbot-auto
+$> chmod a+x certbot-auto
+```
+Be careful, when running the next command, you will need to create two files before pressing for the third time `continue`, and build and deploy your docker app again. 
+These two files need to be placed in `.well-known/acme-challenge` folder.
+Make sure the security group of your ec2 instance has ports 80 and 443 opened.
+```shell
+$> ./certbot-auto certonly --manual -d guillaumecisco.com -d www.guillaumecisco.com
+```
+
+After having deployed your app with the new available files, press continue, files will be available now on your ec2 instance.
+
+You now need to make these files accessible to your docker app by modifying its permissions.
+```shell
+$> sudo groupadd certaccess
+$> whoami
+ec2-user
+$> sudo usermod -a -G certaccess ec2-user
+$> sudo usermod -a -G certaccess root
+$> sudo chown ec2-user.certaccess /etc/letsencrypt/
+$> sudo chown ec2-user.certaccess /etc/letsencrypt/live
+$> sudo chown ec2-user.certaccess /etc/letsencrypt/archive
+```
+
+Now you need to create a volume on your ECS configuration task
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html
+
+Or run the docker run command like that:
+```shell
+$> docker run -it -v /etc/letsencrypt/:/etc/letsencrypt/ -p 8001:8443 984406419997.dkr.ecr.eu-central-1.amazonaws.com/guillaumecisco:latest
+```
+
+ 
+TODO: create a cronjob for renewing certificate and `docker restart container_name`

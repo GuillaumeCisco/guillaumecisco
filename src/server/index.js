@@ -110,8 +110,8 @@ app.use(forceSsl);
 // };
 
 // let's encrypted generated files
-const key = fs.readFileSync('./encryption/privkey.pem');
-const cert = fs.readFileSync( './encryption/fullchain.pem' );
+const key = fs.readFileSync(path.resolve(config.encryption.privkey));
+const cert = fs.readFileSync(path.resolve(config.encryption.fullchain));
 
 const options = {
     key,

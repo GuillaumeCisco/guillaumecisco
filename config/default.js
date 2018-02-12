@@ -1,6 +1,8 @@
 const apiPort = process.env.NODE_PORT || 3000;
 const secureApiPort = process.env.SECURE_NODE_PORT || 3443;
 const ravenUrl = process.env.RAVEN_URL || '';
+const encryption_privkey = './encryption/privkey.pem';
+const encryption_fullchain = './encryption/fullchain.pem';
 
 module.exports = {
     appName: 'Guillaume Cisco',
@@ -18,5 +20,9 @@ module.exports = {
             },
             raven_url: ravenUrl,
         },
-    }
+    },
+    encryption: {
+        privkey: encryption_privkey,
+        fullchain: encryption_fullchain,
+    },
 };

@@ -8,7 +8,6 @@
 !config
 !.babelrc
 !src/app/routesMap.js
-!encryption
 !.well-known
 
 
