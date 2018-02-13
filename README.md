@@ -28,6 +28,7 @@ yarn package-all
 ```
 
 For building the production website and deploy it, run:
+Before deploying, create a file deploy.js in the tools folder with your param
 ```
 yarn build:main
 yarn deploy

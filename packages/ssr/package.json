@@ -20,6 +20,7 @@
         "react-typist": "^2.0.4",
         "react-universal-component": "2.8.2",
         "recompose": "0.26.0",
+        "redis": "^2.8.0",
         "redux": "3.7.2",
         "redux-actions": "2.2.1",
         "redux-first-router": "1.9.15",

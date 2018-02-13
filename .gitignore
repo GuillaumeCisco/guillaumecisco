@@ -40,3 +40,4 @@ src/electron/main.prod.js*
 devsecret.js
 encryption/*
 .well-known
+tools/deploy.js
