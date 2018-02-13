@@ -87,6 +87,7 @@ https://www.digitalocean.com/community/tutorials/how-to-use-certbot-standalone-m
 https://medium.freecodecamp.org/going-https-on-amazon-ec2-ubuntu-14-04-with-lets-encrypt-certbot-on-nginx-696770649e76
 
 Be sure you can access you ec2 instance with ssh, then
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html
 
 on your ec2 instance, follow these steps:
 ```shell
@@ -115,7 +116,7 @@ $> sudo chown ec2-user.certaccess /etc/letsencrypt/live
 $> sudo chown ec2-user.certaccess /etc/letsencrypt/archive
 ```
 
-Now you need to create a volume on your ECS configuration task
+Now you need to create a volume on your ECS configuration task `/etc/letsencrypt/:/etc/letsencrypt/`
 https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html
 
 Or run the docker run command like that:
@@ -125,3 +126,4 @@ $> docker run -it -v /etc/letsencrypt/:/etc/letsencrypt/ -p 8001:8443 9844064199
 
  
 TODO: create a cronjob for renewing certificate and `docker restart container_name`
+For getting container name : `docker ps --format '{{.Names}}' | grep ecs-guillaumecisco`
