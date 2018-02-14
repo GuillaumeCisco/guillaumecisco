@@ -115,14 +115,18 @@ export default env => [
         cacheId: config.appName,
         filename: 'service-worker.js',
         minify: false,
-        dynamicUrlToDependencies: Object.keys(routes).reduce((p, c) => [...p, routes[c].path], []).reduce((p, c) =>
-            ({
-                ...p,
-                [c]: [
-                    path.resolve(__dirname, '../../src/client/index.js'),
-                ],
-            }), {}),
-        navigateFallback: PRODUCTION_BASE_NAME,
+        dynamicUrlToDependencies: {
+            ...Object.keys(routes).reduce((p, c) =>
+                ({
+                    ...p,
+                    [routes[c].path]: [
+                        path.resolve(__dirname, '../../src/client/index.js'),
+                    ],
+                }), {}),
+            // add 404 page
+            '/404': [path.resolve(__dirname, '../../src/client/index.js'),],
+        },
+        navigateFallback: '/404',
         staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
     })] : []),
 ];

@@ -48,6 +48,12 @@ For displaying covering:
 For displaying lint errors:
 `yarn eslint`
 
+### Cache
+
+This project use a redis cache manager for the server routes. Allowing us not to rerender the same html production by route.
+For deploying with amazon, please create a redis cluster by following this documentation:
+https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html
+Don't forget to create a isolated security group for opening port 6379 as described in the documentation.
 
 ### Encryption files creation
 

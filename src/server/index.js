@@ -18,18 +18,13 @@ import clientConfig from '../../webpack/ssr/client';
 import serverConfig from '../../webpack/ssr/server';
 
 
-const DEBUG = !(['production', 'development', 'staging']
-    .includes(process.env.NODE_ENV));
+const DEBUG = !(['production', 'development', 'staging'].includes(process.env.NODE_ENV));
 const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV));
 
 
 // Redefined publicPath and outputPath instead of import clientConfig to solve
 // prod importation problems
-const publicPath = DEBUG ? (
-    config.apps.frontend.baseName.debug
-) : (
-    config.apps.frontend.baseName.production
-);
+const publicPath = DEBUG ? config.apps.frontend.baseName.debug : config.apps.frontend.baseName.production;
 const outputPath = path.resolve(__dirname, '../../build/ssr/client');
 
 const app = express();
@@ -83,6 +78,17 @@ if (DEVELOPMENT) {
         },
         headers: clientConfig.devServer.headers,
     }));
+
+    // uncomment this code block for debugging service worker behaviour in development
+    /// https://github.com/goldhand/sw-precache-webpack-plugin#webpack-dev-server-support
+    // do not forget to regenerate service-worker.js when modifying SWPrecacheWebpackPlugin config
+    // with this command:
+    // NODE_ENV=development ./node_modules/.bin/babel-node ./node_modules/webpack/bin/webpack --progress --config webpack/ssr/server.js
+    // app.get('/service-worker.js', function (req, res) {
+    //     res.set({ 'Content-Type': 'application/javascript; charset=utf-8' });
+    //     res.send(fs.readFileSync('./assets/service-worker.js'));
+    // });
+
     app.use(webpackHotMiddleware(clientCompiler));
     // keeps serverRender updated with arg: { clientStats, outputPath }
     app.use(webpackHotServerMiddleware(multiCompiler, {
@@ -95,34 +101,33 @@ else {
 
     app.use(publicPath, express.static(outputPath));
     app.use(serverRender({clientStats, outputPath}));
+
+    app.use(forceSsl);
+
+    // self signed
+    // const key = fs.readFileSync('./encryption/ca.key');
+    // const cert = fs.readFileSync( './encryption/ca.crt' );
+    // const ca = fs.readFileSync( './encryption/ia.crt' );
+    // const options = {
+    //     key,
+    //     cert,
+    //     ca,
+    // };
+
+    // let's encrypted generated files
+    const key = fs.readFileSync(path.resolve(config.encryption.privkey));
+    const cert = fs.readFileSync(path.resolve(config.encryption.fullchain));
+
+    const options = {
+        key,
+        cert,
+    };
+
+    https.createServer(options, app).listen(config.apps.frontend.secure_api_port, () =>
+        console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`),
+    );
 }
 
-app.use(forceSsl);
-
-// self signed
-// const key = fs.readFileSync('./encryption/ca.key');
-// const cert = fs.readFileSync( './encryption/ca.crt' );
-// const ca = fs.readFileSync( './encryption/ia.crt' );
-// const options = {
-//     key,
-//     cert,
-//     ca,
-// };
-
-// let's encrypted generated files
-const key = fs.readFileSync(path.resolve(config.encryption.privkey));
-const cert = fs.readFileSync(path.resolve(config.encryption.fullchain));
-
-const options = {
-    key,
-    cert,
-};
-
-
-https.createServer(options, app).listen(config.apps.frontend.secure_api_port, () =>
-    console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`)
-);
-
 http.createServer(app).listen(config.apps.frontend.api_port, () =>
-    console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`)
+    console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`),
 );

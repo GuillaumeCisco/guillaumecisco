@@ -14,7 +14,7 @@ module.exports = {
             secure_api_port: secureApiPort,
             baseName: {
                 production: '/',
-                debug: '/guillaumecisco/build/frontend/',
+                debug: '/guillaumecisco/build/ssr/client/',
             },
             meta: {
                 description: 'Guillaume Cisco Resume',

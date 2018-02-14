@@ -1,14 +1,10 @@
 
 .DS_STORE
 node_modules
-*~
-*.pyc
-static
 .grunt
 _SpecRunner.html
 __benchmarks__
 build/
-coverage/
 .module-cache
 *.gem
 docs/.bundle
@@ -27,8 +23,6 @@ chrome-user-data
 .idea
 *.iml
 .vscode
-dist/
-coverage
 yarn.lock
 .happypack
 
@@ -41,3 +35,4 @@ devsecret.js
 encryption/*
 .well-known
 tools/deploy.js
+assets/service-worker.js

@@ -45,7 +45,7 @@ const createCacheStream = (key) => {
             // then cache it at "key"
 
             // only cache '/' path
-            if (paths.includes(key) && !key.endsWith('.js.map')) {
+            if (paths.includes(key) && !(key.endsWith('.js.map') || key.endsWith('.ico')) || key === 'service-worker.js') {
                 console.log('CACHING: ', key);
                 cache.set(key, Buffer.concat(bufferedChunks));
             }
@@ -134,8 +134,10 @@ export default ({clientStats}) => (req, res, next) => {
     let path = req.path;
 
     // check if path is in our whitelist, else give 404 route
-
-    if (!paths.includes(req.path) && !(process.env.NODE_ENV === 'development' && req.path.endsWith('.js.map'))) {
+    if (!paths.includes(req.path) &&
+        !req.path.endsWith('.ico') &&
+        req.path !== 'service-worker.js' &&
+        !(process.env.NODE_ENV === 'development' && req.path.endsWith('.js.map'))) {
         path = '/404';
     }
 
