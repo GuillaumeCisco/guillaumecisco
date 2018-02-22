@@ -75,6 +75,7 @@ const earlyChunk = (styles, stateJson) => `
           <title>${APP_NAME}</title>
           <meta charset="utf-8" />
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="mobile-web-app-capable" content="yes">
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
           <meta name="description" content="${META_DESCRIPTION}"/>
           <meta name="keywords" content="${META_KEYWORDS}" />
