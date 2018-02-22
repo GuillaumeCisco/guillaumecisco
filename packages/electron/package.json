@@ -6,8 +6,8 @@
     },
     "devDependencies": {
         "devtron": "1.4.0",
-        "electron": "1.7.11",
-        "electron-builder": "19.55.2",
+        "electron": "1.8.2",
+        "electron-builder": "20.0.8",
         "electron-debug": "1.5.0",
         "electron-devtools-installer": "2.2.3"
     },

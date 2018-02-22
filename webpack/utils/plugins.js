@@ -33,7 +33,6 @@ export default env => [
         ...(PRODUCTION ? [
             new BabelMinifyPlugin({}, {
                 comments: false,
-                sourceMap: true,
             }),
             new webpack.optimize.AggressiveMergingPlugin(),
             new StatsPlugin('stats.json'),
