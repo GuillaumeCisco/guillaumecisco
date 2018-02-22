@@ -114,6 +114,7 @@ export default env => [
         cacheId: config.appName,
         filename: 'service-worker.js',
         minify: false,
+        dontCacheBustUrlsMatching: '/./',
         dynamicUrlToDependencies: {
             ...Object.keys(routes).reduce((p, c) =>
                 ({
