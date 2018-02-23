@@ -86,6 +86,9 @@ const earlyChunk = (styles, stateJson) => `
           <script src="https://cdn.ravenjs.com/3.22.2/raven.min.js" crossorigin="anonymous"></script>
         </head>
       <body>
+          <noscript>
+              <div>Please enable javascript in your browser for displaying this website.</div>
+          </noscript>
           <script>window.REDUX_STATE = ${stateJson}</script>
           <div id="root">`,
     lateChunk = (cssHash, js, dll, raven) => `</div>
