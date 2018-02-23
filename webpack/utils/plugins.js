@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import config from 'config';
 import path from 'path';
+import fs from 'fs';
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
@@ -10,6 +11,8 @@ import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 import SWPrecacheWebpackPlugin from 'sw-precache-webpack-plugin';
 import WriteFilePlugin from 'write-file-webpack-plugin';
+import ManifestPlugin from 'webpack-manifest-plugin';
+import AddAssetPlugin from 'add-asset-webpack-plugin';
 
 import definePlugin from './definePlugin';
 import dll from './dll';
@@ -29,11 +32,30 @@ export default env => [
             filename: '[name].js',
             minChunks: Infinity,
         }),
+        new ManifestPlugin({
+            seed: {
+                name: 'Guillaume Cisco',
+                short_name: 'Guillaume Cisco\'s interactive website',
+                start_url: '/',
+                display: 'standalone',
+                'background_color': '#000',
+                theme_color: '#000',
+                icons: [
+                    {
+                        'src': 'launcher-icon-4x.png',
+                        'sizes': '192x192',
+                        'type': 'image/png',
+                        'density': 4.0,
+                    },
+                ],
+            },
+        }),
+        new AddAssetPlugin('launcher-icon-4x.png', () => fs.readFileSync(path.resolve(__dirname, '../../assets/img/launcher-icon-4x.png'))),
         dll,
         ...(PRODUCTION ? [
-            new BabelMinifyPlugin({}, {
-                comments: false,
-            }),
+            // new BabelMinifyPlugin({}, {
+            //     comments: false,
+            // }),
             new webpack.optimize.AggressiveMergingPlugin(),
             new StatsPlugin('stats.json'),
         ] : [
@@ -107,6 +129,7 @@ export default env => [
         filename: '[name].css',
         allChunks: false,
     }),
+
     ...(DEBUG ? [new BundleAnalyzerPlugin({
         analyzerMode: 'static',
     })] : []),

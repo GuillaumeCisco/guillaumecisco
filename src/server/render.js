@@ -79,6 +79,9 @@ const earlyChunk = (styles, stateJson) => `
           <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
           <meta name="description" content="${META_DESCRIPTION}"/>
           <meta name="keywords" content="${META_KEYWORDS}" />
+          <meta name="theme-color" content="#000">
+          <link rel="manifest" href="/manifest.json">
+          <link rel="icon" sizes="192x192" href="launcher-icon-4x.png">
           ${styles}
           <script src="https://cdn.ravenjs.com/3.22.2/raven.min.js" crossorigin="anonymous"></script>
         </head>

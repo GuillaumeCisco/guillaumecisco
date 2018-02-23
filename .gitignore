@@ -23,7 +23,6 @@ chrome-user-data
 .idea
 *.iml
 .vscode
-yarn.lock
 .happypack
 
 dll
