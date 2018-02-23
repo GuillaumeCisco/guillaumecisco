@@ -81,7 +81,7 @@ const earlyChunk = (styles, stateJson) => `
           <meta name="keywords" content="${META_KEYWORDS}" />
           <meta name="theme-color" content="#000">
           <link rel="manifest" href="/manifest.json">
-          <link rel="icon" sizes="192x192" href="launcher-icon-4x.png">
+          <link rel="icon" sizes="192x192" href="launcher-icon-high-res.png">
           ${styles}
           <script src="https://cdn.ravenjs.com/3.22.2/raven.min.js" crossorigin="anonymous"></script>
         </head>
