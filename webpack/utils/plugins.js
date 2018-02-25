@@ -97,9 +97,9 @@ export default env => [
         new AddAssetPlugin('raven.min.js', () => fs.readFileSync(path.resolve(__dirname, '../../assets/js/raven.min.js'))),
         dll,
         ...(PRODUCTION ? [
-            new BabelMinifyPlugin({}, {
-                comments: false,
-            }),
+            // new BabelMinifyPlugin({}, {
+            //     comments: false,
+            // }),
             new webpack.optimize.AggressiveMergingPlugin(),
             new StatsPlugin('stats.json'),
         ] : [
