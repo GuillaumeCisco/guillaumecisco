@@ -8,7 +8,7 @@ import {Provider} from 'react-redux';
 import {renderToNodeStream} from 'react-dom/server';
 import {renderStylesToNodeStream} from 'emotion-server';
 import {ReportChunks} from 'react-universal-component';
-import {clearChunks, flushChunkNames} from 'react-universal-component/server';
+import {clearChunks} from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 import routesMap from '../app/routesMap';
 
@@ -22,7 +22,7 @@ const cache = redis.createClient({
     port: config.redis.port,
 });
 
-cache.on('connect', function () {
+cache.on('connect', () => {
     console.log('CACHE CONNECTED');
 });
 
@@ -69,21 +69,20 @@ const flushDll = clientStats => clientStats.assets.reduce((p, c) => [
 
 const earlyChunk = (styles, stateJson) => `
     <!doctype html>
-      <html>
+      <html lang="en">
         <head>
           <meta charset="utf-8">
           <title>${APP_NAME}</title>
           <meta charset="utf-8" />
           <meta http-equiv="X-UA-Compatible" content="IE=edge" />
           <meta name="mobile-web-app-capable" content="yes">
-          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
           <meta name="description" content="${META_DESCRIPTION}"/>
           <meta name="keywords" content="${META_KEYWORDS}" />
           <meta name="theme-color" content="#000">
           <link rel="manifest" href="/manifest.json">
           <link rel="icon" sizes="192x192" href="launcher-icon-high-res.png">
           ${styles}
-          <script src="https://cdn.ravenjs.com/3.22.2/raven.min.js" crossorigin="anonymous"></script>
         </head>
       <body>
           <noscript>
@@ -102,7 +101,7 @@ const earlyChunk = (styles, stateJson) => `
     </html>
   `;
 
-const renderStreamed = async (req, res, path, clientStats) => {
+const renderStreamed = async (req, res, path, clientStats, outputPath) => {
 // Grab the CSS from our sheetsRegistry.
     clearChunks();
 
@@ -110,12 +109,10 @@ const renderStreamed = async (req, res, path, clientStats) => {
     if (!store) return; // no store means redirect was already served
     const stateJson = JSON.stringify(store.getState());
 
-    /* In this project, we do not use css module in chunks, so we know our only main chunk, no need to call flushChunks */
-    // const {styles} = flushChunks(clientStats);
-    const styles = '<link rel=\'stylesheet\' href=\'/main.css\' />';
+    const {css} = flushChunks(clientStats, {outputPath});
 
     // flush the head with css & js resource tags first so the download starts immediately
-    const early = earlyChunk(styles, stateJson);
+    const early = earlyChunk(css, stateJson);
     const chunkNames = [];
     const app = createApp(App, store, chunkNames);
     const stream = renderToNodeStream(app).pipe(renderStylesToNodeStream());
@@ -125,7 +122,7 @@ const renderStreamed = async (req, res, path, clientStats) => {
     cacheStream.write(early);
     stream.pipe(cacheStream, {end: false});
     stream.on('end', () => {
-        const {js, cssHash} = flushChunks(clientStats, {chunkNames});
+        const {js, cssHash} = flushChunks(clientStats, {chunkNames, outputPath});
         const dll = flushDll(clientStats);
 
         console.log('CHUNK NAMES', chunkNames);
@@ -135,7 +132,7 @@ const renderStreamed = async (req, res, path, clientStats) => {
     });
 };
 
-export default ({clientStats}) => (req, res, next) => {
+export default ({clientStats, outputPath}) => (req, res, next) => {
     res.set('Content-Type', 'text/html');
 
     let path = req.path;
@@ -150,13 +147,13 @@ export default ({clientStats}) => (req, res, next) => {
 
     console.log('REQUESTED PATH:', req.path);
 
-    cache.exists(path, (err, reply) => {
+    cache.exists(path, async (err, reply) => {
         if (reply === 1) {
             console.log('CACHE KEY EXISTS: ', path);
             cache.get(path, (err, reply) => res.end(reply));
         }
         else {
-            renderStreamed(req, res, path, clientStats);
+            await renderStreamed(req, res, path, clientStats, outputPath);
         }
     });
 };

@@ -80,7 +80,7 @@ if (DEVELOPMENT) {
     }));
 
     // uncomment this code block for debugging service worker behaviour in development
-    /// https://github.com/goldhand/sw-precache-webpack-plugin#webpack-dev-server-support
+    // / https://github.com/goldhand/sw-precache-webpack-plugin#webpack-dev-server-support
     // do not forget to regenerate service-worker.js when modifying SWPrecacheWebpackPlugin config
     // with this command:
     // NODE_ENV=development ./node_modules/.bin/babel-node ./node_modules/webpack/bin/webpack --progress --config webpack/ssr/server.js

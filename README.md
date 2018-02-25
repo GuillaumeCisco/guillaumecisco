@@ -63,13 +63,15 @@ For deploying with amazon, please create a redis cluster by following this docum
 https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html
 Don't forget to create a isolated security group for opening port 6379 as described in the documentation.
 
-For testing your generated docker with your localhosted redis, update you deploy.js file and do not forget to comment the parth that push to your registry, then:
+For testing your generated docker with your localhosted redis, update your `deploy.js` file and do not forget to comment the part that push to your registry, then:
 ```shell
 $> redis-cli flushall && docker run -it -v /etc/letsencrypt/:/etc/letsencrypt/ --net="host" -p 8000:8000 docker_image_name:latest
 ```
 
 You'll notice I also bind the let's encrypt folder, more information in the next part.
+
 Then head to https://localhost:8001/
+
 Do not forget to `redis-cli flushall` when testing multiple times.
 
 Disable redis for testing this project in ssl with `-p 8001:8443`
