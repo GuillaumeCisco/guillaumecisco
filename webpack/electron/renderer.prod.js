@@ -13,8 +13,8 @@ import config from 'config';
 
 import baseConfig from './base';
 import rules from '../utils/rules';
-import definePlugin from '../utils/definePlugin';
-import dll from '../utils/dll';
+import definePlugin from '../utils/plugins/definePlugin';
+import dll from '../utils/plugins/dll';
 
 
 export default merge.smart(baseConfig, {

@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import rules from '../utils/rules';
 import resolve from '../utils/resolve';
-import plugins from '../utils/plugins';
+import plugins from '../utils/plugins/index';
 
 const DEBUG = !(['production', 'development', 'staging'].includes(process.env.NODE_ENV)),
     DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),

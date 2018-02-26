@@ -1,8 +1,6 @@
 import webpack from 'webpack';
 import config from 'config';
 import path from 'path';
-import fs from 'fs';
-import util from 'util';
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
@@ -12,21 +10,17 @@ import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 import SWPrecacheWebpackPlugin from 'sw-precache-webpack-plugin';
 import WriteFilePlugin from 'write-file-webpack-plugin';
-import ManifestPlugin from 'webpack-manifest-plugin';
-import AddAssetPlugin from './addAssetPlugin';
-import RavenPlugin from './ravenPlugin';
+import RavenPlugin from './tools/ravenPlugin';
 
 import definePlugin from './definePlugin';
 import dll from './dll';
+import pwaManifest from './pwaManifest';
 
-import routes from '../../src/app/routesMap';
+import routes from '../../../src/app/routesMap';
 
 const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
     PRODUCTION = (['production'].includes(process.env.NODE_ENV)),
     DEBUG = !(['production', 'development', 'staging'].includes(process.env.NODE_ENV));
-
-// Convert fs.readFile into Promise version of same
-const readFile = util.promisify(fs.readFile);
 
 export default env => [
     ...(env === 'client' ? [
@@ -36,70 +30,8 @@ export default env => [
             filename: '[name].js',
             minChunks: Infinity,
         }),
-        new ManifestPlugin({
-            seed: {
-                name: 'Guillaume Cisco',
-                short_name: 'G. Cisco',
-                start_url: '/',
-                display: 'standalone',
-                background_color: '#000',
-                theme_color: '#000',
-                icons: [
-                    {
-                        src: 'launcher-icon-0-75x.png',
-                        sizes: '36x36',
-                        type: 'image/png',
-                        density: 0.75,
-                    },
-                    {
-                        src: 'launcher-icon-1x.png',
-                        sizes: '48x48',
-                        type: 'image/png',
-                        density: 1.0,
-                    },
-                    {
-                        src: 'launcher-icon-1-5x.png',
-                        sizes: '72x72',
-                        type: 'image/png',
-                        density: 1.5,
-                    },
-                    {
-                        src: 'launcher-icon-2x.png',
-                        sizes: '96x96',
-                        type: 'image/png',
-                        density: 2.0,
-                    },
-                    {
-                        src: 'launcher-icon-3x.png',
-                        sizes: '144x144',
-                        type: 'image/png',
-                        density: 3.0,
-                    },
-                    {
-                        src: 'launcher-icon-4x.png',
-                        sizes: '192x192',
-                        type: 'image/png',
-                        density: 4.0,
-                    },
-                    {
-                        src: 'launcher-icon-high-res.png',
-                        sizes: '512x512',
-                        type: 'image/png',
-                        density: 4.0,
-                    },
-                ],
-            },
-        }),
-        new AddAssetPlugin('launcher-icon-0-75x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-0-75x.png'))),
-        new AddAssetPlugin('launcher-icon-1x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-1x.png'))),
-        new AddAssetPlugin('launcher-icon-1-5x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-1-5x.png'))),
-        new AddAssetPlugin('launcher-icon-2x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-2x.png'))),
-        new AddAssetPlugin('launcher-icon-3x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-3x.png'))),
-        new AddAssetPlugin('launcher-icon-4x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-4x.png'))),
-        new AddAssetPlugin('launcher-icon-high-res.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-high-res.png'))),
-
-        // raven
-        new RavenPlugin(config.apps.frontend.raven_url, path.resolve(__dirname, '../../assets/js/raven.min.js')),
+        pwaManifest,
+        new RavenPlugin(config.apps.frontend.raven_url, path.resolve(__dirname, '../../../assets/js/raven.min.js')),
         dll,
         ...(PRODUCTION ? [
             new BabelMinifyPlugin({}, {
@@ -191,11 +123,11 @@ export default env => [
                 ({
                     ...p,
                     [routes[c].path]: [
-                        path.resolve(__dirname, '../../src/client/index.js'),
+                        path.resolve(__dirname, '../../../src/client/index.js'),
                     ],
                 }), {}),
             // add 404 page
-            '/404': [path.resolve(__dirname, '../../src/client/index.js')],
+            '/404': [path.resolve(__dirname, '../../../src/client/index.js')],
         },
         navigateFallback: '/404',
         staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
