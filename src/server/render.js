@@ -96,7 +96,7 @@ const earlyChunk = (styles, stateJson) => `
           ${dll}
           ${js}
           ${serviceWorker}
-          <script src="/raven.min.js" type="text/javascript" defer></script>
+          ${raven}
         </body>
     </html>
   `;

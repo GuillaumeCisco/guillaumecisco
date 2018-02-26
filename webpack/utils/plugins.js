@@ -2,7 +2,6 @@ import webpack from 'webpack';
 import config from 'config';
 import path from 'path';
 import fs from 'fs';
-import util from 'util';
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
@@ -13,8 +12,7 @@ import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 import SWPrecacheWebpackPlugin from 'sw-precache-webpack-plugin';
 import WriteFilePlugin from 'write-file-webpack-plugin';
 import ManifestPlugin from 'webpack-manifest-plugin';
-import AddAssetPlugin from './addAssetPlugin';
-import RavenPlugin from './ravenPlugin';
+import AddAssetPlugin from 'add-asset-webpack-plugin';
 
 import definePlugin from './definePlugin';
 import dll from './dll';
@@ -24,9 +22,6 @@ import routes from '../../src/app/routesMap';
 const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
     PRODUCTION = (['production'].includes(process.env.NODE_ENV)),
     DEBUG = !(['production', 'development', 'staging'].includes(process.env.NODE_ENV));
-
-// Convert fs.readFile into Promise version of same
-const readFile = util.promisify(fs.readFile);
 
 export default env => [
     ...(env === 'client' ? [
@@ -90,16 +85,16 @@ export default env => [
                 ],
             },
         }),
-        new AddAssetPlugin('launcher-icon-0-75x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-0-75x.png'))),
-        new AddAssetPlugin('launcher-icon-1x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-1x.png'))),
-        new AddAssetPlugin('launcher-icon-1-5x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-1-5x.png'))),
-        new AddAssetPlugin('launcher-icon-2x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-2x.png'))),
-        new AddAssetPlugin('launcher-icon-3x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-3x.png'))),
-        new AddAssetPlugin('launcher-icon-4x.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-4x.png'))),
-        new AddAssetPlugin('launcher-icon-high-res.png', () => readFile(path.resolve(__dirname, '../../assets/img/launcher-icon-high-res.png'))),
+        new AddAssetPlugin('launcher-icon-0-75x.png', () => fs.readFileSync(path.resolve(__dirname, '../../assets/img/launcher-icon-0-75x.png'))),
+        new AddAssetPlugin('launcher-icon-1x.png', () => fs.readFileSync(path.resolve(__dirname, '../../assets/img/launcher-icon-1x.png'))),
+        new AddAssetPlugin('launcher-icon-1-5x.png', () => fs.readFileSync(path.resolve(__dirname, '../../assets/img/launcher-icon-1-5x.png'))),
+        new AddAssetPlugin('launcher-icon-2x.png', () => fs.readFileSync(path.resolve(__dirname, '../../assets/img/launcher-icon-2x.png'))),
+        new AddAssetPlugin('launcher-icon-3x.png', () => fs.readFileSync(path.resolve(__dirname, '../../assets/img/launcher-icon-3x.png'))),
+        new AddAssetPlugin('launcher-icon-4x.png', () => fs.readFileSync(path.resolve(__dirname, '../../assets/img/launcher-icon-4x.png'))),
+        new AddAssetPlugin('launcher-icon-high-res.png', () => fs.readFileSync(path.resolve(__dirname, '../../assets/img/launcher-icon-high-res.png'))),
 
         // raven
-        new RavenPlugin(config.apps.frontend.raven_url, path.resolve(__dirname, '../../assets/js/raven.min.js')),
+        new AddAssetPlugin('raven.min.js', () => fs.readFileSync(path.resolve(__dirname, '../../assets/js/raven.min.js'))),
         dll,
         ...(PRODUCTION ? [
             new BabelMinifyPlugin({}, {
