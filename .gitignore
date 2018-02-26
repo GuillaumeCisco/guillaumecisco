@@ -24,6 +24,7 @@ chrome-user-data
 *.iml
 .vscode
 .happypack
+release
 
 src/electron/main.prod.js*
 
