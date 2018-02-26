@@ -1,18 +1,20 @@
 import fs from 'fs';
 import path from 'path';
 import config from 'config';
+
+import http from 'http';
+import http2 from 'http2';
+import webpack from 'webpack';
+
 import Koa from 'koa';
 import serve from 'koa-static';
 import mount from 'koa-mount';
 import cookie from 'koa-cookie';
 import compress from 'koa-compress';
 import helmet from 'koa-helmet';
-import http from 'http';
-import http2 from 'http2';
-import webpack from 'webpack';
-import webpackDevMiddleware from 'koa-webpack-dev-middleware';
+
 import hotClient from 'webpack-hot-client';
-import webpackHotMiddleware from 'koa-webpack-hot-middleware';
+import webpackDevMiddleware from 'koa-webpack-dev-middleware';
 import webpackHotServerMiddleware from 'webpack-hot-server-middleware';
 
 // Must be imported in that way to be include in prod
@@ -59,8 +61,8 @@ if (DEVELOPMENT) {
         console.log(`Bundled in ${(Date.now() - bundleStart)}ms!`);
     });
 
+    // support hot module with websocket, not event-stream
     hotClient(clientCompiler, true);
-
     app.use(webpackDevMiddleware(multiCompiler, {
         publicPath,
         watchOptions: {
@@ -83,6 +85,13 @@ if (DEVELOPMENT) {
         headers: clientConfig.devServer.headers,
     }));
 
+    // keeps serverRender updated with arg: { clientStats, outputPath }
+    app.use(webpackHotServerMiddleware(multiCompiler, {
+        serverRendererOptions: {outputPath},
+        createHandler: webpackHotServerMiddleware.createKoaHandler,
+    }));
+
+
     // uncomment this code block for debugging service worker behaviour in development
     // / https://github.com/goldhand/sw-precache-webpack-plugin#webpack-dev-server-support
     // do not forget to regenerate service-worker.js when modifying SWPrecacheWebpackPlugin config
@@ -92,12 +101,6 @@ if (DEVELOPMENT) {
     //     res.set({ 'Content-Type': 'application/javascript; charset=utf-8' });
     //     res.send(fs.readFileSync('./assets/service-worker.js'));
     // });
-
-    // keeps serverRender updated with arg: { clientStats, outputPath }
-    app.use(webpackHotServerMiddleware(multiCompiler, {
-        serverRendererOptions: {outputPath},
-        createHandler: webpackHotServerMiddleware.createKoaHandler,
-    }));
 
     http.createServer(app.callback()).listen(config.apps.frontend.api_port, () =>
         console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`),
