@@ -8,7 +8,7 @@ import BabelMinifyPlugin from 'babel-minify-webpack-plugin';
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 import baseConfig from './base';
 
-import definePlugin from '../utils/definePlugin';
+import definePlugin from '../utils/plugins/definePlugin';
 import rules from '../utils/rules';
 
 export default merge.smart(baseConfig, {
