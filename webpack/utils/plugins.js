@@ -103,7 +103,6 @@ export default env => [
             new webpack.optimize.AggressiveMergingPlugin(),
             new StatsPlugin('stats.json'),
         ] : [
-            new webpack.HotModuleReplacementPlugin(),
             new webpack.NoEmitOnErrorsPlugin(),
             new WriteFilePlugin(),
             new BrowserSyncPlugin(

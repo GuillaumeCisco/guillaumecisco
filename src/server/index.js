@@ -11,6 +11,7 @@ import http from 'http';
 import http2 from 'http2';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'koa-webpack-dev-middleware';
+import hotClient from 'webpack-hot-client';
 import webpackHotMiddleware from 'koa-webpack-hot-middleware';
 import webpackHotServerMiddleware from 'webpack-hot-server-middleware';
 
@@ -58,6 +59,8 @@ if (DEVELOPMENT) {
         console.log(`Bundled in ${(Date.now() - bundleStart)}ms!`);
     });
 
+    hotClient(clientCompiler, true);
+
     app.use(webpackDevMiddleware(multiCompiler, {
         publicPath,
         watchOptions: {
@@ -90,7 +93,6 @@ if (DEVELOPMENT) {
     //     res.send(fs.readFileSync('./assets/service-worker.js'));
     // });
 
-    app.use(webpackHotMiddleware(clientCompiler));
     // keeps serverRender updated with arg: { clientStats, outputPath }
     app.use(webpackHotServerMiddleware(multiCompiler, {
         serverRendererOptions: {outputPath},
