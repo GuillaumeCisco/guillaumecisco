@@ -14,11 +14,12 @@ class Core extends Component {
     };
 
     init = () => {
-        const {w, h} = this.props;
+        const {w, h, radius} = this.props;
 
         // create center
         this.canvas.width = w;
         this.canvas.height = h;
+        this.radius = radius;
         this.ctx = this.canvas.getContext('2d');
         this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
         this.draw();
@@ -26,10 +27,8 @@ class Core extends Component {
 
     draw = () => {
         // center
-        const {radius} = this.props;
-
         this.ctx.beginPath();
-        this.ctx.arc(0, 0, radius, 0, Math.PI * 2); // full centered circle
+        this.ctx.arc(0, 0, this.radius, 0, Math.PI * 2); // full centered circle
         this.ctx.fillStyle = 'rgba(255, 250, 250, 0.9)';
         this.ctx.shadowBlur = 50;
         this.ctx.shadowColor = 'white';
@@ -37,9 +36,10 @@ class Core extends Component {
     };
 
     resize = (props) => {
-        const {w, h} = props;
+        const {w, h, radius} = props;
         this.canvas.width = w;
         this.canvas.height = h;
+        this.radius = radius;
         this.ctx.clearRect(-w, -h, 2 * w, 2 * h);
         this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
         this.draw();

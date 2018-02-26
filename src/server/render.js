@@ -1,7 +1,7 @@
 /* global APP_NAME META_DESCRIPTION META_KEYWORDS */
 
 import config from 'config';
-import {Transform} from 'stream';
+import {Transform, PassThrough} from 'stream';
 import redis from 'redis';
 import React from 'react';
 import {Provider} from 'react-redux';
@@ -44,7 +44,7 @@ const createCacheStream = (key) => {
             // We concatenate all the buffered chunks of HTML to get the full HTML
             // then cache it at "key"
 
-            // only cache '/' path
+            // only cache paths
             if (paths.includes(key) && !(key.endsWith('.js.map') || key.endsWith('.ico')) || key === 'service-worker.js') {
                 console.log('CACHING: ', key);
                 cache.set(key, Buffer.concat(bufferedChunks));
@@ -96,16 +96,17 @@ const earlyChunk = (styles, stateJson) => `
           ${dll}
           ${js}
           ${serviceWorker}
-          ${raven}
+          <script src="/raven.min.js" type="text/javascript" defer></script>
         </body>
     </html>
   `;
 
-const renderStreamed = async (req, res, path, clientStats, outputPath) => {
-// Grab the CSS from our sheetsRegistry.
+const renderStreamed = async (ctx, path, clientStats, outputPath) => {
+    // Grab the CSS from our sheetsRegistry.
     clearChunks();
 
-    const store = await configureStore(req, res);
+    const store = await configureStore(ctx);
+
     if (!store) return; // no store means redirect was already served
     const stateJson = JSON.stringify(store.getState());
 
@@ -115,11 +116,14 @@ const renderStreamed = async (req, res, path, clientStats, outputPath) => {
     const early = earlyChunk(css, stateJson);
     const chunkNames = [];
     const app = createApp(App, store, chunkNames);
-    const stream = renderToNodeStream(app).pipe(renderStylesToNodeStream());
+
 
     const cacheStream = createCacheStream(path);
-    cacheStream.pipe(res);
+    cacheStream.pipe(ctx.body);
     cacheStream.write(early);
+
+    const stream = renderToNodeStream(app).pipe(renderStylesToNodeStream());
+
     stream.pipe(cacheStream, {end: false});
     stream.on('end', () => {
         const {js, cssHash} = flushChunks(clientStats, {chunkNames, outputPath});
@@ -132,28 +136,30 @@ const renderStreamed = async (req, res, path, clientStats, outputPath) => {
     });
 };
 
-export default ({clientStats, outputPath}) => (req, res, next) => {
-    res.set('Content-Type', 'text/html');
+export default ({clientStats, outputPath}) => (ctx) => {
+    ctx.status = 200;
+    ctx.type = 'text/html';
+    ctx.body = new PassThrough();
 
-    let path = req.path;
+    let path = ctx.originalUrl;
 
     // check if path is in our whitelist, else give 404 route
-    if (!paths.includes(req.path) &&
-        !req.path.endsWith('.ico') &&
-        req.path !== 'service-worker.js' &&
-        !(process.env.NODE_ENV === 'development' && req.path.endsWith('.js.map'))) {
+    if (!paths.includes(ctx.originalUrl) &&
+        !ctx.originalUrl.endsWith('.ico') &&
+        ctx.originalUrl !== 'service-worker.js' &&
+        !(process.env.NODE_ENV === 'development' && ctx.originalUrl.endsWith('.js.map'))) {
         path = '/404';
     }
 
-    console.log('REQUESTED PATH:', req.path);
+    console.log('REQUESTED PATH:', ctx.originalUrl);
 
     cache.exists(path, async (err, reply) => {
         if (reply === 1) {
             console.log('CACHE KEY EXISTS: ', path);
-            cache.get(path, (err, reply) => res.end(reply));
+            cache.get(path, (err, reply) => ctx.body.end(reply));
         }
         else {
-            await renderStreamed(req, res, path, clientStats, outputPath);
+            await renderStreamed(ctx, path, clientStats, outputPath);
         }
     });
 };

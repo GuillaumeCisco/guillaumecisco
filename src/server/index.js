@@ -1,16 +1,20 @@
 import fs from 'fs';
-import compression from 'compression';
-import config from 'config';
-import cookieParser from 'cookie-parser';
-import express from 'express';
-import http from 'http';
-import https from 'https';
-import forceSsl from 'express-force-ssl';
-import helmet from 'helmet';
 import path from 'path';
+import config from 'config';
+
+import http from 'http';
+import http2 from 'http2';
 import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
-import webpackHotMiddleware from 'webpack-hot-middleware';
+
+import Koa from 'koa';
+import serve from 'koa-static';
+import mount from 'koa-mount';
+import cookie from 'koa-cookie';
+import compress from 'koa-compress';
+import helmet from 'koa-helmet';
+
+import hotClient from 'webpack-hot-client';
+import webpackDevMiddleware from 'koa-webpack-dev-middleware';
 import webpackHotServerMiddleware from 'webpack-hot-server-middleware';
 
 // Must be imported in that way to be include in prod
@@ -27,15 +31,15 @@ const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV));
 const publicPath = DEBUG ? config.apps.frontend.baseName.debug : config.apps.frontend.baseName.production;
 const outputPath = path.resolve(__dirname, '../../build/ssr/client');
 
-const app = express();
+const app = new Koa();
 app.use(helmet());
-app.use(cookieParser());
-app.use(compression());
+app.use(cookie());
+app.use(compress());
 
 
 // let's encrypt config
 const resolve = p => path.resolve(__dirname, p);
-app.use('/.well-known', express.static((resolve('../../.well-known'))));
+app.use(mount('/.well-known', serve(resolve('../../.well-known'))));
 
 // UNIVERSAL HMR + STATS HANDLING GOODNESS:
 if (DEVELOPMENT) {
@@ -57,6 +61,8 @@ if (DEVELOPMENT) {
         console.log(`Bundled in ${(Date.now() - bundleStart)}ms!`);
     });
 
+    // support hot module with websocket, not event-stream
+    hotClient(clientCompiler, true);
     app.use(webpackDevMiddleware(multiCompiler, {
         publicPath,
         watchOptions: {
@@ -79,6 +85,13 @@ if (DEVELOPMENT) {
         headers: clientConfig.devServer.headers,
     }));
 
+    // keeps serverRender updated with arg: { clientStats, outputPath }
+    app.use(webpackHotServerMiddleware(multiCompiler, {
+        serverRendererOptions: {outputPath},
+        createHandler: webpackHotServerMiddleware.createKoaHandler,
+    }));
+
+
     // uncomment this code block for debugging service worker behaviour in development
     // / https://github.com/goldhand/sw-precache-webpack-plugin#webpack-dev-server-support
     // do not forget to regenerate service-worker.js when modifying SWPrecacheWebpackPlugin config
@@ -89,20 +102,16 @@ if (DEVELOPMENT) {
     //     res.send(fs.readFileSync('./assets/service-worker.js'));
     // });
 
-    app.use(webpackHotMiddleware(clientCompiler));
-    // keeps serverRender updated with arg: { clientStats, outputPath }
-    app.use(webpackHotServerMiddleware(multiCompiler, {
-        serverRendererOptions: {outputPath},
-    }));
+    http.createServer(app.callback()).listen(config.apps.frontend.api_port, () =>
+        console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`),
+    );
 }
 else {
     const clientStats = require('../../build/ssr/client/stats.json'); // eslint-disable-line import/no-unresolved
     const serverRender = require('../../build/ssr/server/main.js').default; // eslint-disable-line import/no-unresolved
 
-    app.use(publicPath, express.static(outputPath));
+    app.use(mount(publicPath, serve(outputPath)));
     app.use(serverRender({clientStats, outputPath}));
-
-    app.use(forceSsl);
 
     // self signed
     // const key = fs.readFileSync('./encryption/ca.key');
@@ -121,13 +130,10 @@ else {
     const options = {
         key,
         cert,
+        allowHTTP1: true,
     };
 
-    https.createServer(options, app).listen(config.apps.frontend.secure_api_port, () =>
+    http2.createSecureServer(options, app.callback()).listen(config.apps.frontend.secure_api_port, () =>
         console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`),
     );
 }
-
-http.createServer(app).listen(config.apps.frontend.api_port, () =>
-    console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`),
-);

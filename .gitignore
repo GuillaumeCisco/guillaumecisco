@@ -5,6 +5,7 @@ node_modules
 _SpecRunner.html
 __benchmarks__
 build/
+release/
 .module-cache
 *.gem
 docs/.bundle
