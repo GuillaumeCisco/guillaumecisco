@@ -117,14 +117,21 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
     const chunkNames = [];
     const app = createApp(App, store, chunkNames);
 
+    // DO not use redis cache on dev
+    let mainStream;
+    if (process.env.NODE_ENV === 'development') {
+        mainStream = ctx.body;
+    }
+    else {
+        mainStream = createCacheStream(path);
+        mainStream.pipe(ctx.body);
+    }
 
-    const cacheStream = createCacheStream(path);
-    cacheStream.pipe(ctx.body);
-    cacheStream.write(early);
+    mainStream.write(early);
 
     const stream = renderToNodeStream(app).pipe(renderStylesToNodeStream());
 
-    stream.pipe(cacheStream, {end: false});
+    stream.pipe(mainStream, {end: false});
     stream.on('end', () => {
         const {js, cssHash} = flushChunks(clientStats, {chunkNames, outputPath});
         const dll = flushDll(clientStats);
@@ -132,7 +139,7 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
         console.log('CHUNK NAMES', chunkNames);
 
         const late = lateChunk(cssHash, js, dll, raven);
-        cacheStream.end(late);
+        mainStream.end(late);
     });
 };
 
@@ -153,13 +160,19 @@ export default ({clientStats, outputPath}) => (ctx) => {
 
     console.log('REQUESTED PATH:', ctx.originalUrl);
 
-    cache.exists(path, async (err, reply) => {
-        if (reply === 1) {
-            console.log('CACHE KEY EXISTS: ', path);
-            cache.get(path, (err, reply) => ctx.body.end(reply));
-        }
-        else {
-            await renderStreamed(ctx, path, clientStats, outputPath);
-        }
-    });
+    // DO not use redis cache on dev
+    if (process.env.NODE_ENV === 'development') {
+        renderStreamed(ctx, path, clientStats, outputPath);
+    }
+    else {
+        cache.exists(path, async (err, reply) => {
+            if (reply === 1) {
+                console.log('CACHE KEY EXISTS: ', path);
+                cache.get(path, (err, reply) => ctx.body.end(reply));
+            }
+            else {
+                await renderStreamed(ctx, path, clientStats, outputPath);
+            }
+        });
+    }
 };

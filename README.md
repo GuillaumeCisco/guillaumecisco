@@ -34,12 +34,12 @@ yarn build:main
 yarn deploy
 ```
 
-You can now stop the task on aws ECS, it will restart automatically.
+You can now stop the task on aws ECS, it will restart automatically, if you did not define an autoscaling policy.
 
 Do no forget to invalidate the cache on your aws redis instance.
-Connect with ssh to your ec2 instance, then connect to tour redis instance as explain in elasticache documentation.
+Connect with ssh to your ec2 instance, then connect to your redis instance as explain in elasticache documentation.
 https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.ConnectToCacheNode.html#GettingStarted.ConnectToCacheNode.Redis.NoEncrypt
-Then run `flushall`.
+Then run `flushall`. You should automatize this part.
 More information in the cache part below.
 
 ### Test and Cover
@@ -63,6 +63,7 @@ For deploying with amazon, please create a redis cluster by following this docum
 https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html
 Don't forget to create a isolated security group for opening port 6379 as described in the documentation.
 
+#### test
 For testing your generated docker with your localhosted redis, update your `deploy.js` file and do not forget to comment the part that push to your registry, then:
 ```shell
 $> redis-cli flushall && docker run -it -v /etc/letsencrypt/:/etc/letsencrypt/ --net="host" -p 8000:8000 docker_image_name:latest
@@ -74,7 +75,7 @@ Then head to https://localhost:8001/
 
 Do not forget to `redis-cli flushall` when testing multiple times.
 
-Disable redis for testing this project in ssl with `-p 8001:8443`
+Disable redis for testing this project in ssl with `-p 8001:8443`.
 
 ### Encryption files creation
 
