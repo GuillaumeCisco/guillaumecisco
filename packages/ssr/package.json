@@ -59,7 +59,6 @@
         "happypack": "4.0.1",
         "helmet": "3.11.0",
         "http": "0.0.0",
-        "http2": "3.3.7",
         "https": "1.0.0",
         "koa": "2.5.0",
         "koa-compress": "2.0.0",
