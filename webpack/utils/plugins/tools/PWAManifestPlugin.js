@@ -18,7 +18,6 @@ class PWAManifestPlugin {
 
     apply(compiler) {
         compiler.plugin('emit', async (compilation, cb) => {
-
             // create icon files
             const path = this.options.iconsPath;
             let filesPath = await readdir(path);
@@ -28,6 +27,7 @@ class PWAManifestPlugin {
 
             const filesContent = await Promise.all(promises);
             filesContent.forEach((source, i) => {
+                // eslint-disable-next-line no-param-reassign
                 compilation.assets[filesPath[i]] = {
                     source: () => source,
                     size: () => source.length,

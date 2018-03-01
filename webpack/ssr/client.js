@@ -20,9 +20,6 @@ export default {
             'fetch-everywhere',
         ],
         main: [
-            ...(DEVELOPMENT ? [
-                'react-hot-loader/patch',
-            ] : []),
             path.resolve(__dirname, '../../src/client/index.js'),
         ],
     },

@@ -22,6 +22,10 @@ class Core extends Component {
         this.radius = radius;
         this.ctx = this.canvas.getContext('2d');
         this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
+        this.r = 255;
+        this.g = 250;
+        this.b = 230;
+        this.alpha = 0.9;
         this.draw();
     };
 
@@ -29,9 +33,9 @@ class Core extends Component {
         // center
         this.ctx.beginPath();
         this.ctx.arc(0, 0, this.radius, 0, Math.PI * 2); // full centered circle
-        this.ctx.fillStyle = 'rgba(255, 250, 250, 0.9)';
-        this.ctx.shadowBlur = 50;
-        this.ctx.shadowColor = 'white';
+        this.ctx.fillStyle = `rgba(${this.r}, ${this.g}, ${this.b}, ${this.alpha})`;
+        this.ctx.shadowBlur = 100;
+        this.ctx.shadowColor = `rgb(${this.r}, ${this.g}, ${this.b})`;
         this.ctx.fill();
     };
 

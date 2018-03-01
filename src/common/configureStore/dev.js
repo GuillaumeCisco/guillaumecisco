@@ -34,8 +34,8 @@ const configureStore = (history, initialState) => {
     // Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
     if (module.hot) {
         module.hot.accept('../../app/reducer', () => {
-            const rootReducer = require('../../app/reducer').default;
-            const replacedReducers = {...store.injectedReducers, ...rootReducer, location: reducer};
+            const nextRootReducer = require('../../app/reducer').default;
+            const replacedReducers = {...store.injectedReducers, ...nextRootReducer, location: reducer};
             store.replaceReducer(combineReducersRecurse(replacedReducers));
         });
 

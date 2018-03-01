@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {css} from 'react-emotion';
 
-import Supernova from '../supernova/index';
-import Modal from '../modal';
+import Supernova from './supernova/index';
+import Modal from './modal';
 import Intro from './intro';
 
 const style = css`

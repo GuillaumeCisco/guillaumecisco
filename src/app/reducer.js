@@ -1,5 +1,5 @@
 import {actionTypes} from './actions';
-import modal from './business/modal/reducer';
+import modal from './business/splash/modal/reducer';
 
 const initialState = {
     error: '',

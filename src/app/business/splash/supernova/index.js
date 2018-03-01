@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 import modalActions from '../modal/actions';
-import generalActions from '../../actions';
+import generalActions from '../../../actions';
 
 import Background from './background/index';
 import ShootingStars from './shootingStar/index';
