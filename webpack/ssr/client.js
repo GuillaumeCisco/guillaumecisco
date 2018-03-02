@@ -15,15 +15,15 @@ export default {
     name: 'client',
     target: 'web',
     devtool: DEBUG ? 'source-map' : (DEVELOPMENT ? 'cheap-module-source-map' : '#hidden-source-map'),
-    entry: [
-        // vendor: [
-        //     'babel-polyfill',
-        //     'fetch-everywhere',
-        // ],
-        // main: [
+    entry: {
+        vendor: [
+            'babel-polyfill',
+            'fetch-everywhere',
+        ],
+        main: [
             path.resolve(__dirname, '../../src/client/index.js'),
-        // ],
-    ],
+        ],
+    },
     module: {
         rules: rules(),
     },
@@ -59,17 +59,4 @@ export default {
         watch: true,
         cache: true,
     } : {}),
-    optimization: {
-        //noEmitOnErrors: true,
-        //concatenateModules: true,
-        // https://webpack.js.org/plugins/commons-chunk-plugin/#manifest-file
-        splitChunks: { // needed to put webpack bootstrap code before chunks
-            cacheGroups: {
-                commons: {
-                    name: 'commons',
-                    minChunks: Infinity,
-                },
-            },
-        },
-    },
 };
