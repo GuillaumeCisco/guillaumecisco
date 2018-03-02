@@ -1,4 +1,5 @@
-import ExtractCssChunks from 'extract-css-chunks-webpack-plugin-webpack-4';
+//import ExtractCssChunks from 'extract-css-chunks-webpack-plugin-webpack-4';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
 const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
     PRODUCTION = (['production'].includes(process.env.NODE_ENV));
@@ -31,6 +32,7 @@ export default env => [
                 ],
                 presets: [
                     'es2015',
+                    'es2017',
                     'react',
                     'stage-0',
                 ],
@@ -87,7 +89,7 @@ export default env => [
     ] : [{
         test: /\.s?css$/,
         exclude: /node_modules/,
-        use: ExtractCssChunks.extract({
+        use: ExtractTextPlugin.extract({
             use: [
                 {
                     loader: 'css-loader',

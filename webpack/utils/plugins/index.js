@@ -1,7 +1,8 @@
 import webpack from 'webpack';
 import config from 'config';
 import path from 'path';
-import ExtractCssChunks from 'extract-css-chunks-webpack-plugin-webpack-4';
+//import ExtractCssChunks from 'extract-css-chunks-webpack-plugin-webpack-4';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
 import BabelMinifyPlugin from 'babel-minify-webpack-plugin';
@@ -96,7 +97,7 @@ export default env => [
     //     }],
     //     threads: 4,
     // }),
-    new ExtractCssChunks({
+    new ExtractTextPlugin({
         filename: '[name].css',
         allChunks: false,
     }),
