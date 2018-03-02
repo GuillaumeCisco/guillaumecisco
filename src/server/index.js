@@ -62,7 +62,7 @@ if (DEVELOPMENT) {
     });
 
     // support hot module with websocket, not event-stream
-    hotClient(multiCompiler);
+    hotClient(clientCompiler);
     app.use(webpackDevMiddleware(multiCompiler, {
         publicPath,
         watchOptions: {
