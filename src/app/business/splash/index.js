@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {css} from 'react-emotion';
 
-import Supernova from './supernova/index';
+import Supernova from './supernova';
 import Intro from './intro';
 import AsyncModal from './asyncModal';
 

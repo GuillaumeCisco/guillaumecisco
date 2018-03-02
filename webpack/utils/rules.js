@@ -1,10 +1,41 @@
-import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
+import ExtractCssChunks from 'extract-css-chunks-webpack-plugin-webpack-4';
+
+const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
+    PRODUCTION = (['production'].includes(process.env.NODE_ENV));
 
 export default env => [
     {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: 'happypack/loader?id=babel',
+        //use: 'happypack/loader?id=babel',
+        use: {
+            loader: 'babel-loader',
+            options: {
+                // ignore babelrc
+                babelrc: false,
+                plugins: [
+                    ['universal-import', {
+                        disableWarnings: true,
+                    }],
+                    'transform-runtime',
+                    'emotion',
+                    'lodash',
+                    ...(PRODUCTION && env === 'client' ? [
+                        'transform-class-properties',
+                        'transform-es2015-classes',
+                        'transform-react-constant-elements',
+                        'transform-react-inline-elements',
+                        'transform-react-remove-prop-types',
+                    ] : []),
+                    ...(DEVELOPMENT ? ['react-hot-loader/babel'] : []),
+                ],
+                presets: [
+                    'es2015',
+                    'react',
+                    'stage-0',
+                ],
+            },
+        }
     },
     {
         test: /\.jpe?g$|\.gif$|\.png$/,

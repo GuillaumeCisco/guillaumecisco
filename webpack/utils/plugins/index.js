@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 import config from 'config';
 import path from 'path';
-import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
+import ExtractCssChunks from 'extract-css-chunks-webpack-plugin-webpack-4';
 import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
 import BabelMinifyPlugin from 'babel-minify-webpack-plugin';
@@ -24,15 +24,9 @@ const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
 
 export default env => [
     ...(env === 'client' ? [
-        // https://webpack.js.org/plugins/commons-chunk-plugin/#manifest-file
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ['bootstrap'], // needed to put webpack bootstrap code before chunks
-            filename: '[name].js',
-            minChunks: Infinity,
-        }),
         pwaManifest,
         new RavenPlugin(config.apps.frontend.raven_url, path.resolve(__dirname, '../../../assets/js/raven.min.js')),
-        dll,
+        //dll,
         ...(PRODUCTION ? [
             new BabelMinifyPlugin({}, {
                 comments: false,
@@ -40,8 +34,6 @@ export default env => [
             new webpack.optimize.AggressiveMergingPlugin(),
             new StatsPlugin('stats.json'),
         ] : [
-            new webpack.NoEmitOnErrorsPlugin(),
-            new WriteFilePlugin(),
             new BrowserSyncPlugin(
                 // BrowserSync options
                 {
@@ -67,44 +59,43 @@ export default env => [
             maxChunks: 1,
         }),
     ]),
-    ...(DEVELOPMENT ? [new webpack.NamedModulesPlugin()] : [new webpack.HashedModuleIdsPlugin()]),
+    new WriteFilePlugin(),
     definePlugin(),
     new LodashModuleReplacementPlugin({
         shorthands: true,
     }),
-    new HappyPack({
-        id: 'babel',
-        loaders: [{
-            path: 'babel-loader', // Options to configure babel with
-            query: {
-                // ignore babelrc
-                babelrc: false,
-                plugins: [
-                    ['universal-import', {
-                        disableWarnings: true,
-                    }],
-                    'transform-runtime',
-                    'emotion',
-                    'lodash',
-                    ...(PRODUCTION && env === 'client' ? [
-                        'transform-class-properties',
-                        'transform-es2015-classes',
-                        'transform-react-constant-elements',
-                        'transform-react-inline-elements',
-                        'transform-react-remove-prop-types',
-                    ] : []),
-                    ...(DEVELOPMENT ? ['react-hot-loader/babel'] : []),
-                ],
-                presets: [
-                    'es2015',
-                    'react',
-                    'stage-0',
-                ],
-            },
-        }],
-        threads: 4,
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
+    // new HappyPack({
+    //     id: 'babel',
+    //     loaders: [{
+    //         path: 'babel-loader', // Options to configure babel with
+    //         query: {
+    //             // ignore babelrc
+    //             babelrc: false,
+    //             plugins: [
+    //                 ['universal-import', {
+    //                     disableWarnings: true,
+    //                 }],
+    //                 'transform-runtime',
+    //                 'emotion',
+    //                 'lodash',
+    //                 ...(PRODUCTION && env === 'client' ? [
+    //                     'transform-class-properties',
+    //                     'transform-es2015-classes',
+    //                     'transform-react-constant-elements',
+    //                     'transform-react-inline-elements',
+    //                     'transform-react-remove-prop-types',
+    //                 ] : []),
+    //                 ...(DEVELOPMENT ? ['react-hot-loader/babel'] : []),
+    //             ],
+    //             presets: [
+    //                 'es2015',
+    //                 'react',
+    //                 'stage-0',
+    //             ],
+    //         },
+    //     }],
+    //     threads: 4,
+    // }),
     new ExtractCssChunks({
         filename: '[name].css',
         allChunks: false,
@@ -113,23 +104,25 @@ export default env => [
     ...(DEBUG ? [new BundleAnalyzerPlugin({
         analyzerMode: 'static',
     })] : []),
-    ...(PRODUCTION ? [new SWPrecacheWebpackPlugin({
-        cacheId: config.appName,
-        filename: 'service-worker.js',
-        minify: false,
-        dontCacheBustUrlsMatching: '/./',
-        dynamicUrlToDependencies: {
-            ...Object.keys(routes).reduce((p, c) =>
-                ({
-                    ...p,
-                    [routes[c].path]: [
-                        path.resolve(__dirname, '../../../src/client/index.js'),
-                    ],
-                }), {}),
-            // add 404 page
-            '/404': [path.resolve(__dirname, '../../../src/client/index.js')],
-        },
-        navigateFallback: '/404',
-        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
-    })] : []),
+    ...(PRODUCTION ? [
+        new webpack.HashedModuleIdsPlugin(),
+        new SWPrecacheWebpackPlugin({
+            cacheId: config.appName,
+            filename: 'service-worker.js',
+            minify: false,
+            dontCacheBustUrlsMatching: '/./',
+            dynamicUrlToDependencies: {
+                ...Object.keys(routes).reduce((p, c) =>
+                    ({
+                        ...p,
+                        [routes[c].path]: [
+                            path.resolve(__dirname, '../../../src/client/index.js'),
+                        ],
+                    }), {}),
+                // add 404 page
+                '/404': [path.resolve(__dirname, '../../../src/client/index.js')],
+            },
+            navigateFallback: '/404',
+            staticFileGlobsIgnorePatterns: [/\.map$/, /manifest\.json$/],
+        })] : []),
 ];
