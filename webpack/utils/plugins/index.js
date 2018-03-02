@@ -25,15 +25,9 @@ const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
 
 export default env => [
     ...(env === 'client' ? [
-        // https://webpack.js.org/plugins/commons-chunk-plugin/#manifest-file
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ['bootstrap'], // needed to put webpack bootstrap code before chunks
-            filename: '[name].js',
-            minChunks: Infinity,
-        }),
         pwaManifest,
         new RavenPlugin(config.apps.frontend.raven_url, path.resolve(__dirname, '../../../assets/js/raven.min.js')),
-        dll,
+        //dll,
         ...(PRODUCTION ? [
             new BabelMinifyPlugin({}, {
                 comments: false,
@@ -59,8 +53,6 @@ export default env => [
                 staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/, /index\.html$/, /404\.html$/],
             }),
         ] : [
-            new webpack.NoEmitOnErrorsPlugin(),
-            new WriteFilePlugin(),
             new BrowserSyncPlugin(
                 // BrowserSync options
                 {
@@ -86,7 +78,7 @@ export default env => [
             maxChunks: 1,
         }),
     ]),
-    ...(DEVELOPMENT ? [new webpack.NamedModulesPlugin()] : [new webpack.HashedModuleIdsPlugin()]),
+    new WriteFilePlugin(),
     definePlugin(),
     new LodashModuleReplacementPlugin({
         shorthands: true,
@@ -132,4 +124,5 @@ export default env => [
     ...(DEBUG ? [new BundleAnalyzerPlugin({
         analyzerMode: 'static',
     })] : []),
+    ...(PRODUCTION ? [new webpack.HashedModuleIdsPlugin()] : []),
 ];

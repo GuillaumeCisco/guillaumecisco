@@ -17,7 +17,7 @@ import hotClient from 'webpack-hot-client';
 import webpackDevMiddleware from 'koa-webpack-dev-middleware';
 import webpackHotServerMiddleware from 'webpack-hot-server-middleware';
 
-// Must be imported in that way to be include in prod
+// Must be imported in that way to be included in prod
 import clientConfig from '../../webpack/ssr/client';
 import serverConfig from '../../webpack/ssr/server';
 

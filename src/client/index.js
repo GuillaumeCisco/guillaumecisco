@@ -21,8 +21,10 @@ const root = document.getElementById('root');
 
 // render for electron, hydrate for SSR
 if (process.env.IS_ELECTRON !== 'false') {
+    console.log('render');
     render(<App />, root);
 }
 else {
+    console.log('hydrate');
     hydrate(<App />, root);
 }
