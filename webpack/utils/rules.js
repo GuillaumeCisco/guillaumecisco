@@ -15,12 +15,12 @@ export default env => [
                 // ignore babelrc
                 babelrc: false,
                 plugins: [
+                    'lodash',
                     ['universal-import', {
                         disableWarnings: true,
                     }],
                     'transform-runtime',
                     'emotion',
-                    'lodash',
                     ...(PRODUCTION && env === 'client' ? [
                         'transform-class-properties',
                         'transform-es2015-classes',
@@ -31,8 +31,10 @@ export default env => [
                     ...(DEVELOPMENT ? ['react-hot-loader/babel'] : []),
                 ],
                 presets: [
-                    'es2015',
-                    'es2017',
+                    ['env', {
+                        modules: false,
+                        targets: {node: 4},
+                    }],
                     'react',
                     'stage-0',
                 ],

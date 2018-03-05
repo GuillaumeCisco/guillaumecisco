@@ -31,7 +31,6 @@
         "react-dom": "16.2.0",
         "react-emotion": "9.0.2",
         "react-helmet": "5.2.0",
-        "react-keydown": "1.9.6",
         "react-redux": "5.0.7",
         "react-tap-event-plugin": "3.0.2",
         "react-typist": "^2.0.4",
@@ -43,8 +42,7 @@
         "redux-first-router": "1.9.15",
         "redux-reducers-injector": "0.1.1",
         "redux-saga": "0.16.0",
-        "redux-sagas-injector": "0.2.3",
-        "webpack-flush-chunks": "1.2.3"
+        "redux-sagas-injector": "0.2.3"
     },
     "devDependencies": {
         "add-asset-webpack-plugin": "0.1.0",
@@ -97,7 +95,7 @@
         "write-file-webpack-plugin": "4.2.0"
     },
     "scripts": {
-        "start": "npm run clean && cd ../../ && cross-env NODE_ENV=development node $NODE_DEBUG_OPTION -r babel-register src/server/index.js",
+        "start": "npm run clean && cd ../../ && cross-env NODE_ENV=development babel-node $NODE_DEBUG_OPTION src/server/index.js",
         "start:prod": "npm run build:main && npm run serve",
         "serve": "cd ../../ && cross-env NODE_ENV=production babel-node build/ssr/index.js",
         "build:main": "concurrently \"npm run build:client\" \"npm run build:server\" && npm run build:node",

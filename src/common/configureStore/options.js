@@ -1,8 +1,7 @@
 import path from 'path';
 import {redirect} from 'redux-first-router';
-import {endsWith} from 'lodash';
 import queryString from 'query-string';
-
+import endsWith from 'lodash-es/endsWith';
 import routes from '../../app/routesMap';
 
 export default {

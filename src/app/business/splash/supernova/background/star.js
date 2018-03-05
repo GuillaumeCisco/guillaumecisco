@@ -1,4 +1,4 @@
-import {random} from 'lodash';
+import random from 'lodash-es/random';
 
 const Star = function Star(w, h) {
     const padding = 10;

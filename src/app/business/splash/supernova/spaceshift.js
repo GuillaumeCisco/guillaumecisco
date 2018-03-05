@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {random} from 'lodash';
+import random from 'lodash-es/random';
 import {interpolate} from 'd3-interpolate';
 import {timer} from 'd3-timer';
 import 'd3-transition'; // needed for interpolating radians

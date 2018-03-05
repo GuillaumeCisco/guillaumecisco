@@ -2,7 +2,7 @@ import config from 'config';
 import path from 'path';
 import rules from '../utils/rules';
 import resolve from '../utils/resolve';
-import plugins from '../utils/plugins/index';
+import plugins from '../utils/plugins';
 
 const DEBUG = !(['production', 'development', 'staging'].includes(process.env.NODE_ENV)),
     DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
@@ -10,17 +10,28 @@ const DEBUG = !(['production', 'development', 'staging'].includes(process.env.NO
     PRODUCTION_BASE_NAME = config.apps.frontend.baseName.production,
     DEBUG_BASE_NAME = config.apps.frontend.baseName.debug;
 
+
+export const vendors = {
+    vendor: ['babel-polyfill', 'fetch-everywhere'],
+    react: ['react', 'react-dom', 'react-emotion', 'emotion', 'emotion-utils', 'react-redux', 'react-tap-event-plugin', 'react-typist', 'react-universal-component'],
+    redux: ['redux', 'redux-actions', 'redux-first-router', 'redux-reducers-injector', 'redux-saga', 'redux-sagas-injector'],
+    common: ['fastclick', 'history', 'react-helmet', 'recompose'],
+    d3: ['d3', 'd3-interpolate', 'd3-selection', 'd3-transition', 'd3-color', 'd3-timer', 'd3-ease', 'd3-dispatch'],
+};
+const modulesRegex = new RegExp( `node_modules\\/(?!(${Object.keys(vendors).reduce((p, c) => [
+    ...p,
+    ...vendors[c],
+], []).join('|')})\\/).*`);
+
 export default {
     mode: process.env.NODE_ENV,
     name: 'client',
     target: 'web',
     devtool: DEBUG ? 'source-map' : (DEVELOPMENT ? 'cheap-module-source-map' : '#hidden-source-map'),
     entry: {
-        vendor: [
+        main: [
             'babel-polyfill',
             'fetch-everywhere',
-        ],
-        main: [
             path.resolve(__dirname, '../../src/client/index.js'),
         ],
     },
@@ -39,8 +50,8 @@ export default {
         cachedAssets: DEVELOPMENT,
     },
     output: {
-        filename: `[name]${PRODUCTION ? '-[hash:6]' : ''}.js`,
-        chunkFilename: '[name].js',
+        filename: `[name]-${PRODUCTION ? '[hash:6]' : ''}.js`,
+        chunkFilename: `[name]-${PRODUCTION ? '[chunkhash:6]' : ''}.js`,
         path: path.resolve(__dirname, '../../build/ssr/client'),
         publicPath: DEBUG ? DEBUG_BASE_NAME : PRODUCTION_BASE_NAME,
     },
@@ -59,4 +70,39 @@ export default {
         watch: true,
         cache: true,
     } : {}),
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                // create vendors
+                ...(Object.keys(vendors).reduce((p, c) => {
+                    const regex = new RegExp(vendors[c].join('|'));
+                    return {
+                        ...p,
+                        [c]: {
+                            test: function (module, chunks) {
+                                if (!module.nameForCondition) return;
+                                return regex.test(module.nameForCondition());
+                            },
+                            name: c,
+                            chunks: 'initial',
+                            enforce: true
+                        }
+                    };
+                }, {})),
+                // add missing node_modules
+                modules: {
+                    test: function (module, chunks) {
+                        if (!module.nameForCondition) return;
+                        return modulesRegex.test(module.nameForCondition());
+                    },
+                    name: 'modules',
+                    chunks: 'initial',
+                    enforce: true
+                },
+            },
+        },
+        runtimeChunk: {
+            name: 'bootstrap',
+        },
+    },
 };
