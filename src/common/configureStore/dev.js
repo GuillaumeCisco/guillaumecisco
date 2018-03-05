@@ -1,6 +1,6 @@
 import {connectRoutes} from 'redux-first-router';
 import {applyMiddleware, compose} from 'redux';
-import {pick} from 'lodash';
+import pick from 'lodash-es/pick';
 
 import {createInjectSagasStore, sagaMiddleware, reloadSaga} from 'redux-sagas-injector';
 import {combineReducersRecurse} from 'redux-reducers-injector';

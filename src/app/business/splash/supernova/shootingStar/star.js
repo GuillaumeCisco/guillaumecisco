@@ -1,4 +1,4 @@
-import {random} from 'lodash';
+import random from 'lodash-es/random';
 
 const ShootingStar = function ShootingStar(w, h) {
     this.originW = w;

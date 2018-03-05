@@ -10,12 +10,13 @@ import {renderStylesToNodeStream} from 'emotion-server';
 import {ReportChunks} from 'react-universal-component';
 import {clearChunks} from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
+
 import routesMap from '../app/routesMap';
+import {vendors} from '../../webpack/ssr/client';
 
 import App from '../app';
 import configureStore from './configureStore';
 import serviceWorker from './serviceWorker';
-import raven from './raven';
 
 const cache = redis.createClient({
     host: config.redis.host,
@@ -85,12 +86,10 @@ const earlyChunk = (styles, stateJson) => `
           ${styles}
         </head>
       <body>
-          <noscript>
-              <div>Please enable javascript in your browser for displaying this website.</div>
-          </noscript>
+          <noscript><div>Please enable javascript in your browser for displaying this website.</div></noscript>
           <script>window.REDUX_STATE = ${stateJson}</script>
           <div id="root">`,
-    lateChunk = (cssHash, js, dll, raven) => `</div>
+    lateChunk = (cssHash, js, dll) => `</div>
           ${process.env.NODE_ENV === 'development' ? '<div id="devTools"></div>' : ''}
           ${cssHash}
           ${dll}
@@ -133,12 +132,17 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
 
     stream.pipe(mainStream, {end: false});
     stream.on('end', () => {
-        const {js, cssHash} = flushChunks(clientStats, {chunkNames, outputPath});
+        const {js, cssHash} = flushChunks(clientStats,
+            {
+                chunkNames,
+                outputPath,
+                before: ['bootstrap', ...Object.keys(vendors), 'modules'],
+            });
         const dll = flushDll(clientStats);
 
         console.log('CHUNK NAMES', chunkNames);
 
-        const late = lateChunk(cssHash, js, dll, raven);
+        const late = lateChunk(cssHash, js, dll);
         mainStream.end(late);
     });
 };

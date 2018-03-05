@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {range} from 'lodash';
+import range from 'lodash-es/range';
 import {onlyUpdateForKeys} from 'recompose';
 
 import Canvas from '../canvas';
