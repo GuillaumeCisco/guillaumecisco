@@ -6,11 +6,9 @@ import Supernova from './supernova';
 import Intro from './intro';
 import AsyncModal from './asyncModal';
 
-
 const style = css`
     height: 100%;
   `;
-
 
 const Splash = ({page}) =>
     (<div className={style}>
