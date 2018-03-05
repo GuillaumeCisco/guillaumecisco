@@ -65,30 +65,27 @@ class Modal extends React.Component {
     };
 
     render() {
-        const {visible, component} = this.props;
-        return visible ? <Container>
+        const {component} = this.props;
+        return <Container>
             <Wrapper>
                 {getComponent(component)}
             </Wrapper>
             <CloseComponent onClick={this.close}><Close /></CloseComponent>
-        </Container> : null;
+        </Container>;
     }
 }
 
 Modal.propTypes = {
     setVisible: PropTypes.func.isRequired,
-    visible: PropTypes.bool,
     component: PropTypes.string,
 };
 
 Modal.defaultProps = {
-    visible: false,
     component: '',
 };
 
 
 const mapStateToProps = (state, ownProps) => ({
-    visible: state.modal.visible,
     component: state.modal.component,
 });
 
