@@ -50,8 +50,8 @@ export default {
         cachedAssets: DEVELOPMENT,
     },
     output: {
-        filename: `[name]-${PRODUCTION ? '[hash:6]' : ''}.js`,
-        chunkFilename: `[name]-${PRODUCTION ? '[chunkhash:6]' : ''}.js`,
+        filename: `[name]${PRODUCTION ? '-[hash:6]' : ''}.js`,
+        chunkFilename: `[name]${PRODUCTION ? '-[chunkhash:6]' : ''}.js`,
         path: path.resolve(__dirname, '../../build/ssr/client'),
         publicPath: DEBUG ? DEBUG_BASE_NAME : PRODUCTION_BASE_NAME,
     },
