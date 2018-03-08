@@ -29,7 +29,6 @@
         "concurrently": "3.5.1",
         "css-loader": "0.28.10",
         "cssnano": "3.10.0",
-        "extract-text-webpack-plugin": "3.0.2",
         "file-loader": "1.1.10",
         "form-data": "2.3.2",
         "gzip-size": "4.1.0",
