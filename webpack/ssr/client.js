@@ -38,17 +38,17 @@ export default {
     module: {
         rules: rules(),
     },
-    stats: {
-        colors: true,
-        reasons: DEBUG,
-        hash: DEVELOPMENT,
-        version: DEVELOPMENT,
-        timings: true,
-        chunks: DEVELOPMENT,
-        chunkModules: DEVELOPMENT,
-        cached: DEVELOPMENT,
-        cachedAssets: DEVELOPMENT,
-    },
+    // stats: {
+    //     colors: true,
+    //     reasons: DEBUG,
+    //     hash: DEVELOPMENT,
+    //     version: DEVELOPMENT,
+    //     timings: true,
+    //     chunks: DEVELOPMENT,
+    //     chunkModules: DEVELOPMENT,
+    //     cached: DEVELOPMENT,
+    //     cachedAssets: DEVELOPMENT,
+    // },
     output: {
         filename: `[name]${PRODUCTION ? '-[hash:6]' : ''}.js`,
         chunkFilename: `[name]${PRODUCTION ? '-[chunkhash:6]' : ''}.js`,
