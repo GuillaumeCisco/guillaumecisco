@@ -25,15 +25,15 @@ const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
 
 export default env => [
     ...(env === 'client' ? [
-        pwaManifest,
-        new RavenPlugin(config.apps.frontend.raven_url, path.resolve(__dirname, '../../../assets/js/raven.min.js')),
+        //pwaManifest,
+        //new RavenPlugin(config.apps.frontend.raven_url, path.resolve(__dirname, '../../../assets/js/raven.min.js')),
         //dll,
         ...(PRODUCTION ? [
             new BabelMinifyPlugin({}, {
                 comments: false,
             }),
-            new webpack.optimize.AggressiveMergingPlugin(),
-            new StatsPlugin('stats.json'),
+            //new webpack.optimize.AggressiveMergingPlugin(),
+            //new StatsPlugin('stats.json'),
         ] : [
             new BrowserSyncPlugin(
                 // BrowserSync options
@@ -60,7 +60,7 @@ export default env => [
             maxChunks: 1,
         }),
     ]),
-    new WriteFilePlugin(),
+    //new WriteFilePlugin(),
     definePlugin(),
     new LodashModuleReplacementPlugin({
         shorthands: true,
@@ -107,23 +107,24 @@ export default env => [
     })] : []),
     ...(PRODUCTION ? [
         new webpack.HashedModuleIdsPlugin(),
-        new SWPrecacheWebpackPlugin({
-            cacheId: config.appName,
-            filename: 'service-worker.js',
-            minify: false,
-            dontCacheBustUrlsMatching: '/./',
-            dynamicUrlToDependencies: {
-                ...Object.keys(routes).reduce((p, c) =>
-                    ({
-                        ...p,
-                        [routes[c].path]: [
-                            path.resolve(__dirname, '../../../src/client/index.js'),
-                        ],
-                    }), {}),
-                // add 404 page
-                '/404': [path.resolve(__dirname, '../../../src/client/index.js')],
-            },
-            navigateFallback: '/404',
-            staticFileGlobsIgnorePatterns: [/\.map$/, /manifest\.json$/],
-        })] : []),
+        // new SWPrecacheWebpackPlugin({
+        //     cacheId: config.appName,
+        //     filename: 'service-worker.js',
+        //     minify: false,
+        //     dontCacheBustUrlsMatching: '/./',
+        //     dynamicUrlToDependencies: {
+        //         ...Object.keys(routes).reduce((p, c) =>
+        //             ({
+        //                 ...p,
+        //                 [routes[c].path]: [
+        //                     path.resolve(__dirname, '../../../src/client/index.js'),
+        //                 ],
+        //             }), {}),
+        //         // add 404 page
+        //         '/404': [path.resolve(__dirname, '../../../src/client/index.js')],
+        //     },
+        //     navigateFallback: '/404',
+        //     staticFileGlobsIgnorePatterns: [/\.map$/, /manifest\.json$/],
+        // })
+    ] : []),
 ];

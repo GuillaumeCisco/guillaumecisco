@@ -19,6 +19,7 @@
         "eslint"
     ],
     "dependencies": {
+        "extract-text-webpack-plugin": "4.0.0-beta.0",
         "react-json-tree": "0.11.0"
     },
     "devDependencies": {
