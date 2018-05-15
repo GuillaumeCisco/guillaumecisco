@@ -1,6 +1,6 @@
 # Guillaume Cisco's interactive website
 
-### Installation
+## Installation
 
 This project use yarn and the experimental yarn workspaces for package.json splitting and convenience.
 
@@ -42,7 +42,7 @@ https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.Co
 Then run `flushall`. You should automatize this part.
 More information in the cache part below.
 
-### Test and Cover
+## Test and Cover
 
 For running the test suite:
 `yarn test`
@@ -51,19 +51,19 @@ For displaying covering:
 `yarn cover`
 
 
-### Eslint
+## Eslint
 
 For displaying lint errors:
 `yarn eslint`
 
-### Cache
+## Cache
 
 This project use a redis cache manager for the server routes. Allowing us not to rerender the same html production by route.
 For deploying with amazon, please create a redis cluster by following this documentation:
 https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html
 Don't forget to create a isolated security group for opening port 6379 as described in the documentation.
 
-#### test
+### test
 For testing your generated docker with your localhosted redis, update your `deploy.js` file and do not forget to comment the part that push to your registry, then:
 ```shell
 $> redis-cli flushall && docker run -it -v /etc/letsencrypt/:/etc/letsencrypt/ --net="host" -p 8000:8000 docker_image_name:latest
@@ -77,7 +77,7 @@ Do not forget to `redis-cli flushall` when testing multiple times.
 
 Disable redis for testing this project in ssl with `-p 8001:8443`.
 
-### Encryption files creation
+## Encryption files creation
 
 For creating your own self signed certificates
 
@@ -92,9 +92,9 @@ openssl x509 -req -days 730 -in ia.csr -CA ca.crt -CAkey ca.key -set_serial 01 -
 ```
 
 
-##### With let's encrypt
+#### With let's encrypt
 
-###### Dev mode
+##### Dev mode
 
 ```shell
 sudo certbot certonly --manual -d guillaumecisco.com -d www.guillaumecisco.com
@@ -109,10 +109,11 @@ sudo certbot renew
 ```
 for issuing new certificates and rebuild and deploy your docker app.
 
-###### Ec2
+##### Ec2
 
 You should run these commands on the server running the docker app i.e the EC2 instance
 https://www.digitalocean.com/community/tutorials/how-to-use-certbot-standalone-mode-to-retrieve-let-s-encrypt-ssl-certificates
+
 https://medium.freecodecamp.org/going-https-on-amazon-ec2-ubuntu-14-04-with-lets-encrypt-certbot-on-nginx-696770649e76
 
 Be sure you can access you ec2 instance with ssh, then
@@ -153,6 +154,19 @@ Or run the docker run command like that:
 $> docker run -it -v /etc/letsencrypt/:/etc/letsencrypt/ -p 8001:8443 984406419997.dkr.ecr.eu-central-1.amazonaws.com/guillaumecisco:latest
 ```
 
+Your site is now secured!
+
+###### Renewing
+
+For now, we need to do it manually as the docker instance is binded to port 80 and 443. Cerbot need these port to renew thecertificates.
+So we need to stop the docker, launch the command and the docker instance will be automatically renewed thanks to our aws ecs policy.
+
+```shell
+docker stop `docker ps --format '{{.Names}}' | grep ecs-guillaumecisco` && ./certbot-auto renew --standalone
+```
  
 TODO: create a cronjob for renewing certificate and `docker restart container_name`
-For getting container name : `docker ps --format '{{.Names}}' | grep ecs-guillaumecisco`
+
+Maybe better use webroot plugin
+
+Tip: For getting container name : `docker ps --format '{{.Names}}' | grep ecs-guillaumecisco`
