@@ -1,6 +1,7 @@
 import webpack from 'webpack';
 import config from 'config';
 import path from 'path';
+import glob from 'glob';
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
@@ -39,6 +40,24 @@ export default env => [
             }),
             new webpack.optimize.AggressiveMergingPlugin(),
             new StatsPlugin('stats.json'),
+            new SWPrecacheWebpackPlugin({
+                cacheId: config.appName,
+                filename: 'service-worker.js',
+                minify: false,
+                dynamicUrlToDependencies: {
+                    ...Object.keys(routes).reduce((p, c) =>
+                        ({
+                            ...p,
+                            [routes[c].path]: [
+                                ...glob.sync(path.resolve(__dirname, '../../../src/app/**/*.{js,png}')),
+                                ...glob.sync(path.resolve(__dirname, '../../../src/client/**/*.{js,png}')),
+                                ...glob.sync(path.resolve(__dirname, '../../../src/common/**/*.{js,png}')),
+                            ],
+                        }), {}),
+                },
+                navigateFallback: '/404', // needed for working offline and avoiding blink on not found pages
+                staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/, /index\.html$/, /404\.html$/],
+            }),
         ] : [
             new webpack.NoEmitOnErrorsPlugin(),
             new WriteFilePlugin(),
@@ -112,24 +131,5 @@ export default env => [
 
     ...(DEBUG ? [new BundleAnalyzerPlugin({
         analyzerMode: 'static',
-    })] : []),
-    ...(PRODUCTION ? [new SWPrecacheWebpackPlugin({
-        cacheId: config.appName,
-        filename: 'service-worker.js',
-        minify: false,
-        dontCacheBustUrlsMatching: '/./',
-        dynamicUrlToDependencies: {
-            ...Object.keys(routes).reduce((p, c) =>
-                ({
-                    ...p,
-                    [routes[c].path]: [
-                        path.resolve(__dirname, '../../../src/client/index.js'),
-                    ],
-                }), {}),
-            // add 404 page
-            '/404': [path.resolve(__dirname, '../../../src/client/index.js')],
-        },
-        navigateFallback: '/404',
-        staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
     })] : []),
 ];

@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import styled from 'react-emotion';
+import {NOT_FOUND} from 'redux-first-router';
 
-import routes from './routesMap';
 import Splash from './business/splash';
 import ServiceWorker from './business/common/components/serviceWorker';
 
@@ -14,9 +14,10 @@ const Container = styled('div')`
 const Routes = ({location}) => (
     <Container>
         <ServiceWorker />
-        {Object.keys(routes).includes(location.type) ?
-            <Splash page={location.type} /> :
-            <h1>Not Found</h1>}
+        {location.type === NOT_FOUND ?
+            <h1>404 - Not found</h1> :
+            <Splash page={location.type} />
+        }
     </Container>
 );
 

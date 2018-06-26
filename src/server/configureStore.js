@@ -1,11 +1,11 @@
 import createHistory from 'history/createMemoryHistory';
 import {NOT_FOUND} from 'redux-first-router';
 
-import configureStore from '../common/configureStore/index';
+import configureStore from '../common/configureStore';
 
-const doesRedirect = ({kind, pathname}, res) => {
+const doesRedirect = ({kind, pathname, search}, res) => {
     if (kind === 'redirect') {
-        res.redirect(302, pathname);
+        res.redirect(302, search ? `${pathname}?${search}` : pathname);
         return true;
     }
 };
@@ -17,7 +17,11 @@ export default async (ctx) => {
     // if not using onBeforeChange + jwTokens, you can also async authenticate
     // here against your db (i.e. using req.cookies.sessionId)
 
-    let location = store.getState().location;
+
+    // the idiomatic way to handle redirects
+    // serverRender.js will short-circuit since the redirect is made here already
+    const location = store.getState().location;
+
     if (doesRedirect(location, ctx.res)) return false;
 
     // using redux-thunk perhaps request and dispatch some app-wide state as well, e.g:
@@ -25,9 +29,9 @@ export default async (ctx) => {
 
     await thunk(store); // THE PAYOFF BABY!
 
-    location = store.getState().location; // remember: state has now changed
-    if (doesRedirect(location, ctx.res)) return false; // only do this again if ur thunks have redirects
+    // the idiomatic way to handle routes not found :)
+    // your component's should also detect this state and render a 404 scene
+    ctx.status = location.type === NOT_FOUND && (!location.query || (location.query && !location.query['_sw-precache'])) ? 404 : 200;
 
-    ctx.status = location.type === NOT_FOUND ? 404 : 200;
     return store;
 };

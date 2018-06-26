@@ -1,6 +1,8 @@
 import path from 'path';
 import {redirect} from 'redux-first-router';
 import {endsWith} from 'lodash';
+import queryString from 'query-string';
+
 import routes from '../../app/routesMap';
 
 export default {
@@ -14,4 +16,5 @@ export default {
             dispatch(redirect({type: 'HOME'}));
         }
     },
+    querySerializer: queryString,
 };

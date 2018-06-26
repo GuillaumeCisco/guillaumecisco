@@ -1,15 +1,19 @@
 /* global APP_NAME META_DESCRIPTION META_KEYWORDS */
 
+import React from 'react';
 import config from 'config';
+import {parse} from 'url';
 import {Transform, PassThrough} from 'stream';
 import redis from 'redis';
-import React from 'react';
 import {Provider} from 'react-redux';
 import {renderToNodeStream} from 'react-dom/server';
+// import {renderToStaticMarkup} from 'react-dom/server';
 import {renderStylesToNodeStream} from 'emotion-server';
+// import {renderStylesToString} from 'emotion-server';
 import {ReportChunks} from 'react-universal-component';
 import {clearChunks} from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
+
 import routesMap from '../app/routesMap';
 
 import App from '../app';
@@ -26,7 +30,7 @@ cache.on('connect', () => {
     console.log('CACHE CONNECTED');
 });
 
-const paths = Object.keys(routesMap).map(o => routesMap[o].path).concat('/404');
+const paths = Object.keys(routesMap).map(o => routesMap[o].path);
 
 const createCacheStream = (key) => {
     const bufferedChunks = [];
@@ -90,7 +94,7 @@ const earlyChunk = (styles, stateJson) => `
           </noscript>
           <script>window.REDUX_STATE = ${stateJson}</script>
           <div id="root">`,
-    lateChunk = (cssHash, js, dll, raven) => `</div>
+    lateChunk = (cssHash, js, dll) => `</div>
           ${process.env.NODE_ENV === 'development' ? '<div id="devTools"></div>' : ''}
           ${cssHash}
           ${dll}
@@ -131,6 +135,9 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
 
     const stream = renderToNodeStream(app).pipe(renderStylesToNodeStream());
 
+    // test for generating html
+    // const html = renderStylesToString(renderToStaticMarkup(app));
+
     stream.pipe(mainStream, {end: false});
     stream.on('end', () => {
         const {js, cssHash} = flushChunks(clientStats, {chunkNames, outputPath});
@@ -148,17 +155,20 @@ export default ({clientStats, outputPath}) => (ctx) => {
     ctx.type = 'text/html';
     ctx.body = new PassThrough();
 
-    let path = ctx.originalUrl;
+    console.log('REQUESTED ORIGINAL PATH:', ctx.originalUrl);
 
+    const url = parse(ctx.originalUrl);
+
+    let path = ctx.originalUrl;
     // check if path is in our whitelist, else give 404 route
-    if (!paths.includes(ctx.originalUrl) &&
+    if (!paths.includes(url.pathname) &&
         !ctx.originalUrl.endsWith('.ico') &&
         ctx.originalUrl !== 'service-worker.js' &&
         !(process.env.NODE_ENV === 'development' && ctx.originalUrl.endsWith('.js.map'))) {
         path = '/404';
     }
 
-    console.log('REQUESTED PATH:', ctx.originalUrl);
+    console.log('REQUESTED PARSED PATH:', path);
 
     // DO not use redis cache on dev
     if (process.env.NODE_ENV === 'development') {
@@ -168,6 +178,11 @@ export default ({clientStats, outputPath}) => (ctx) => {
         cache.exists(path, async (err, reply) => {
             if (reply === 1) {
                 console.log('CACHE KEY EXISTS: ', path);
+                // handle status 404
+                if (path === '/404') {
+                    ctx.status = 404;
+                }
+
                 cache.get(path, (err, reply) => ctx.body.end(reply));
             }
             else {
