@@ -40,9 +40,9 @@ class SpaceShift extends React.Component {
             h, w, width, height,
         } = this.props;
 
-        this.luck = 1000; // the higher, the rarest
+        this.luck = 300; // the higher, the rarest
         this.step = 0;
-        this.speed = 100; // the higher, the slower
+        this.speed = 200; // the higher, the slower
 
         this.i = interpolate(-width, h);
         this.originW = this.w = w;
