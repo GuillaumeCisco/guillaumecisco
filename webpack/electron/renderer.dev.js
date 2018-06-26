@@ -57,7 +57,7 @@ export default merge.smart(baseConfig, {
                         'react-hot-loader/babel',
                     ],
                     presets: [
-                        'es2015',
+                        'env',
                         'react',
                         'stage-0',
                     ],

@@ -100,7 +100,7 @@ export default env => [
                 babelrc: false,
                 plugins: [
                     ['universal-import', {
-                        disableWarnings: true,
+                        disableWarnings: true
                     }],
                     'transform-runtime',
                     'emotion',
@@ -115,7 +115,7 @@ export default env => [
                     ...(DEVELOPMENT ? ['react-hot-loader/babel'] : []),
                 ],
                 presets: [
-                    'es2015',
+                    'env',
                     'react',
                     'stage-0',
                 ],

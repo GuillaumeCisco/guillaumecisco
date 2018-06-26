@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {random} from 'lodash';
 import {timer} from 'd3-timer';
