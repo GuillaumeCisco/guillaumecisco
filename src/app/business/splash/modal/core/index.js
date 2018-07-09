@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import {
-Container, Ul, H3, A, P,
+    Container, Ul, H3, A, P,
 } from '../common';
 
 import Github from './github';
@@ -15,10 +15,10 @@ const Span = styled('span')`
 const Core = props => (
     <Container>
         <h1>
-Hey there!
+            Hey there!
         </h1>
         <H3>
-My name is Guillaume Cisco
+            My name is Guillaume Cisco
         </H3>
         <P>
             If you are here, there is a high probability you want to know more about me.
@@ -33,7 +33,7 @@ My name is Guillaume Cisco
             Do not hesitate to click on them!
         </P>
         <p>
-If you'd like a more conventional version, you can check:
+            If you'd like a more conventional version, you can check:
         </p>
         <Ul>
             <li>

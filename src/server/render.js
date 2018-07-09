@@ -15,7 +15,7 @@ import {clearChunks} from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 
 import routesMap from '../app/routesMap';
-import {vendors} from '../../webpack/ssr/client';
+import vendors from '../../webpack/ssr/vendors';
 
 import App from '../app';
 import configureStore from './configureStore';
@@ -142,9 +142,13 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
             {
                 chunkNames,
                 outputPath,
-                before: ['bootstrap', ...Object.keys(vendors), 'modules'],
+                ...(process.env.NODE_ENV === 'production' ? {before: ['bootstrap', ...Object.keys(vendors), 'modules']} : {}),
             });
-        const dll = flushDll(clientStats);
+
+        let dll = '';
+        if (process.env.NODE_ENV === 'development') {
+            dll = flushDll(clientStats);
+        }
 
         console.log('CHUNK NAMES', chunkNames);
 

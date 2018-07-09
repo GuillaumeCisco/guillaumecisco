@@ -69,10 +69,10 @@ class Stars extends Component {
     render() {
         return (
             <Canvas innerRef={(e) => {
-            this.canvas = e;
-        }}
+                this.canvas = e;
+            }}
             />
-);
+        );
     }
 }
 

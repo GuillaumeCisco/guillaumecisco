@@ -17,173 +17,173 @@ const Block = styled('div')`
 
 const Skills = props => (<Cont>
     <h1>
-Skills
+            Skills
     </h1>
     <Block>
         <H3>
-Frontend
+                Frontend
         </H3>
         <ul>
             <li>
-CSS 3
+                    CSS 3
             </li>
             <li>
-HTML5
+                    HTML5
             </li>
             <li>
-Javascript
+                    Javascript
             </li>
             <li>
-React
+                    React
             </li>
             <li>
-Redux
+                    Redux
             </li>
             <li>
-Webpack
+                    Webpack
             </li>
             <li>
-WebRTC
+                    WebRTC
             </li>
             <li>
-PRPL Pattern
+                    PRPL Pattern
             </li>
             <li>
-Electron
+                    Electron
             </li>
             <li>
-Http Stream
+                    Http Stream
             </li>
         </ul>
     </Block>
     <Block>
         <H3>
-Backend
+                Backend
         </H3>
         <ul>
             <li>
-Django (1.3 ~ 2.0)
+                    Django (1.3 ~ 2.0)
             </li>
             <li>
-Django Rest Framework
+                    Django Rest Framework
             </li>
             <li>
-Node.js
+                    Node.js
             </li>
             <li>
-Socket-io.js
+                    Socket-io.js
             </li>
             <li>
-Redis
+                    Redis
             </li>
         </ul>
     </Block>
     <Block>
         <H3>
-Devops
+                Devops
         </H3>
         <ul>
             <li>
                 <ul>
                     <h4>
-Amazon Web Services
+                            Amazon Web Services
                     </h4>
                     <ul>
                         <li>
-EC2
+                                EC2
                         </li>
                         <li>
-ECS
+                                ECS
                         </li>
                         <li>
-Route 53
+                                Route 53
                         </li>
                     </ul>
                 </ul>
             </li>
             <li>
-Kubernetes
+                    Kubernetes
             </li>
             <li>
-Docker
+                    Docker
             </li>
             <li>
-Kong
-            </li>
-        </ul>
-    </Block>
-    <Block>
-        <H3>
-SQL
-        </H3>
-        <ul>
-            <li>
-PostGreSQL
-            </li>
-            <li>
-ElasticSearch
+                    Kong
             </li>
         </ul>
     </Block>
     <Block>
         <H3>
-Blockchain
+                SQL
         </H3>
         <ul>
             <li>
-Fabric Hyperledger
+                    PostGreSQL
+            </li>
+            <li>
+                    ElasticSearch
+            </li>
+        </ul>
+    </Block>
+    <Block>
+        <H3>
+                Blockchain
+        </H3>
+        <ul>
+            <li>
+                    Fabric Hyperledger
             </li>
             <li>
                 <a href="https://github.com/MorpheoOrg" rel="noopener noreferrer" target="_blank">
-Morpheo Open Source project
+                        Morpheo Open Source project
                 </a>
             </li>
         </ul>
     </Block>
     <Block>
         <H3>
-IDE
+                IDE
         </H3>
         <ul>
             <li>
-PyCharm
+                    PyCharm
             </li>
             <li>
-PHPStorm
+                    PHPStorm
             </li>
             <li>
-WebStorm
+                    WebStorm
             </li>
             <li>
-Intellij IDEA
+                    Intellij IDEA
             </li>
             <li>
-GoLand
+                    GoLand
             </li>
         </ul>
     </Block>
     <Block>
         <H3>
-Miscellaneous
+                Miscellaneous
         </H3>
         <ul>
             <li>
-Git
+                    Git
             </li>
             <li>
-Python
+                    Python
             </li>
             <li>
-C/C++
+                    C/C++
             </li>
             <li>
-ffmpeg
+                    ffmpeg
             </li>
             <li>
-Adobe Photoshop
+                    Adobe Photoshop
             </li>
             <li>
-Shell Scripting: sh, bash, zsh
+                    Shell Scripting: sh, bash, zsh
             </li>
         </ul>
     </Block>

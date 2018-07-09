@@ -1,4 +1,4 @@
-import {app, BrowserWindow, session} from 'electron';
+import {app, BrowserWindow} from 'electron';
 
 import MenuBuilder from './menu';
 
@@ -47,10 +47,6 @@ app.on('ready', async () => {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
         await installExtensions();
     }
-
-    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-        callback({responseHeaders: 'script-src \'self\''});
-    });
 
     mainWindow = new BrowserWindow({
         show: false,

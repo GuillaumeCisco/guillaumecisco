@@ -171,7 +171,7 @@ class SpaceShift extends React.Component {
                     height="41.514"
                 />
             </svg>
-) : null;
+        ) : null;
     }
 }
 
