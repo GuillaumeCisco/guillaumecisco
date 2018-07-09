@@ -27,7 +27,7 @@ export default env => [
     ...(env === 'client' ? [
         pwaManifest,
         new RavenPlugin(config.apps.frontend.raven_url, path.resolve(__dirname, '../../../assets/js/raven.min.js')),
-        //dll,
+        dll,
         ...(PRODUCTION ? [
             new BabelMinifyPlugin({}, {
                 comments: false,
@@ -92,7 +92,7 @@ export default env => [
                 babelrc: false,
                 plugins: [
                     ['universal-import', {
-                        disableWarnings: true
+                        disableWarnings: true,
                     }],
                     'transform-runtime',
                     'emotion',

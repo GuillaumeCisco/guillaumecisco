@@ -21,7 +21,7 @@ export default merge.smart(baseConfig, {
         filename: '../../build/electron/index.js',
     },
     module: {
-        rules: rules('electron'),
+        rules: rules(),
     },
     plugins: [
         new HappyPack({

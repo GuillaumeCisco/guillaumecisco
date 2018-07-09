@@ -79,8 +79,8 @@ class SuperNova extends Component {
                 b: (4 * a / 8) / 2,
             };
 
-        this.setState({
-            ...this.state,
+        this.setState(state => ({
+            ...state,
             loaded: true,
             w,
             h,
@@ -90,16 +90,17 @@ class SuperNova extends Component {
             redPlanet,
             bluePlanet,
             orangePlanet,
-        });
+        }));
     }
 
     // x, y are the coordinate of the center of circle, r is the radius, a, b the coordinate to test
     isInCircle = (x, y, r, a, b) => ((a - x) ** 2) + ((b - y) ** 2) < (r ** 2);
 
-    isInCore = (x, y) =>
-        // core surface
-        this.isInCircle(this.state.w / 2, this.state.h / 2, this.state.coreRadius, x, y)
-    ;
+    isInCore = (x, y) => {
+        const {w, h, coreRadius} = this.state;
+
+        this.isInCircle(w / 2, h / 2, coreRadius, x, y);
+    };
 
     isInPlanet = (a, b, planet, radius) => {
         // get center of planet in current referential
@@ -110,62 +111,78 @@ class SuperNova extends Component {
     };
 
     click = (e) => {
+        const {setComponent, setIntro} = this.props;
+        const {redPlanet, orangePlanet, bluePlanet} = this.state;
+
         const point = clientPoint(this.wrapper, e);
         const x = point[0];
         const y = point[1];
 
         if (this.isInCore(x, y)) {
-            this.props.setComponent('core');
-            this.props.setIntro(true);
+            setComponent('core');
+            setIntro(true);
         }
 
-        if (this.isInPlanet(x, y, this.redPlanet, this.state.redPlanet.radius)) {
-            this.props.setComponent('skills');
+        if (this.isInPlanet(x, y, this.redPlanet, redPlanet.radius)) {
+            setComponent('skills');
         }
 
-        if (this.isInPlanet(x, y, this.orangePlanet, this.state.orangePlanet.radius)) {
-            this.props.setComponent('awards');
+        if (this.isInPlanet(x, y, this.orangePlanet, orangePlanet.radius)) {
+            setComponent('awards');
         }
 
-        if (this.isInPlanet(x, y, this.bluePlanet, this.state.bluePlanet.radius)) {
-            this.props.setComponent('experience');
+        if (this.isInPlanet(x, y, this.bluePlanet, bluePlanet.radius)) {
+            setComponent('experience');
         }
     };
 
     mouseMove = (e) => {
+        const {
+redPlanet, orangePlanet, bluePlanet, over,
+} = this.state;
+
         e.persist();
         const point = clientPoint(this.wrapper, e);
         const x = point[0];
         const y = point[1];
 
-        if (this.isInCore(x, y) ||
-            this.isInPlanet(x, y, this.redPlanet, this.state.redPlanet.radius) ||
-            this.isInPlanet(x, y, this.orangePlanet, this.state.orangePlanet.radius) ||
-            this.isInPlanet(x, y, this.bluePlanet, this.state.bluePlanet.radius)) {
-            if (!this.state.over) {
-                this.setState({...this.state, over: true});
+        if (this.isInCore(x, y)
+            || this.isInPlanet(x, y, this.redPlanet, redPlanet.radius)
+            || this.isInPlanet(x, y, this.orangePlanet, orangePlanet.radius)
+            || this.isInPlanet(x, y, this.bluePlanet, bluePlanet.radius)) {
+            if (!over) {
+                this.setState(state => ({...state, over: true}));
             }
         }
-        else if (this.state.over) {
-            this.setState({...this.state, over: false});
+        else if (over) {
+            this.setState(state => ({...state, over: false}));
         }
     };
 
     spaceshiftClick = (e) => {
-        this.props.setComponent('spaceshift');
+        const {setComponent} = this.props;
+
+        setComponent('spaceshift');
     };
 
-    wrapperCss = () => css`
+    wrapperCss = () => {
+        const {over} = this.state;
+
+        return css`
             height: 100%;
             overflow: hidden;
             background-color: #111;
             width: 100%;
             position: relative;
-            cursor: ${this.state.over ? 'pointer' : 'default'};
+            cursor: ${over ? 'pointer' : 'default'};
         `;
+    };
 
     render() {
         const {intro} = this.props;
+        const {
+loaded, w, h, coreRadius, a, b, redPlanet, bluePlanet, orangePlanet,
+} = this.state;
 
         return (
             <div
@@ -176,38 +193,40 @@ class SuperNova extends Component {
                 onClick={this.click}
                 onMouseMove={this.mouseMove}
             >
-                {this.state.loaded &&
+                {loaded
+                && (
                 <Fragment>
-                    <Background w={this.state.w} h={this.state.h} size={this.nbBackgroundStars} />
-                    <ShootingStars w={this.state.w} h={this.state.h} />
+                    <Background w={w} h={h} size={this.nbBackgroundStars} />
+                    <ShootingStars w={w} h={h} />
                     <Core
-                        w={this.state.w}
-                        h={this.state.h}
-                        radius={this.state.coreRadius}
+                        w={w}
+                        h={h}
+                        radius={coreRadius}
                     />
                     <Ellipse
-                        w={this.state.w}
-                        h={this.state.h}
+                        w={w}
+                        h={h}
                         size={this.nbStars}
-                        a={this.state.a}
-                        b={this.state.b}
+                        a={a}
+                        b={b}
                         padding={this.padding}
                     />
                     <SpaceShift
-                        w={this.state.w}
-                        h={this.state.h}
+                        w={w}
+                        h={h}
                         width={48}
                         height={48}
                         onClick={this.spaceshiftClick}
                     />
-                    {intro && <Fragment>
+                    {intro && (
+                    <Fragment>
                         <Planet
-                            w={this.state.w}
-                            h={this.state.h}
+                            w={w}
+                            h={h}
                             color="#97140c"
-                            radius={this.state.redPlanet.radius}
-                            a={this.state.redPlanet.a}
-                            b={this.state.redPlanet.b}
+                            radius={redPlanet.radius}
+                            a={redPlanet.a}
+                            b={redPlanet.b}
                             intervals={4000}
                             teta={Math.PI / 2}
                             img={mars}
@@ -216,12 +235,12 @@ class SuperNova extends Component {
                             }}
                         />
                         <Planet
-                            w={this.state.w}
-                            h={this.state.h}
+                            w={w}
+                            h={h}
                             color="#7399b8"
-                            radius={this.state.bluePlanet.radius}
-                            a={this.state.bluePlanet.a}
-                            b={this.state.bluePlanet.b}
+                            radius={bluePlanet.radius}
+                            a={bluePlanet.a}
+                            b={bluePlanet.b}
                             intervals={3500}
                             teta={-Math.PI / 2}
                             img={blue}
@@ -230,12 +249,12 @@ class SuperNova extends Component {
                             }}
                         />
                         <Planet
-                            w={this.state.w}
-                            h={this.state.h}
+                            w={w}
+                            h={h}
                             color="#8a451f"
-                            radius={this.state.orangePlanet.radius}
-                            a={this.state.orangePlanet.a}
-                            b={this.state.orangePlanet.b}
+                            radius={orangePlanet.radius}
+                            a={orangePlanet.a}
+                            b={orangePlanet.b}
                             intervals={2000}
                             teta={0}
                             img={white}
@@ -244,8 +263,10 @@ class SuperNova extends Component {
                             }}
                         />
                     </Fragment>
+)
                     }
-                </Fragment>}
+                </Fragment>
+)}
             </div>
         );
     }

@@ -18,7 +18,7 @@ export const vendors = {
     common: ['fastclick', 'history', 'react-helmet', 'recompose'],
     d3: ['d3', 'd3-interpolate', 'd3-selection', 'd3-transition', 'd3-color', 'd3-timer', 'd3-ease', 'd3-dispatch'],
 };
-const modulesRegex = new RegExp( `node_modules\\/(?!(${Object.keys(vendors).reduce((p, c) => [
+const modulesRegex = new RegExp(`node_modules\\/(?!(${Object.keys(vendors).reduce((p, c) => [
     ...p,
     ...vendors[c],
 ], []).join('|')})\\/).*`);
@@ -79,25 +79,25 @@ export default {
                     return {
                         ...p,
                         [c]: {
-                            test: function (module, chunks) {
+                            test(module, chunks) {
                                 if (!module.nameForCondition) return;
                                 return regex.test(module.nameForCondition());
                             },
                             name: c,
                             chunks: 'initial',
-                            enforce: true
-                        }
+                            enforce: true,
+                        },
                     };
                 }, {})),
                 // add missing node_modules
                 modules: {
-                    test: function (module, chunks) {
+                    test(module, chunks) {
                         if (!module.nameForCondition) return;
                         return modulesRegex.test(module.nameForCondition());
                     },
                     name: 'modules',
                     chunks: 'initial',
-                    enforce: true
+                    enforce: true,
                 },
             },
         },

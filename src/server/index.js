@@ -102,8 +102,7 @@ if (DEVELOPMENT) {
     //     res.send(fs.readFileSync('./assets/service-worker.js'));
     // });
 
-    http.createServer(app.callback()).listen(config.apps.frontend.api_port, () =>
-        console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`),
+    http.createServer(app.callback()).listen(config.apps.frontend.api_port, () => console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`),
     );
 }
 else {

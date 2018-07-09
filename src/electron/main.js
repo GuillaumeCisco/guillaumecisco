@@ -1,4 +1,4 @@
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow, session} from 'electron';
 
 import MenuBuilder from './menu';
 
@@ -48,6 +48,10 @@ app.on('ready', async () => {
         await installExtensions();
     }
 
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({responseHeaders: 'script-src \'self\''});
+    });
+
     mainWindow = new BrowserWindow({
         show: false,
         width: 1024,
@@ -56,9 +60,9 @@ app.on('ready', async () => {
 
     const port = process.env.PORT || 1212;
 
-    mainWindow.loadURL(process.env.NODE_ENV === 'development' ?
-        `http://localhost:${port}/dist/index.html` :
-        `file://${__dirname}/dist/index.html`);
+    mainWindow.loadURL(process.env.NODE_ENV === 'development'
+        ? `http://localhost:${port}/dist/index.html`
+        : `file://${__dirname}/dist/index.html`);
 
     // @TODO: Use 'ready-to-show' event
     //        https://github.com/electron/electron/blob/master/docs/api/browser-window.md#using-ready-to-show-event

@@ -1,5 +1,4 @@
-//import ExtractCssChunks from 'extract-css-chunks-webpack-plugin-webpack-4';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 
 const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
     PRODUCTION = (['production'].includes(process.env.NODE_ENV));
@@ -8,7 +7,7 @@ export default env => [
     {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        //use: 'happypack/loader?id=babel',
+        // use: 'happypack/loader?id=babel',
         use: {
             loader: 'babel-loader',
             options: {
@@ -39,7 +38,7 @@ export default env => [
                     'stage-0',
                 ],
             },
-        }
+        },
     },
     {
         test: /\.jpe?g$|\.gif$|\.png$/,
@@ -69,41 +68,23 @@ export default env => [
         test: /\.html$/,
         use: 'html-loader',
     },
-    ...(env === 'electron' ? [
-        {
-            test: /\.s?css$/,
-            use: [
-                {
-                    loader: 'style-loader',
-                },
-                {
-                    loader: 'css-loader',
-                    options: {
-                        sourceMap: true,
-                        importLoaders: true,
-                    },
-                },
-                {
-                    loader: 'sass-loader',
-                },
-            ],
-        },
-    ] : [{
+    {
         test: /\.s?css$/,
         exclude: /node_modules/,
-        use: ExtractTextPlugin.extract({
-            use: [
-                {
-                    loader: 'css-loader',
-                    options: {
-                        importLoaders: true,
-                        sourceMap: true,
-                    },
+        use: [
+            {
+                loader: ExtractCssChunks.loader,
+            },
+            {
+                loader: 'css-loader',
+                options: {
+                    importLoaders: true,
+                    sourceMap: true,
                 },
-                {
-                    loader: 'sass-loader',
-                },
-            ],
-        }),
-    }]),
+            },
+            {
+                loader: 'sass-loader',
+            },
+        ],
+    },
 ];

@@ -25,7 +25,7 @@ const Container = styled('div')`
     background-color: rgba(0, 0, 0, 0.9);
     border-radius: 10px;
     font-size: 24px;
-    padding: 3%;
+    padding: 4%;
     color: #fff;
     
 `;
@@ -61,27 +61,36 @@ const getComponent = (type) => {
 
 class Modal extends React.Component {
     close = () => {
-        this.props.setVisible(false);
+        const {setVisible} = this.props;
+        setVisible(false);
     };
 
     render() {
         const {component} = this.props;
-        return <Container>
-            <Wrapper>
-                {getComponent(component)}
-            </Wrapper>
-            <CloseComponent onClick={this.close}><Close /></CloseComponent>
-        </Container>;
+
+        return (
+            <Container>
+                <Wrapper>
+                    {getComponent(component)}
+                </Wrapper>
+                <CloseComponent onClick={this.close}>
+                    <Close />
+                </CloseComponent>
+            </Container>
+);
     }
 }
 
+const noop = () => {};
+
 Modal.propTypes = {
-    setVisible: PropTypes.func.isRequired,
+    setVisible: PropTypes.func,
     component: PropTypes.string,
 };
 
 Modal.defaultProps = {
     component: '',
+    setVisible: noop,
 };
 
 

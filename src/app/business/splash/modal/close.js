@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Close = ({width, height, color}) =>
-    (<svg
+const Close = ({width, height, color}) => (
+    <svg
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         x="0px"
@@ -19,7 +19,8 @@ const Close = ({width, height, color}) =>
                 fill={color}
             />
         </g>
-    </svg>);
+    </svg>
+);
 
 Close.propTypes = {
     width: PropTypes.number,

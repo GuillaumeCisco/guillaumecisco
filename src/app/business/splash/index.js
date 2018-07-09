@@ -10,12 +10,13 @@ const style = css`
     height: 100%;
   `;
 
-const Splash = ({page}) =>
-    (<div className={style}>
+const Splash = ({page}) => (
+    <div className={style}>
         <Intro />
         <Supernova />
         <AsyncModal />
-    </div>);
+    </div>
+);
 
 
 Splash.propTypes = {
