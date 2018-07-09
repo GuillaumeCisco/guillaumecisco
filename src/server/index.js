@@ -132,12 +132,11 @@ else {
         allowHTTP1: true,
     };
 
-    http.createServer(function (req, res) {
-        res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    http.createServer((req, res) => {
+        res.writeHead(301, {Location: `https://${req.headers.host}${req.url}`});
         res.end();
     }).listen(config.apps.frontend.api_port);
 
-    http2.createSecureServer(options, app.callback()).listen(config.apps.frontend.secure_api_port, () =>
-        console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`),
+    http2.createSecureServer(options, app.callback()).listen(config.apps.frontend.secure_api_port, () => console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`),
     );
 }

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import config from 'config';
-import {parse} from 'url';
 import {Transform, PassThrough} from 'stream';
 import redis from 'redis';
 import {Provider} from 'react-redux';
@@ -163,8 +162,6 @@ export default ({clientStats, outputPath}) => (ctx) => {
     ctx.body = new PassThrough();
 
     console.log('REQUESTED ORIGINAL PATH:', ctx.originalUrl);
-
-    const url = parse(ctx.originalUrl);
 
     let path = ctx.originalUrl;
     // check if path is in our whitelist, else give 404 route
