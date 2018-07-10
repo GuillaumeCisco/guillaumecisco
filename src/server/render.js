@@ -142,9 +142,11 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
             {
                 chunkNames,
                 outputPath,
+                // use splitchunks in production
                 ...(process.env.NODE_ENV === 'production' ? {before: ['bootstrap', ...Object.keys(vendors), 'modules']} : {}),
             });
 
+        // dll only in development
         let dll = '';
         if (process.env.NODE_ENV === 'development') {
             dll = flushDll(clientStats);
@@ -168,10 +170,10 @@ export default ({clientStats, outputPath}) => (ctx) => {
 
     let path = ctx.originalUrl;
     // check if path is in our whitelist, else give 404 route
-    if (!paths.includes(url.pathname) &&
-        !ctx.originalUrl.endsWith('.ico') &&
-        ctx.originalUrl !== 'service-worker.js' &&
-        !(process.env.NODE_ENV === 'development' && ctx.originalUrl.endsWith('.js.map'))) {
+    if (!paths.includes(url.pathname)
+        && !ctx.originalUrl.endsWith('.ico')
+        && ctx.originalUrl !== 'service-worker.js'
+        && !(process.env.NODE_ENV === 'development' && ctx.originalUrl.endsWith('.js.map'))) {
         path = '/404';
     }
 

@@ -5,7 +5,7 @@
 import path from 'path';
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
-import BabelMinifyPlugin from 'babel-minify-webpack-plugin';
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import HappyPack from 'happypack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
@@ -62,9 +62,9 @@ export default merge.smart(baseConfig, {
             title: `${config.appName}`,
             inject: true,
         }),
-        new BabelMinifyPlugin({}, {
-            comments: false,
-            sourceMap: true,
+        new UglifyJsPlugin({
+            cache: true,
+            parallel: true,
         }),
         new ExtractCssChunks('style.css'),
         new BundleAnalyzerPlugin({

@@ -102,8 +102,7 @@ if (DEVELOPMENT) {
     //     res.send(fs.readFileSync('./assets/service-worker.js'));
     // });
 
-    http.createServer(app.callback()).listen(config.apps.frontend.api_port, () => console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`),
-    );
+    http.createServer(app.callback()).listen(config.apps.frontend.api_port, () => console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`));
 }
 else {
     const clientStats = require('../../build/ssr/client/stats.json'); // eslint-disable-line import/no-unresolved
@@ -137,6 +136,5 @@ else {
         res.end();
     }).listen(config.apps.frontend.api_port);
 
-    http2.createSecureServer(options, app.callback()).listen(config.apps.frontend.secure_api_port, () => console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`),
-    );
+    http2.createSecureServer(options, app.callback()).listen(config.apps.frontend.secure_api_port, () => console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`));
 }

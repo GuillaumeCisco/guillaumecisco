@@ -17,9 +17,9 @@ const Routes = ({location}) => (
         {location.type === NOT_FOUND
             ? (
                 <h1>
-404 - Not found
+                    404 - Not found
                 </h1>
-)
+            )
             : <Splash page={location.type} />
         }
     </Container>
