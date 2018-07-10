@@ -33,7 +33,7 @@ export default merge.smart(baseConfig, {
     },
 
     module: {
-        rules: rules('electron'),
+        rules: rules(),
     },
 
     plugins: [

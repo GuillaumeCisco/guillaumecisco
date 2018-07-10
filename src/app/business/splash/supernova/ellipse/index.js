@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {range} from 'lodash';
+import range from 'lodash-es/range';
 import {timer} from 'd3-timer';
 import {onlyUpdateForKeys} from 'recompose';
 import 'd3-transition'; // needed for interpolating radians
@@ -80,10 +80,12 @@ class Stars extends Component {
     };
 
     render() {
-        return (<Canvas innerRef={(e) => {
- this.canvas = e;
-}}
-        />);
+        return (
+            <Canvas innerRef={(e) => {
+                this.canvas = e;
+            }}
+            />
+        );
     }
 }
 

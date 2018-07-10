@@ -50,10 +50,12 @@ class Core extends Component {
     };
 
     render() {
-        return (<Canvas innerRef={(e) => {
-            this.canvas = e;
-        }}
-        />);
+        return (
+            <Canvas innerRef={(e) => {
+                this.canvas = e;
+            }}
+            />
+        );
     }
 }
 

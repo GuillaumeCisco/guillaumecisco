@@ -2,9 +2,9 @@
 
 import React from 'react';
 import config from 'config';
-import {parse} from 'url';
 import {Transform, PassThrough} from 'stream';
 import redis from 'redis';
+import {parse} from 'url';
 import {Provider} from 'react-redux';
 import {renderToNodeStream} from 'react-dom/server';
 // import {renderToStaticMarkup} from 'react-dom/server';
@@ -15,11 +15,11 @@ import {clearChunks} from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 
 import routesMap from '../app/routesMap';
+import vendors from '../../webpack/ssr/vendors';
 
 import App from '../app';
 import configureStore from './configureStore';
 import serviceWorker from './serviceWorker';
-import raven from './raven';
 
 const cache = redis.createClient({
     host: config.redis.host,
@@ -89,9 +89,7 @@ const earlyChunk = (styles, stateJson) => `
           ${styles}
         </head>
       <body>
-          <noscript>
-              <div>Please enable javascript in your browser for displaying this website.</div>
-          </noscript>
+          <noscript><div>Please enable javascript in your browser for displaying this website.</div></noscript>
           <script>window.REDUX_STATE = ${stateJson}</script>
           <div id="root">`,
     lateChunk = (cssHash, js, dll) => `</div>
@@ -140,12 +138,23 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
 
     stream.pipe(mainStream, {end: false});
     stream.on('end', () => {
-        const {js, cssHash} = flushChunks(clientStats, {chunkNames, outputPath});
-        const dll = flushDll(clientStats);
+        const {js, cssHash} = flushChunks(clientStats,
+            {
+                chunkNames,
+                outputPath,
+                // use splitchunks in production
+                ...(process.env.NODE_ENV === 'production' ? {before: ['bootstrap', ...Object.keys(vendors), 'modules']} : {}),
+            });
+
+        // dll only in development
+        let dll = '';
+        if (process.env.NODE_ENV === 'development') {
+            dll = flushDll(clientStats);
+        }
 
         console.log('CHUNK NAMES', chunkNames);
 
-        const late = lateChunk(cssHash, js, dll, raven);
+        const late = lateChunk(cssHash, js, dll);
         mainStream.end(late);
     });
 };
@@ -161,10 +170,10 @@ export default ({clientStats, outputPath}) => (ctx) => {
 
     let path = ctx.originalUrl;
     // check if path is in our whitelist, else give 404 route
-    if (!paths.includes(url.pathname) &&
-        !ctx.originalUrl.endsWith('.ico') &&
-        ctx.originalUrl !== 'service-worker.js' &&
-        !(process.env.NODE_ENV === 'development' && ctx.originalUrl.endsWith('.js.map'))) {
+    if (!paths.includes(url.pathname)
+        && !ctx.originalUrl.endsWith('.ico')
+        && ctx.originalUrl !== 'service-worker.js'
+        && !(process.env.NODE_ENV === 'development' && ctx.originalUrl.endsWith('.js.map'))) {
         path = '/404';
     }
 

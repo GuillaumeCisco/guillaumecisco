@@ -17,7 +17,7 @@ import hotClient from 'webpack-hot-client';
 import webpackDevMiddleware from 'koa-webpack-dev-middleware';
 import webpackHotServerMiddleware from 'webpack-hot-server-middleware';
 
-// Must be imported in that way to be include in prod
+// Must be imported in that way to be included in prod
 import clientConfig from '../../webpack/ssr/client';
 import serverConfig from '../../webpack/ssr/server';
 
@@ -62,7 +62,7 @@ if (DEVELOPMENT) {
     });
 
     // support hot module with websocket, not event-stream
-    hotClient(clientCompiler, true);
+    hotClient(clientCompiler);
     app.use(webpackDevMiddleware(multiCompiler, {
         publicPath,
         watchOptions: {
@@ -102,9 +102,7 @@ if (DEVELOPMENT) {
     //     res.send(fs.readFileSync('./assets/service-worker.js'));
     // });
 
-    http.createServer(app.callback()).listen(config.apps.frontend.api_port, () =>
-        console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`),
-    );
+    http.createServer(app.callback()).listen(config.apps.frontend.api_port, () => console.log(`Listening @ http://localhost:${config.apps.frontend.api_port}/`));
 }
 else {
     const clientStats = require('../../build/ssr/client/stats.json'); // eslint-disable-line import/no-unresolved
@@ -133,12 +131,10 @@ else {
         allowHTTP1: true,
     };
 
-    http.createServer(function (req, res) {
-        res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    http.createServer((req, res) => {
+        res.writeHead(301, {Location: `https://${req.headers.host}${req.url}`});
         res.end();
     }).listen(config.apps.frontend.api_port);
 
-    http2.createSecureServer(options, app.callback()).listen(config.apps.frontend.secure_api_port, () =>
-        console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`),
-    );
+    http2.createSecureServer(options, app.callback()).listen(config.apps.frontend.secure_api_port, () => console.log(`Listening @ https://localhost:${config.apps.frontend.secure_api_port}/`));
 }

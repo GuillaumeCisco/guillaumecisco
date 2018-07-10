@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const LinkedIn = ({width, height}) =>
-    (<svg
+const LinkedIn = ({width, height}) => (
+    <svg
         version="1.1"
         viewBox="0 0 48 48"
         width={width}
@@ -14,7 +14,8 @@ const LinkedIn = ({width, height}) =>
                 fill="#0097D3"
             />
         </g>
-    </svg>);
+    </svg>
+);
 
 LinkedIn.propTypes = {
     width: PropTypes.number,

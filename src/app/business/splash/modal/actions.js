@@ -5,7 +5,7 @@ const prefix = 'MODAL';
 export const actionTypes = {
     visible: `${prefix}_VISIBLE`,
     component: {
-        SET: `${prefix}_COMPONET_SET`,
+        SET: `${prefix}_COMPONENT_SET`,
     },
 };
 

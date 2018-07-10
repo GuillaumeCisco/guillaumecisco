@@ -5,7 +5,7 @@ import glob from 'glob';
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import LodashModuleReplacementPlugin from 'lodash-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
-import BabelMinifyPlugin from 'babel-minify-webpack-plugin';
+import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import HappyPack from 'happypack';
 import BrowserSyncPlugin from 'browser-sync-webpack-plugin';
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
@@ -25,18 +25,12 @@ const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV)),
 
 export default env => [
     ...(env === 'client' ? [
-        // https://webpack.js.org/plugins/commons-chunk-plugin/#manifest-file
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ['bootstrap'], // needed to put webpack bootstrap code before chunks
-            filename: '[name].js',
-            minChunks: Infinity,
-        }),
         pwaManifest,
         new RavenPlugin(config.apps.frontend.raven_url, path.resolve(__dirname, '../../../assets/js/raven.min.js')),
-        dll,
         ...(PRODUCTION ? [
-            new BabelMinifyPlugin({}, {
-                comments: false,
+            new UglifyJsPlugin({
+                cache: true,
+                parallel: true,
             }),
             new webpack.optimize.AggressiveMergingPlugin(),
             new StatsPlugin('stats.json'),
@@ -45,8 +39,7 @@ export default env => [
                 filename: 'service-worker.js',
                 minify: false,
                 dynamicUrlToDependencies: {
-                    ...Object.keys(routes).reduce((p, c) =>
-                        ({
+                    ...Object.keys(routes).reduce((p, c) => ({
                             ...p,
                             [routes[c].path]: [
                                 ...glob.sync(path.resolve(__dirname, '../../../src/app/**/*.{js,png}')),
@@ -59,8 +52,7 @@ export default env => [
                 staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/, /index\.html$/, /404\.html$/],
             }),
         ] : [
-            new webpack.NoEmitOnErrorsPlugin(),
-            new WriteFilePlugin(),
+            dll,
             new BrowserSyncPlugin(
                 // BrowserSync options
                 {
@@ -86,7 +78,7 @@ export default env => [
             maxChunks: 1,
         }),
     ]),
-    ...(DEVELOPMENT ? [new webpack.NamedModulesPlugin()] : [new webpack.HashedModuleIdsPlugin()]),
+    new WriteFilePlugin(),
     definePlugin(),
     new LodashModuleReplacementPlugin({
         shorthands: true,
@@ -100,7 +92,7 @@ export default env => [
                 babelrc: false,
                 plugins: [
                     ['universal-import', {
-                        disableWarnings: true
+                        disableWarnings: true,
                     }],
                     'transform-runtime',
                     'emotion',
@@ -115,7 +107,10 @@ export default env => [
                     ...(DEVELOPMENT ? ['react-hot-loader/babel'] : []),
                 ],
                 presets: [
-                    'env',
+                    // do not transpil es6 import into require, webpack needs to see the import and exports statements to do tree-shaking
+                    ['env', {
+                        modules: false,
+                    }],
                     'react',
                     'stage-0',
                 ],
@@ -123,7 +118,6 @@ export default env => [
         }],
         threads: 4,
     }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractCssChunks({
         filename: '[name].css',
         allChunks: false,
@@ -132,4 +126,5 @@ export default env => [
     ...(DEBUG ? [new BundleAnalyzerPlugin({
         analyzerMode: 'static',
     })] : []),
+    ...(DEVELOPMENT ? [new webpack.NamedModulesPlugin()] : [new webpack.HashedModuleIdsPlugin()]),
 ];

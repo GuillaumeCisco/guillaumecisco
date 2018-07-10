@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {random} from 'lodash';
+import random from 'lodash-es/random';
 import {timer} from 'd3-timer';
 import {onlyUpdateForKeys} from 'recompose';
 
@@ -67,10 +67,12 @@ class Stars extends Component {
     };
 
     render() {
-        return (<Canvas innerRef={(e) => {
-            this.canvas = e;
-        }}
-        />);
+        return (
+            <Canvas innerRef={(e) => {
+                this.canvas = e;
+            }}
+            />
+        );
     }
 }
 

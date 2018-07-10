@@ -14,12 +14,12 @@ const intro = css`
     color: green;
 `;
 
-const Intro = props =>
-    (<Typist cursor={cursor} className={intro}>
+const Intro = props => (
+    <Typist cursor={cursor} className={intro}>
         Welcome into (my) space.
         <br />
         Please click on the core star for instructions.
-    </Typist>);
-
+    </Typist>
+);
 
 export default Intro;

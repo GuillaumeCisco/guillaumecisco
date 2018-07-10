@@ -6,11 +6,9 @@ import {connect} from 'react-redux';
 
 const Modal = universal(import('./modal'));
 
-const ModalComponent = ({visible}) => {
-    return visible && <Modal />;
-};
+const ModalComponent = ({visible}) => visible && <Modal />;
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
     visible: state.modal.visible,
 });
 
