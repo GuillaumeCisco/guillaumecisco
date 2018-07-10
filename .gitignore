@@ -33,5 +33,6 @@ src/electron/main.prod.js*
 devsecret.js
 encryption/*
 .well-known
+
+# custom deploy script
 tools/deploy.js
-assets/service-worker.js

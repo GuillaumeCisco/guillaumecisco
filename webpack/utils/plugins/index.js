@@ -94,9 +94,9 @@ export default env => [
                     ['universal-import', {
                         disableWarnings: true,
                     }],
-                    'lodash',
                     'transform-runtime',
                     'emotion',
+                    'lodash',
                     ...(PRODUCTION && env === 'client' ? [
                         'transform-class-properties',
                         'transform-es2015-classes',
@@ -107,7 +107,7 @@ export default env => [
                     ...(DEVELOPMENT ? ['react-hot-loader/babel'] : []),
                 ],
                 presets: [
-                    // do not transpill es6 import into require, webpack needs to see the import and exports statements to do tree-shaking
+                    // do not transpil es6 import into require, webpack needs to see the import and exports statements to do tree-shaking
                     ['env', {
                         modules: false,
                     }],
@@ -118,7 +118,6 @@ export default env => [
         }],
         threads: 4,
     }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
     new ExtractCssChunks({
         filename: '[name].css',
         allChunks: false,
