@@ -4,6 +4,7 @@ import React from 'react';
 import config from 'config';
 import {Transform, PassThrough} from 'stream';
 import redis from 'redis';
+import {parse} from 'url';
 import {Provider} from 'react-redux';
 import {renderToNodeStream} from 'react-dom/server';
 // import {renderToStaticMarkup} from 'react-dom/server';
@@ -163,12 +164,14 @@ export default ({clientStats, outputPath}) => (ctx) => {
 
     console.log('REQUESTED ORIGINAL PATH:', ctx.originalUrl);
 
+    const url = parse(ctx.originalUrl);
+
     let path = ctx.originalUrl;
     // check if path is in our whitelist, else give 404 route
-    if (!paths.includes(ctx.originalUrl)
-        && !ctx.originalUrl.endsWith('.ico')
-        && ctx.originalUrl !== 'service-worker.js'
-        && !(process.env.NODE_ENV === 'development' && ctx.originalUrl.endsWith('.js.map'))) {
+    if (!paths.includes(url.pathname) &&
+        !ctx.originalUrl.endsWith('.ico') &&
+        ctx.originalUrl !== 'service-worker.js' &&
+        !(process.env.NODE_ENV === 'development' && ctx.originalUrl.endsWith('.js.map'))) {
         path = '/404';
     }
 
