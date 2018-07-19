@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {css} from 'react-emotion';
 
 import Supernova from './supernova';
@@ -10,17 +9,12 @@ const style = css`
     height: 100%;
   `;
 
-const Splash = ({page}) => (
+const Splash = () => (
     <div className={style}>
         <Intro />
         <Supernova />
         <AsyncModal />
     </div>
 );
-
-
-Splash.propTypes = {
-    page: PropTypes.string.isRequired,
-};
 
 export default Splash;

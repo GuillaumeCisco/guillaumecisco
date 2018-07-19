@@ -20,7 +20,7 @@ const Routes = ({location}) => (
                     404 - Not found
                 </h1>
             )
-            : <Splash page={location.type} />
+            : <Splash />
         }
     </Container>
 );

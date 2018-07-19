@@ -1,5 +1,5 @@
 import React from 'react';
-import {Container} from './common';
+import {Container, A} from './common';
 
 const Awards = props => (
     <Container>
@@ -11,9 +11,9 @@ const Awards = props => (
         </p>
         <br />
         <p>
-            <a href="https://github.com/GuillaumeCisco/guillaumecisco" target="_blank" rel="noopener noreferrer">
+            <A href="https://github.com/GuillaumeCisco/guillaumecisco" target="_blank" rel="noopener noreferrer">
                 Here
-            </a>
+            </A>
             {' '}
             you can find the code for making this website!
         </p>
