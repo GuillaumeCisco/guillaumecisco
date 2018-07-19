@@ -7,7 +7,7 @@ export const Container = styled('div')`
 `;
 
 export const H3 = styled('h3')`
-    margin: 10px;
+    margin: 40px 0;
 `;
 
 export const P = styled('p')`
@@ -18,17 +18,17 @@ export const P = styled('p')`
 
 export const Ul = styled('ul')`
     list-style: none;
-    padding: 0 200px;
+    padding: 0 20px;
     margin: 80px 0;
 `;
 
 export const Li = styled('li')`
-    margin: 30px 0;
+    margin: 70px 0;
     text-align: left;
     font-size: 20px;
 `;
 
 export const A = styled('a')`
     text-decoration: none;
-    color: ${color};
+    color: rgb(76, 155, 186);
 `;

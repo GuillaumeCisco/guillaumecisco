@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 
-import {Container, H3} from '../common';
+import {Container, H3, A} from '../common';
 
 const Cont = styled(Container)`
     text-align: center;
@@ -134,9 +134,14 @@ const Skills = props => (<Cont>
                     Fabric Hyperledger
             </li>
             <li>
-                <a href="https://github.com/MorpheoOrg" rel="noopener noreferrer" target="_blank">
+                <A href="https://github.com/MorpheoOrg" rel="noopener noreferrer" target="_blank">
                         Morpheo Open Source project
-                </a>
+                </A>
+            </li>
+            <li>
+                <A href="https://github.com/SubstraFoundation" rel="noopener noreferrer" target="_blank">
+                    Substra Open Source project
+                </A>
             </li>
         </ul>
     </Block>

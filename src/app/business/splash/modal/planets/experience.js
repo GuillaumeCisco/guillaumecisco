@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'react-emotion';
 
 import {
-    Container, H3, P, Ul, Li,
+    Container, H3, P, Ul, Li, A,
 } from '../common';
 
 const Title = styled('span')`
@@ -22,8 +22,13 @@ const Location = styled('span')`
     margin-left: 10px;
 `;
 
+const Cont = styled(Container)`
+    max-width: 1000px;
+    margin: 0 auto;
+`;
+
 const Core = props => (
-    <Container>
+    <Cont>
         <h1>
             Professional Experience
         </h1>
@@ -34,7 +39,7 @@ const Core = props => (
             Currently I'm a Senior Lead FullStack Developer and work mainly in python and javascript in web
             architectures.
             <br />
-            Creating websites, softwares or algorithm for both internal and external tools ;
+            Creating websites, softwares or algorithm for both internal and external tools
             on different platforms: desktop, mobile, electronic terminal.
             <br />
             Each development is different but has strong fundamentals like responsiveness, ux friendly, quick and
@@ -46,10 +51,48 @@ const Core = props => (
         <Ul>
             <Li>
                 <Title>
-                    Full Stack Lead Senior Engineer – Django /Javascript
+                    FullStack & BlockChain Engineer
                 </Title>
                 <Date>
-                    Mar 2016 – Today
+                    Mar 2018 – Today
+                </Date>
+                <br />
+                <Company>
+                    Owkin
+                </Company>
+                <Location>
+                    Région de Nantes, France
+                </Location>
+                <ul>
+                    <li>
+                        Senior Full stack Web Engineer (Back, Front, DevOps).
+                    </li>
+                    <li>
+                        Django REST API
+                    </li>
+                    <li>
+                        React/Redux/Webpack/Node.js websites.
+                    </li>
+                    <li>
+                        SSR/Code splitting/PWA/PRPL Pattern/Electron
+                    </li>
+                    <li>
+                        Blockchain with Hyperledger tools
+                    </li>
+                    <li>
+                        Kubernetes/Docker/Jenkins/Amazon web services.
+                    </li>
+                    <li>
+                        Advanced paradigms and algorithms.
+                    </li>
+                </ul>
+            </Li>
+            <Li>
+                <Title>
+                    Full Stack Lead Senior Engineer – Django/Javascript
+                </Title>
+                <Date>
+                    Mar 2016 – March 2018
                 </Date>
                 <br />
                 <Company>
@@ -123,7 +166,6 @@ const Core = props => (
                     <li>
                         Team leader of 4 people for maintaining and creating evolutions on main site.
                     </li>
-                    li>
                     <li>
                         Lead Front End decisions and manage system deployment and integrations.
                     </li>
@@ -202,15 +244,16 @@ const Core = props => (
         </Ul>
         <p>
             You can directly access to all these data by downloading my
-            <a
+            {' '}
+            <A
                 href="https://drive.google.com/file/d/0Bwji_-hi-VLiWDVwaDFGYjhvTy0yeG1kZ3Yxbm5UMnRBckxj/view?usp=sharing"
                 target="_blank"
                 rel="noopener noreferrer"
             >
                 resume
-            </a>
+            </A>
         </p>
-    </Container>
+    </Cont>
 );
 
 

@@ -7,7 +7,7 @@ body {
     padding: 0;
     background: #fefefe;
     color: rgb(68, 66, 87);
-    font-family: Amiko, sans-serif;
+    font-family: 'nunitolight', sans-serif;
     font-size: 16px;
     letter-spacing: 0.5px;
 }
@@ -21,4 +21,78 @@ html [type="button"], /* 1 */
 [type="reset"],
 [type="submit"] {
     -webkit-appearance: none; /* 2 */
+}
+
+
+
+@font-face {
+    font-family: 'nunitoblack';
+    src: url('../fonts/nunito/nunito-black-webfont.woff2') format('woff2'),
+    url('../fonts/nunito/nunito-black-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'nunitobold';
+    src: url('../fonts/nunito/nunito-bold-webfont.woff2') format('woff2'),
+    url('../fonts/nunito/nunito-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'nunitoextrabold';
+    src: url('../fonts/nunito/nunito-extrabold-webfont.woff2') format('woff2'),
+    url('../fonts/nunito/nunito-extrabold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'nunitoextralight';
+    src: url('../fonts/nunito/nunito-extralight-webfont.woff2') format('woff2'),
+    url('../fonts/nunito/nunito-extralight-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'nunitolight';
+    src: url('../fonts/nunito/nunito-light-webfont.woff2') format('woff2'),
+    url('../fonts/nunito/nunito-light-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'nunitomedium';
+    src: url('../fonts/nunito/nunito-medium-webfont.woff2') format('woff2'),
+    url('../fonts/nunito/nunito-medium-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'nunitoregular';
+    src: url('../fonts/nunito/nunito-regular-webfont.woff2') format('woff2'),
+    url('../fonts/nunito/nunito-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'nunitosemibold';
+    src: url('../fonts/nunito/nunito-semibold-webfont.woff2') format('woff2'),
+    url('../fonts/nunito/nunito-semibold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
 }

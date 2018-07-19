@@ -4,6 +4,8 @@ import styled from 'react-emotion';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
+import PerfectScrollbar from 'react-perfect-scrollbar';
+
 import actions from './actions';
 
 import Core from './core/index';
@@ -27,12 +29,6 @@ const Container = styled('div')`
     font-size: 24px;
     padding: 4%;
     color: #fff;
-    
-`;
-
-const Wrapper = styled('div')`
-    overflow: auto;
-    height: 100%;
 `;
 
 const CloseComponent = styled('div')`
@@ -42,20 +38,20 @@ const CloseComponent = styled('div')`
     cursor: pointer;
 `;
 
-const getComponent = (type) => {
+const Content = ({type}) => {
     switch (type) {
-    case 'core':
-        return <Core />;
-    case 'experience':
-        return <Experience />;
-    case 'awards':
-        return <Awards />;
-    case 'skills':
-        return <Skills />;
-    case 'spaceshift':
-        return <Spaceshift />;
-    default:
-        return null;
+        case 'core':
+            return <Core />;
+        case 'experience':
+            return <Experience />;
+        case 'awards':
+            return <Awards />;
+        case 'skills':
+            return <Skills />;
+        case 'spaceshift':
+            return <Spaceshift />;
+        default:
+            return null;
     }
 };
 
@@ -66,13 +62,14 @@ class Modal extends React.Component {
     };
 
     render() {
-        const {component} = this.props;
+        const {component, visible} = this.props;
 
-        return (
+        return visible
+            && (
             <Container>
-                <Wrapper>
-                    {getComponent(component)}
-                </Wrapper>
+                <PerfectScrollbar>
+                    <Content type={component} />
+                </PerfectScrollbar>
                 <CloseComponent onClick={this.close}>
                     <Close />
                 </CloseComponent>
@@ -81,21 +78,25 @@ class Modal extends React.Component {
     }
 }
 
-const noop = () => {};
+const noop = () => {
+};
 
 Modal.propTypes = {
     setVisible: PropTypes.func,
     component: PropTypes.string,
+    visible: PropTypes.bool,
 };
 
 Modal.defaultProps = {
     component: '',
     setVisible: noop,
+    visible: false,
 };
 
 
 const mapStateToProps = (state, ownProps) => ({
     component: state.modal.component,
+    visible: state.modal.visible,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

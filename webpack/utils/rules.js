@@ -1,6 +1,6 @@
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 
-export default env => [
+export default () => [
     {
         test: /\.jsx?$/,
         exclude: /node_modules/,
@@ -36,7 +36,7 @@ export default env => [
     },
     {
         test: /\.s?css$/,
-        exclude: /node_modules/,
+        // exclude: /node_modules\/(?!(react-perfect-scrollbar)\/).*/,
         use: [
             {
                 loader: ExtractCssChunks.loader,
