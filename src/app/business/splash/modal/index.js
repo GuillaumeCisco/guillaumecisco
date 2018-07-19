@@ -3,18 +3,19 @@ import PropTypes from 'prop-types';
 import styled from 'react-emotion';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import universal from 'react-universal-component';
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import actions from './actions';
 
-import Core from './core/index';
-import Experience from './planets/experience';
-import Awards from './planets/awards';
-import Skills from './planets/skills';
-import Spaceshift from './spaceshift';
-
 import Close from './close';
+
+const Core = universal(import('./core/index'));
+const Experience = universal(import('./planets/experience'));
+const Awards = universal(import('./planets/awards'));
+const Skills = universal(import('./planets/skills'));
+const Spaceshift = universal(import('./spaceshift'));
 
 const Container = styled('div')`
     position: absolute;
@@ -33,7 +34,7 @@ const Container = styled('div')`
 
 const CloseComponent = styled('div')`
     position: absolute;
-    top 15px;
+    top: 15px;
     right: 15px;
     cursor: pointer;
 `;

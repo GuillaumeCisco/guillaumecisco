@@ -27,7 +27,7 @@ const Cont = styled(Container)`
     margin: 0 auto;
 `;
 
-const Core = props => (
+const Core = () => (
     <Cont>
         <h1>
             Professional Experience

@@ -94,9 +94,9 @@ export default env => [
                     ['universal-import', {
                         disableWarnings: true,
                     }],
+                    'lodash',
                     'transform-runtime',
                     'emotion',
-                    'lodash',
                     ...(PRODUCTION && env === 'client' ? [
                         'transform-class-properties',
                         'transform-es2015-classes',
