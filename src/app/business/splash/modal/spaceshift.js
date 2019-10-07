@@ -1,7 +1,7 @@
 import React from 'react';
 import {Container, A} from './common';
 
-const Awards = props => (
+const Awards = (props) => (
     <Container>
         <h1>
             Nice catch!

@@ -3,10 +3,12 @@ module.exports = {
     "parser": "babel-eslint",
     "rules": {
         "indent": [0],
+        "react/state-in-constructor": [2, "never"],
         "react/jsx-indent": [2, 4],
         "react/jsx-indent-props": [2, 4],
         "react/jsx-filename-extension": [0],
         "react/jsx-closing-tag-location": [0],
+        "react/jsx-props-no-spreading": [2, {"exceptions": ["BaseComponent"]}],
         "react/no-unescaped-entities": [0],
         "react/no-danger": [0],
         "react/sort-comp": [0],
@@ -67,5 +69,17 @@ module.exports = {
         "react",
         "jsx-a11y",
         "import",
+        "jest",
     ],
+    "env": {
+        "jest/globals": true,
+    },
+    "overrides": [
+        {
+            "files": "**/*.spec.js",
+            "rules": {
+                "no-unused-expressions": [0],
+            }
+        }
+    ]
 };

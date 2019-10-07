@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import {NOT_FOUND} from 'redux-first-router';
 
 import Splash from './business/splash';
@@ -20,13 +20,14 @@ const Routes = ({location}) => (
                     404 - Not found
                 </h1>
             )
-            : <Splash />
-        }
+            : <Splash />}
     </Container>
 );
 
 Routes.propTypes = {
-    location: PropTypes.shape({}).isRequired,
+    location: PropTypes.shape({
+        type: PropTypes.string,
+    }).isRequired,
 };
 
 const mapStateToProps = ({location}, ownProps) => ({location, ...ownProps});

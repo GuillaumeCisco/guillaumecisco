@@ -1,7 +1,8 @@
 /* global window */
 
-import React from 'react';
-import styled, {css, keyframes} from 'react-emotion';
+import React, {Component} from 'react';
+import styled from '@emotion/styled';
+import {css, keyframes} from 'emotion';
 
 const fade = keyframes`
   0% {opacity: 0}
@@ -34,7 +35,7 @@ const Red = styled('span')`
     background-color: #c30e15;
 `;
 
-class ServiceWorker extends React.Component {
+class ServiceWorker extends Component {
     constructor() {
         super();
         this.update = this.update.bind(this);
@@ -44,7 +45,7 @@ class ServiceWorker extends React.Component {
         status: undefined,
     };
 
-    componentWillMount() {
+    componentDidMount() {
         if (typeof window !== 'undefined') {
             window.addEventListener('online', this.update);
             window.addEventListener('offline', this.update);

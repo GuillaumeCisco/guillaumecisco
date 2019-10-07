@@ -10,6 +10,8 @@ import Canvas from '../canvas';
 import Star from './star';
 
 class Stars extends Component {
+    state = {};
+
     constructor(props) {
         super(props);
         this.stars = [];
@@ -19,9 +21,11 @@ class Stars extends Component {
         this.init();
     }
 
-    componentWillReceiveProps = (nextProps) => {
-        this.resize(nextProps); // redraw on resize
-    };
+    static getDerivedStateFromProps = (props, state) => props;
+
+    componentDidUpdate(prevProps, prevState) {
+        this.resize(prevProps); // redraw on resize
+    }
 
     componentWillUnmount() {
         this.timer.stop();
@@ -81,7 +85,7 @@ class Stars extends Component {
 
     render() {
         return (
-            <Canvas innerRef={(e) => {
+            <Canvas ref={(e) => {
                 this.canvas = e;
             }}
             />

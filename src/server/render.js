@@ -7,12 +7,12 @@ import redis from 'redis';
 import {parse} from 'url';
 import {Provider} from 'react-redux';
 import {renderToNodeStream} from 'react-dom/server';
-// import {renderToStaticMarkup} from 'react-dom/server';
 import {renderStylesToNodeStream} from 'emotion-server';
-// import {renderStylesToString} from 'emotion-server';
 import {ReportChunks} from 'react-universal-component';
 import {clearChunks} from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
+
+import {promisify} from 'util';
 
 import routesMap from '../app/routesMap';
 import vendors from '../../webpack/ssr/vendors';
@@ -26,11 +26,14 @@ const cache = redis.createClient({
     port: config.redis.port,
 });
 
+const exists = promisify(cache.exists).bind(cache);
+const get = promisify(cache.get).bind(cache);
+
 cache.on('connect', () => {
     console.log('CACHE CONNECTED');
 });
 
-const paths = Object.keys(routesMap).map(o => routesMap[o].path);
+const paths = Object.keys(routesMap).map((o) => routesMap[o].path);
 
 const createCacheStream = (key) => {
     const bufferedChunks = [];
@@ -59,14 +62,14 @@ const createCacheStream = (key) => {
 };
 
 const createApp = (App, store, chunkNames) => (
-    <ReportChunks report={chunkName => chunkNames.push(chunkName)}>
+    <ReportChunks report={(chunkName) => chunkNames.push(chunkName)}>
         <Provider store={store}>
             <App />
         </Provider>
     </ReportChunks>
 );
 
-const flushDll = clientStats => clientStats.assets.reduce((p, c) => [
+const flushDll = (clientStats) => clientStats.assets.reduce((p, c) => [
     ...p,
     ...(c.name.endsWith('dll.js') ? [`<script type="text/javascript" src="/${c.name}" defer></script>`] : []),
 ], []).join('\n');
@@ -91,6 +94,7 @@ const earlyChunk = (styles, stateJson) => `
       <body>
           <noscript><div>Please enable javascript in your browser for displaying this website.</div></noscript>
           <script>window.REDUX_STATE = ${stateJson}</script>
+          ${process.env.NODE_ENV === 'production' ? '<script src="/raven.min.js" type="text/javascript" defer></script>' : ''}
           <div id="root">`,
     lateChunk = (cssHash, js, dll) => `</div>
           ${process.env.NODE_ENV === 'development' ? '<div id="devTools"></div>' : ''}
@@ -98,7 +102,6 @@ const earlyChunk = (styles, stateJson) => `
           ${dll}
           ${js}
           ${serviceWorker}
-          <script src="/raven.min.js" type="text/javascript" defer></script>
         </body>
     </html>
   `;
@@ -114,10 +117,13 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
 
     const {css} = flushChunks(clientStats, {outputPath});
 
-    // flush the head with css & js resource tags first so the download starts immediately
-    const early = earlyChunk(css, stateJson);
     const chunkNames = [];
     const app = createApp(App, store, chunkNames);
+
+    const stream = renderToNodeStream(app).pipe(renderStylesToNodeStream());
+
+    // flush the head with css & js resource tags first so the download starts immediately
+    const early = earlyChunk(css, stateJson);
 
     // DO not use redis cache on dev
     let mainStream;
@@ -131,12 +137,11 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
 
     mainStream.write(early);
 
-    const stream = renderToNodeStream(app).pipe(renderStylesToNodeStream());
-
     // test for generating html
     // const html = renderStylesToString(renderToStaticMarkup(app));
 
     stream.pipe(mainStream, {end: false});
+
     stream.on('end', () => {
         const {js, cssHash} = flushChunks(clientStats,
             {
@@ -159,7 +164,7 @@ const renderStreamed = async (ctx, path, clientStats, outputPath) => {
     });
 };
 
-export default ({clientStats, outputPath}) => (ctx) => {
+export default ({clientStats, outputPath}) => async (ctx) => {
     ctx.status = 200;
     ctx.type = 'text/html';
     ctx.body = new PassThrough();
@@ -184,19 +189,23 @@ export default ({clientStats, outputPath}) => (ctx) => {
         renderStreamed(ctx, path, clientStats, outputPath);
     }
     else {
-        cache.exists(path, async (err, reply) => {
-            if (reply === 1) {
+        const reply = await exists(path);
+
+        if (reply === 1) {
+            const reply = await get(path);
+
+            if (reply) {
                 console.log('CACHE KEY EXISTS: ', path);
                 // handle status 404
                 if (path === '/404') {
                     ctx.status = 404;
                 }
-
-                cache.get(path, (err, reply) => ctx.body.end(reply));
+                ctx.body.end(reply);
             }
-            else {
-                await renderStreamed(ctx, path, clientStats, outputPath);
-            }
-        });
+        }
+        else {
+            console.log('CACHE KEY DOES NOT EXIST: ', path);
+            await renderStreamed(ctx, path, clientStats, outputPath);
+        }
     }
 };

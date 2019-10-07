@@ -1,5 +1,7 @@
 import config from 'config';
 import path from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
+
 import rules from '../utils/rules';
 import resolve from '../utils/resolve';
 import plugins from '../utils/plugins';
@@ -48,7 +50,7 @@ export default {
         publicPath: DEBUG ? DEBUG_BASE_NAME : PRODUCTION_BASE_NAME,
     },
     plugins: plugins('client'),
-    resolve: resolve(),
+    resolve: resolve(DEVELOPMENT),
     ...(DEVELOPMENT ? {
         devServer: {
             historyApiFallback: true,
@@ -98,6 +100,11 @@ export default {
             runtimeChunk: {
                 name: 'bootstrap',
             },
+            // minimize: false,
+            minimizer: [new TerserPlugin({
+                cache: true,
+                parallel: true,
+            })],
         },
     } : {}),
 };

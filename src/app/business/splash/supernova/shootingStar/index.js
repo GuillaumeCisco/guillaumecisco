@@ -8,6 +8,8 @@ import Canvas from '../canvas';
 import Star from './star';
 
 class Stars extends Component {
+    state = {};
+
     constructor(props) {
         super(props);
         this.shootingStars = [];
@@ -19,9 +21,12 @@ class Stars extends Component {
         this.init();
     }
 
-    componentWillReceiveProps = (nextProps) => {
-        this.resize(nextProps); // redraw on resize
-    };
+    static getDerivedStateFromProps = (props, state) => props // redraw on resize
+    ;
+
+    componentDidUpdate(prevProps, prevState) {
+        this.resize(prevProps); // redraw on resize
+    }
 
     componentWillUnmount() {
         this.timer.stop();
@@ -46,7 +51,7 @@ class Stars extends Component {
             this.shootingStars.push(new Star(w, h));
         }
         // remove finished shootingStars
-        this.shootingStars = this.shootingStars.filter(star => star.getStep() <= this.maxSteps);
+        this.shootingStars = this.shootingStars.filter((star) => star.getStep() <= this.maxSteps);
 
         this.shootingStars.forEach((star) => {
             // move by one step
@@ -68,7 +73,7 @@ class Stars extends Component {
 
     render() {
         return (
-            <Canvas innerRef={(e) => {
+            <Canvas ref={(e) => {
                 this.canvas = e;
             }}
             />

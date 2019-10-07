@@ -5,13 +5,17 @@ import PropTypes from 'prop-types';
 import Canvas from './canvas';
 
 class Core extends Component {
+    state = {};
+
     componentDidMount() {
         this.init();
     }
 
-    componentWillReceiveProps = (nextProps) => {
-        this.resize(nextProps); // redraw on resize
-    };
+    static getDerivedStateFromProps = (props, state) => props;
+
+    componentDidUpdate(prevProps, prevState) {
+        this.resize(prevProps); // redraw on resize
+    }
 
     init = () => {
         const {w, h, radius} = this.props;
@@ -51,7 +55,7 @@ class Core extends Component {
 
     render() {
         return (
-            <Canvas innerRef={(e) => {
+            <Canvas ref={(e) => {
                 this.canvas = e;
             }}
             />

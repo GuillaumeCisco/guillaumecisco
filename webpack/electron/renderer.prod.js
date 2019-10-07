@@ -5,7 +5,7 @@
 import path from 'path';
 import {BundleAnalyzerPlugin} from 'webpack-bundle-analyzer';
 import merge from 'webpack-merge';
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 import ExtractCssChunks from 'extract-css-chunks-webpack-plugin';
 import HappyPack from 'happypack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
@@ -62,14 +62,16 @@ export default merge.smart(baseConfig, {
             title: `${config.appName}`,
             inject: true,
         }),
-        new UglifyJsPlugin({
-            cache: true,
-            parallel: true,
-        }),
         new ExtractCssChunks('style.css'),
         new BundleAnalyzerPlugin({
             analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
             openAnalyzer: process.env.OPEN_ANALYZER === 'true',
         }),
     ],
+    optimization: {
+        minimizer: [new TerserPlugin({
+            cache: true,
+            parallel: true,
+        })],
+    },
 });

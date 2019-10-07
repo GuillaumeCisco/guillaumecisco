@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import {Container} from '../common';
 
@@ -10,7 +10,7 @@ const Cont = styled(Container)`
 `;
 
 
-const Awards = props => (
+const Awards = (props) => (
     <Cont>
         <h1>
             Awards

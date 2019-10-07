@@ -9,13 +9,17 @@ import {interpolate} from 'd3-interpolate';
 import Canvas from '../canvas';
 
 class Planet extends React.Component {
+    state = {};
+
     componentDidMount() {
         this.init();
     }
 
-    componentWillReceiveProps = (nextProps) => {
-        this.resize(nextProps); // redraw on resize
-    };
+    static getDerivedStateFromProps = (props, state) => props;
+
+    componentDidUpdate(prevProps, prevState) {
+        this.resize(prevProps); // redraw on resize
+    }
 
     componentWillUnmount() {
         this.timer.stop();
@@ -104,7 +108,7 @@ class Planet extends React.Component {
 
     render() {
         return (
-            <Canvas innerRef={(e) => {
+            <Canvas ref={(e) => {
                 this.canvas = e;
             }}
             />

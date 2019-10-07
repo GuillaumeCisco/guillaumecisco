@@ -18,9 +18,11 @@ class SpaceShift extends React.Component {
         this.init();
     }
 
-    componentWillReceiveProps = (nextProps) => {
-        this.resize(nextProps); // redraw on resize
-    };
+    static getDerivedStateFromProps = (props, state) => props;
+
+    componentDidUpdate(prevProps, prevState) {
+        this.resize(prevProps); // redraw on resize
+    }
 
     componentWillUnmount() {
         this.timer.stop();
@@ -78,7 +80,7 @@ class SpaceShift extends React.Component {
     };
 
     draw = () => {
-        this.setState(state => ({
+        this.setState((state) => ({
             ...state,
             style: {
                 ...state.style,

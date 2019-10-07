@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 import {
     Container, Ul, H3, A, P,
 } from '../common';
@@ -12,7 +12,7 @@ const Span = styled('span')`
     vertical-align: 16px;
 `;
 
-const Core = props => (
+const Core = (props) => (
     <Container>
         <h1>
             Hey there!

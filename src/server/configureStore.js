@@ -1,4 +1,4 @@
-import createHistory from 'history/createMemoryHistory';
+/* globals PRODUCTION_BASE_NAME */
 import {NOT_FOUND} from 'redux-first-router';
 
 import configureStore from '../common/configureStore';
@@ -11,8 +11,9 @@ const doesRedirect = ({kind, pathname, search}, res) => {
 };
 
 export default async (ctx) => {
-    const history = createHistory({initialEntries: [ctx.originalUrl]});
-    const {store, thunk} = configureStore(history, {});
+    const {store, thunk} = configureStore({}, [ctx.originalUrl], {
+        basename: PRODUCTION_BASE_NAME,
+    });
 
     // if not using onBeforeChange + jwTokens, you can also async authenticate
     // here against your db (i.e. using req.cookies.sessionId)

@@ -1,6 +1,6 @@
 import React from 'react';
 import Typist from 'react-typist';
-import {css} from 'react-emotion';
+import {css} from 'emotion';
 
 const cursor = {
     show: false,
@@ -14,7 +14,7 @@ const intro = css`
     color: green;
 `;
 
-const Intro = props => (
+const Intro = () => (
     <Typist cursor={cursor} className={intro}>
         Welcome into (my) space.
         <br />

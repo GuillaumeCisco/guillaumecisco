@@ -1,9 +1,9 @@
 /* global window */
 
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {clientPoint} from 'd3-selection';
-import {css} from 'react-emotion';
+import {css} from 'emotion';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
@@ -79,7 +79,7 @@ class SuperNova extends Component {
                 b: (4 * a / 8) / 2,
             };
 
-        this.setState(state => ({
+        this.setState((state) => ({
             ...state,
             loaded: true,
             w,
@@ -151,11 +151,11 @@ class SuperNova extends Component {
             || this.isInPlanet(x, y, this.orangePlanet, orangePlanet.radius)
             || this.isInPlanet(x, y, this.bluePlanet, bluePlanet.radius)) {
             if (!over) {
-                this.setState(state => ({...state, over: true}));
+                this.setState((state) => ({...state, over: true}));
             }
         }
         else if (over) {
-            this.setState(state => ({...state, over: false}));
+            this.setState((state) => ({...state, over: false}));
         }
     };
 
@@ -195,7 +195,7 @@ class SuperNova extends Component {
             >
                 {loaded
                 && (
-                    <Fragment>
+                    <>
                         <Background w={w} h={h} size={this.nbBackgroundStars} />
                         <ShootingStars w={w} h={h} />
                         <Core
@@ -219,7 +219,7 @@ class SuperNova extends Component {
                             onClick={this.spaceshiftClick}
                         />
                         {intro && (
-                            <Fragment>
+                            <>
                                 <Planet
                                     w={w}
                                     h={h}
@@ -262,10 +262,9 @@ class SuperNova extends Component {
                                         this.orangePlanet = x;
                                     }}
                                 />
-                            </Fragment>
-                        )
-                        }
-                    </Fragment>
+                            </>
+                        )}
+                    </>
                 )}
             </div>
         );
@@ -291,7 +290,7 @@ const mapStateToProps = (state, ownProps) => ({
     intro: state.general.intro,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+const mapDispatchToProps = (dispatch) => bindActionCreators({
     setComponent: modalActions.component.set,
     setIntro: generalActions.intro.set,
 }, dispatch);

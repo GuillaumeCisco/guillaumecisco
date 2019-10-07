@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'react-emotion';
+import styled from '@emotion/styled';
 
 import {Container, H3, A} from '../common';
 
@@ -15,184 +15,185 @@ const Block = styled('div')`
     margin: 1% 3%;
 `;
 
-const Skills = props => (<Cont>
-    <h1>
+const Skills = (props) => (
+    <Cont>
+        <h1>
             Skills
-    </h1>
-    <Block>
-        <H3>
+        </h1>
+        <Block>
+            <H3>
                 Frontend
-        </H3>
-        <ul>
-            <li>
+            </H3>
+            <ul>
+                <li>
                     CSS 3
-            </li>
-            <li>
+                </li>
+                <li>
                     HTML5
-            </li>
-            <li>
+                </li>
+                <li>
                     Javascript
-            </li>
-            <li>
+                </li>
+                <li>
                     React
-            </li>
-            <li>
+                </li>
+                <li>
                     Redux
-            </li>
-            <li>
+                </li>
+                <li>
                     Webpack
-            </li>
-            <li>
+                </li>
+                <li>
                     WebRTC
-            </li>
-            <li>
+                </li>
+                <li>
                     PRPL Pattern
-            </li>
-            <li>
+                </li>
+                <li>
                     Electron
-            </li>
-            <li>
+                </li>
+                <li>
                     Http Stream
-            </li>
-        </ul>
-    </Block>
-    <Block>
-        <H3>
+                </li>
+            </ul>
+        </Block>
+        <Block>
+            <H3>
                 Backend
-        </H3>
-        <ul>
-            <li>
+            </H3>
+            <ul>
+                <li>
                     Django (1.3 ~ 2.0)
-            </li>
-            <li>
+                </li>
+                <li>
                     Django Rest Framework
-            </li>
-            <li>
+                </li>
+                <li>
                     Node.js
-            </li>
-            <li>
+                </li>
+                <li>
                     Socket-io.js
-            </li>
-            <li>
+                </li>
+                <li>
                     Redis
-            </li>
-        </ul>
-    </Block>
-    <Block>
-        <H3>
+                </li>
+            </ul>
+        </Block>
+        <Block>
+            <H3>
                 Devops
-        </H3>
-        <ul>
-            <li>
-                <ul>
-                    <h4>
-                            Amazon Web Services
-                    </h4>
+            </H3>
+            <ul>
+                <li>
                     <ul>
-                        <li>
+                        <h4>
+                            Amazon Web Services
+                        </h4>
+                        <ul>
+                            <li>
                                 EC2
-                        </li>
-                        <li>
+                            </li>
+                            <li>
                                 ECS
-                        </li>
-                        <li>
+                            </li>
+                            <li>
                                 Route 53
-                        </li>
+                            </li>
+                        </ul>
                     </ul>
-                </ul>
-            </li>
-            <li>
+                </li>
+                <li>
                     Kubernetes
-            </li>
-            <li>
+                </li>
+                <li>
                     Docker
-            </li>
-            <li>
+                </li>
+                <li>
                     Kong
-            </li>
-        </ul>
-    </Block>
-    <Block>
-        <H3>
+                </li>
+            </ul>
+        </Block>
+        <Block>
+            <H3>
                 SQL
-        </H3>
-        <ul>
-            <li>
+            </H3>
+            <ul>
+                <li>
                     PostGreSQL
-            </li>
-            <li>
+                </li>
+                <li>
                     ElasticSearch
-            </li>
-        </ul>
-    </Block>
-    <Block>
-        <H3>
+                </li>
+            </ul>
+        </Block>
+        <Block>
+            <H3>
                 Blockchain
-        </H3>
-        <ul>
-            <li>
+            </H3>
+            <ul>
+                <li>
                     Fabric Hyperledger
-            </li>
-            <li>
-                <A href="https://github.com/MorpheoOrg" rel="noopener noreferrer" target="_blank">
+                </li>
+                <li>
+                    <A href="https://github.com/MorpheoOrg" rel="noopener noreferrer" target="_blank">
                         Morpheo Open Source project
-                </A>
-            </li>
-            <li>
-                <A href="https://github.com/SubstraFoundation" rel="noopener noreferrer" target="_blank">
+                    </A>
+                </li>
+                <li>
+                    <A href="https://github.com/SubstraFoundation" rel="noopener noreferrer" target="_blank">
                     Substra Open Source project
-                </A>
-            </li>
-        </ul>
-    </Block>
-    <Block>
-        <H3>
+                    </A>
+                </li>
+            </ul>
+        </Block>
+        <Block>
+            <H3>
                 IDE
-        </H3>
-        <ul>
-            <li>
+            </H3>
+            <ul>
+                <li>
                     PyCharm
-            </li>
-            <li>
+                </li>
+                <li>
                     PHPStorm
-            </li>
-            <li>
+                </li>
+                <li>
                     WebStorm
-            </li>
-            <li>
+                </li>
+                <li>
                     Intellij IDEA
-            </li>
-            <li>
+                </li>
+                <li>
                     GoLand
-            </li>
-        </ul>
-    </Block>
-    <Block>
-        <H3>
+                </li>
+            </ul>
+        </Block>
+        <Block>
+            <H3>
                 Miscellaneous
-        </H3>
-        <ul>
-            <li>
+            </H3>
+            <ul>
+                <li>
                     Git
-            </li>
-            <li>
+                </li>
+                <li>
                     Python
-            </li>
-            <li>
+                </li>
+                <li>
                     C/C++
-            </li>
-            <li>
+                </li>
+                <li>
                     ffmpeg
-            </li>
-            <li>
+                </li>
+                <li>
                     Adobe Photoshop
-            </li>
-            <li>
+                </li>
+                <li>
                     Shell Scripting: sh, bash, zsh
-            </li>
-        </ul>
-    </Block>
-</Cont>
+                </li>
+            </ul>
+        </Block>
+    </Cont>
 );
 
 
