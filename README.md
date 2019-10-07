@@ -61,12 +61,22 @@ For displaying lint errors:
 
 ## Cache
 
-This project use a redis cache manager for the server routes. Allowing us not to rerender the same html production by route.
-For deploying with amazon, please create a redis cluster by following this documentation:
-https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html
-Don't forget to create a isolated security group for opening port 6379 as described in the documentation.
+This project use a redis cache manager for the server routes. Allowing us not to rerender the same html production by route.  
+For deploying with amazon, please create a redis cluster by following this documentation:  
+https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html  
+Don't forget to create a isolated security group for opening port 6379 as described in the documentation.  
+For not paying too much on amazon, you can simply run a redis docker instance on your ec2 instance and get the container instance ip for your redis.
+```
+$> docker run --name redis -p 6379:6379 -d redis
+$> docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redis
+```
+You will need to go inside this docker for flushing cache in the future.
+```
+$> docker exec -it redis bash
+# redis-cli flushall
+```
 
-### test
+### Test
 For testing your generated docker with your localhosted redis, update your `deploy.js` file and do not forget to comment the part that push to your registry, then:
 ```shell
 $> redis-cli flushall && docker run -it -v /etc/letsencrypt/:/etc/letsencrypt/ --net="host" -p 8000:8000 docker_image_name:latest
@@ -161,7 +171,7 @@ Your site is now secured!
 
 ###### Renewing
 
-For now, we need to do it manually as the docker instance is binded to port 80 and 443. Cerbot need these port to renew thecertificates.
+For now, we need to do it manually as the docker instance is binded to port 80 and 443. Cerbot need these port to renew the certificates.
 So we need to stop the docker, launch the command and the docker instance will be automatically renewed thanks to our aws ecs policy.
 
 ```shell
