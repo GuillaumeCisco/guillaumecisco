@@ -246,7 +246,7 @@ const Core = () => (
             You can directly access to all these data by downloading my
             {' '}
             <A
-                href="https://drive.google.com/file/d/1haG_lZDccbUdL_Ac8wUvS1hXKxp9kQFv/view?usp=sharing"
+                href="https://drive.google.com/open?id=1OeDkwv4dsVopfftQWAJXnr-Yp0InunFZ"
                 target="_blank"
                 rel="noopener noreferrer"
             >
