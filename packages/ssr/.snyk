@@ -1,0 +1,22 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.14.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-05-01T00:13:44.514Z'
+    - redux-reducers-injector > lodash:
+        patched: '2020-05-01T00:13:44.514Z'
+    - redux-sagas-injector > redux-reducers-injector > lodash:
+        patched: '2020-05-01T00:13:44.514Z'
+    - '@emotion/babel-preset-css-prop > @babel/plugin-transform-react-jsx > @babel/helper-builder-react-jsx-experimental > @babel/types > lodash':
+        patched: '2020-05-01T00:13:44.514Z'
+    - '@emotion/styled > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash':
+        patched: '2020-05-01T00:13:44.514Z'
+    - emotion > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2020-05-01T00:13:44.514Z'
+    - '@emotion/babel-preset-css-prop > @babel/plugin-transform-react-jsx > @babel/helper-builder-react-jsx-experimental > @babel/helper-module-imports > @babel/types > lodash':
+        patched: '2020-05-01T00:13:44.514Z'
+    - '@emotion/core > @emotion/css > babel-plugin-emotion > @babel/helper-module-imports > @babel/types > lodash':
+        patched: '2020-05-01T00:13:44.514Z'
