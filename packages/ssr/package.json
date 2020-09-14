@@ -27,7 +27,7 @@
         "emotion": "10.0.17",
         "emotion-server": "10.0.17",
         "fastclick": "1.0.6",
-        "lodash": "4.17.15",
+        "lodash": "4.17.20",
         "lodash-es": "4.17.15",
         "prop-types": "15.7.2",
         "raven-for-redux": "1.4.0",
@@ -43,9 +43,9 @@
         "redux": "4.0.4",
         "redux-actions": "2.6.5",
         "redux-first-router": "2.1.5",
-        "redux-reducers-injector": "0.3.0",
+        "redux-reducers-injector": "0.3.1",
         "redux-saga": "1.1.1",
-        "redux-sagas-injector": "1.1.1"
+        "redux-sagas-injector": "1.1.2"
     },
     "devDependencies": {
         "@babel/cli": "7.6.2",
