@@ -1,6 +1,5 @@
 import {cloneableGenerator} from 'redux-saga/utils';
 
-
 const noop = () => {};
 
 /**
@@ -55,7 +54,6 @@ class GeneratorHelper {
         input,
     );
 }
-
 
 export default (originalGenerator, testFunction) => (...args) => {
     const generator = cloneableGenerator(originalGenerator)(...args);

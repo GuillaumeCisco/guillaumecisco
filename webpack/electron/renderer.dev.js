@@ -12,7 +12,6 @@ import rules from '../utils/rules';
 import definePlugin from '../utils/plugins/definePlugin';
 import dll from '../utils/plugins/dll';
 
-
 const port = process.env.PORT || 1212;
 const publicPath = `http://localhost:${port}/dist`;
 

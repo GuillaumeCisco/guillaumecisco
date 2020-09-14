@@ -98,7 +98,6 @@ Modal.defaultProps = {
     visible: false,
 };
 
-
 const mapStateToProps = (state, ownProps) => ({
     component: state.modal.component,
     visible: state.modal.visible,

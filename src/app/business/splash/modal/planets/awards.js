@@ -9,7 +9,6 @@ const Cont = styled(Container)`
     display: inline-block;
 `;
 
-
 const Awards = (props) => (
     <Cont>
         <h1>
@@ -51,6 +50,5 @@ const Awards = (props) => (
         </ul>
     </Cont>
 );
-
 
 export default Awards;

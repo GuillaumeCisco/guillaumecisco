@@ -196,5 +196,4 @@ const Skills = (props) => (
     </Cont>
 );
 
-
 export default Skills;

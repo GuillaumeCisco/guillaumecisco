@@ -24,5 +24,4 @@ const Awards = (props) => (
     </Container>
 );
 
-
 export default Awards;

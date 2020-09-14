@@ -256,5 +256,4 @@ const Core = () => (
     </Cont>
 );
 
-
 export default Core;

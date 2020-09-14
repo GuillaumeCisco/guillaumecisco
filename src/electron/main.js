@@ -29,7 +29,6 @@ const installExtensions = async () => {
         .catch(console.log);
 };
 
-
 /**
  * Add event listeners...
  */
@@ -41,7 +40,6 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
-
 
 app.on('ready', async () => {
     if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {

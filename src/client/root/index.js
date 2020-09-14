@@ -36,7 +36,6 @@ const Root = ({store}) => (
     </Provider>
 );
 
-
 Root.propTypes = {
     store: PropTypes.shape({}).isRequired,
 };

@@ -18,7 +18,6 @@ export default async (ctx) => {
     // if not using onBeforeChange + jwTokens, you can also async authenticate
     // here against your db (i.e. using req.cookies.sessionId)
 
-
     // the idiomatic way to handle redirects
     // serverRender.js will short-circuit since the redirect is made here already
     const location = store.getState().location;

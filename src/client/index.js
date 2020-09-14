@@ -4,12 +4,10 @@ import React from 'react';
 import {hydrate, render} from 'react-dom';
 import FastClick from 'fastclick';
 
-
 import App from './App';
 
 // load DevTools
 import './DevTools';
-
 
 FastClick.attach(document.body);
 

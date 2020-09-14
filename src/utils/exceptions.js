@@ -17,7 +17,6 @@ ES6Error.prototype = Object.create(Error.prototype, {
 });
 Object.setPrototypeOf(ES6Error, Error);
 
-
 /**
  * Abstract class use to define new error.
  *
@@ -37,7 +36,6 @@ class ExtendableError extends ES6Error {
         }
     }
 }
-
 
 export default {
     ExtendableError,

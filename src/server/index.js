@@ -21,10 +21,8 @@ import webpackHotServerMiddleware from 'webpack-hot-server-middleware';
 import clientConfig from '../../webpack/ssr/client';
 import serverConfig from '../../webpack/ssr/server';
 
-
 const DEBUG = !(['production', 'development', 'staging'].includes(process.env.NODE_ENV));
 const DEVELOPMENT = (['development', 'staging'].includes(process.env.NODE_ENV));
-
 
 // Redefined publicPath and outputPath instead of import clientConfig to solve
 // prod importation problems
@@ -35,7 +33,6 @@ const app = new Koa();
 app.use(helmet());
 app.use(cookie());
 app.use(compress());
-
 
 // let's encrypt config
 const resolve = (p) => path.resolve(__dirname, p);
@@ -90,7 +87,6 @@ if (DEVELOPMENT) {
         serverRendererOptions: {outputPath},
         createHandler: webpackHotServerMiddleware.createKoaHandler,
     }));
-
 
     // uncomment this code block for debugging service worker behaviour in development
     // / https://github.com/goldhand/sw-precache-webpack-plugin#webpack-dev-server-support
