@@ -21,7 +21,7 @@ For testing with prod config:
 `yarn start:prod`
 
 For testing in electron, run:
-`yarn dev`
+`yarn start:electron-dev`
 
 For packaging for electron:
 ```
