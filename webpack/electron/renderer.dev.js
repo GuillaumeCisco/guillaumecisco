@@ -10,10 +10,9 @@ import config from 'config';
 import baseConfig from './base';
 import rules from '../utils/rules';
 import definePlugin from '../utils/plugins/definePlugin';
-import dll from '../utils/plugins/dll';
 
-const port = process.env.PORT || 1212;
-const publicPath = `http://localhost:${port}/dist`;
+const port = process.env.NODE_PORT || 1212;
+const publicPath = `http://127.0.0.1:${port}/`;
 
 export default merge.smart(baseConfig, {
     devtool: 'inline-source-map',
@@ -21,14 +20,14 @@ export default merge.smart(baseConfig, {
     target: 'electron-renderer',
 
     entry: [
-        'babel-polyfill',
-        `webpack-dev-server/client?http://localhost:${port}/`,
+        '@babel/polyfill',
+        `webpack-dev-server/client?${publicPath}/`,
         'webpack/hot/only-dev-server',
         path.join(__dirname, '../../src/client/index.js'),
     ],
 
     output: {
-        publicPath: `http://localhost:${port}/dist/`,
+        publicPath,
     },
 
     module: {
@@ -49,16 +48,37 @@ export default merge.smart(baseConfig, {
                             disableWarnings: true,
                         }],
                         'emotion',
-                        'transform-runtime',
+                        '@babel/plugin-transform-runtime',
                         'lodash',
-                        'transform-class-properties',
-                        'transform-es2015-classes',
                         'react-hot-loader/babel',
+
+                        // Stage 0
+                        '@babel/plugin-proposal-function-bind',
+
+                        // Stage 1
+                        '@babel/plugin-proposal-export-default-from',
+                        '@babel/plugin-proposal-logical-assignment-operators',
+                        ['@babel/plugin-proposal-optional-chaining', {loose: false}],
+                        ['@babel/plugin-proposal-pipeline-operator', {proposal: 'minimal'}],
+                        ['@babel/plugin-proposal-nullish-coalescing-operator', {loose: false}],
+                        '@babel/plugin-proposal-do-expressions',
+
+                        // Stage 2
+                        ['@babel/plugin-proposal-decorators', {legacy: true}],
+                        '@babel/plugin-proposal-function-sent',
+                        '@babel/plugin-proposal-export-namespace-from',
+                        '@babel/plugin-proposal-numeric-separator',
+                        '@babel/plugin-proposal-throw-expressions',
+
+                        // Stage 3
+                        '@babel/plugin-syntax-dynamic-import',
+                        '@babel/plugin-syntax-import-meta',
+                        ['@babel/plugin-proposal-class-properties', {loose: true}],
+                        '@babel/plugin-proposal-json-strings',
                     ],
                     presets: [
-                        'env',
-                        'react',
-                        'stage-0',
+                        ['@babel/preset-env', {modules: false}],
+                        '@babel/preset-react',
                     ],
                 },
             }],
@@ -70,7 +90,7 @@ export default merge.smart(baseConfig, {
             title: `${config.appName} dev`,
             inject: true,
         }),
-        dll,
+        // dll,
         new ExtractCssChunks({
             filename: '[name].css',
             allChunks: false,
@@ -92,6 +112,7 @@ export default merge.smart(baseConfig, {
         port,
         publicPath,
         compress: true,
+        disableHostCheck: true,
         noInfo: true,
         stats: 'errors-only',
         inline: true,
@@ -108,7 +129,7 @@ export default merge.smart(baseConfig, {
             verbose: true,
             disableDotRule: false,
         },
-        setup() {
+        before() {
             if (process.env.START_HOT) {
                 console.log('Starting Main Process...');
                 spawn(

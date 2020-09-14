@@ -30,7 +30,7 @@
 
         "eslint": "cd packages/eslint && npm run eslint",
 
-        "dev": "cd packages/electron && npm run dev",
+        "start:electron-dev": "cd packages/electron && npm run start:electron-dev",
         "start-main-dev": "cd packages/electron && npm run start-main-dev",
         "start:electron": "cd packages/electron && npm run start:electron",
         "build:electron": "cd packages/electron && npm run build:electron",
