@@ -48,7 +48,7 @@
         "test",
         "eslint"
     ],
-    "browserslist": "electron 1.6",
+    "browserslist": ["electron 1.6"],
     "main": "./build/electron/index.js",
     "build": {
         "appId": "org.guillaumecisco.website",
