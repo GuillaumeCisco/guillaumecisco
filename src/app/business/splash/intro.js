@@ -1,25 +1,41 @@
 import React from 'react';
-import Typist from 'react-typist';
+import Typical from 'react-typical';
 import {css} from 'emotion';
 
-const cursor = {
-    show: false,
-};
-
-const intro = css`
+const pos = css`
     position: absolute;
     z-index: 2;
-    top: 15px;
     left: 15px;
     color: green;
+
+    &:after {
+        content: "" !important;
+    }
+`;
+
+const intro = css`
+    ${pos};
+    top: 15px;
+`;
+
+const intro2 = css`
+    ${pos};
+    top: 39px;
 `;
 
 const Intro = () => (
-    <Typist cursor={cursor} className={intro}>
-        Welcome into (my) space.
-        <br />
-        Please click on the core star for instructions.
-    </Typist>
+    <>
+        <Typical
+            steps={['Welcome into (my) space.']}
+            wrapper="span"
+            className={intro}
+        />
+        <Typical
+            steps={[1700, 'Please click on the core star for instructions.']}
+            wrapper="span"
+            className={intro2}
+        />
+    </>
 );
 
 export default Intro;
