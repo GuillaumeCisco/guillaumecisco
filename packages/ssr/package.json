@@ -23,7 +23,7 @@
         "@emotion/core": "10.0.21",
         "@emotion/styled": "10.0.17",
         "babel-runtime": "6.26.0",
-        "d3": "5.12.0",
+        "d3": "7.0.0",
         "emotion": "10.0.17",
         "emotion-server": "10.0.17",
         "fastclick": "1.0.6",
