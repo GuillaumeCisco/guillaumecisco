@@ -2,39 +2,52 @@
 
 ## Installation
 
-This project use yarn and the experimental yarn workspaces for package.json splitting and convenience.
+This project uses yarn and the experimental yarn workspaces for package.json splitting and convenience.
+
+```shell
+$>  $> npm -v
+6.14.12
+$> npm install yarn@1.22.22
+$> PYTHON=python2.7 ./node_modules/.bin/yarn version
+yarn version v1.22.22
+info Current version: 0.0.1
+question New version: 
+Done in 1.47s.
+$> $> node -v
+v10.24.1
+```
 
 Please install the last version of yarn and run 
-`yarn config set workspaces-experimental true`
+`PYTHON=python2.7 ./node_modules/.bin/yarn config set workspaces-experimental true`
 
 Then run:
-`yarn install`
+`PYTHON=python2.7 ./node_modules/.bin/yarn install`
 
 For electron, you need to install `libgconf-2-4`
 
 `sudo apt install libgconf-2-4`
 
 For testing and developping on the projet with true hot module replacement, run
-`yarn start`
+`PYTHON=python2.7 ./node_modules/.bin/yarn start`
 
 For testing with prod config:
-`yarn start:prod`
+`PYTHON=python2.7 ./node_modules/.bin/yarn start:prod`
 
 For testing in electron, run:
-`yarn start:electron-dev`
+`PYTHON=python2.7 ./node_modules/.bin/yarn start:electron-dev`
 
 For packaging for electron:
 ```
-yarn build:electron
-yarn build-electron
-yarn package-all
+PYTHON=python2.7 ./node_modules/.bin/yarn build:electron
+PYTHON=python2.7 ./node_modules/.bin/yarn build-electron
+PYTHON=python2.7 ./node_modules/.bin/yarn package-all
 ```
 
 For building the production website and deploy it, run:
 Before deploying, create a file deploy.js in the tools folder with your param
 ```
-yarn build:main
-yarn deploy
+PYTHON=python2.7 ./node_modules/.bin/yarn build:main
+PYTHON=python2.7 ./node_modules/.bin/yarn deploy
 ```
 
 You can now stop the task on aws ECS, it will restart automatically, if you did not define an autoscaling policy.
@@ -48,16 +61,16 @@ More information in the cache part below.
 ## Test and Cover
 
 For running the test suite:
-`yarn test`
+`PYTHON=python2.7 ./node_modules/.bin/yarn test`
 
 For displaying covering:
-`yarn cover`
+`PYTHON=python2.7 ./node_modules/.bin/yarn cover`
 
 
 ## Eslint
 
 For displaying lint errors:
-`yarn eslint`
+`PYTHON=python2.7 ./node_modules/.bin/yarn eslint`
 
 ## Cache
 
@@ -92,7 +105,7 @@ Disable redis for testing this project in ssl with `-p 8001:8443`.
 
 ## Encryption files creation
 
-For creating your own self signed certificates
+For creating your own self-signed certificates
 
 https://blog.didierstevens.com/2008/12/30/howto-make-your-own-cert-with-openssl/
 ```shell
@@ -183,3 +196,53 @@ TODO: create a cronjob for renewing certificate and `docker restart container_na
 Maybe better use webroot plugin
 
 Tip: For getting container name : `docker ps --format '{{.Names}}' | grep ecs-guillaumecisco`
+
+### Deploy
+
+```shell
+$> aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 984406419997.dkr.ecr.eu-central-1.amazonaws.com
+```
+
+Create a deploy.js file with the right variables.
+
+```shell
+$> sudo systemctl reload nginx
+```
+
+### Nginx conf
+
+`/etc/nginx/conf.d/guillaumecisco.conf`
+
+```
+# Redirection HTTP -> HTTPS
+server {
+    listen 80;
+    server_name guillaumecisco.com www.guillaumecisco.com;
+
+    return 301 https://$host$request_uri;
+}
+
+# Virtual host HTTPS
+server {
+    listen 443 ssl;
+    server_name guillaumecisco.com www.guillaumecisco.com;
+
+    ssl_certificate     /etc/letsencrypt/live/guillaumecisco.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/guillaumecisco.com/privkey.pem;
+
+    # Proxy vers ton conteneur Docker
+    location / {
+        proxy_pass https://127.0.0.1:8001;
+
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Comme ton backend est en HTTPS avec un certificat probablement
+        # auto-signé ou pas aligné sur le hostname, on désactive la vérif :
+        proxy_ssl_server_name on;
+        proxy_ssl_verify     off;
+    }
+}
+```

@@ -36,3 +36,4 @@ encryption/*
 
 # custom deploy script
 tools/deploy.js
+.node_version

@@ -11,7 +11,7 @@
         "url": "https://github.com/GuillaumeCisco/guillaumecisco"
     },
     "engines": {
-        "node": ">=8.4.0",
+        "node": ">=10.24.1",
         "npm": ">=5.3.0"
     },
     "workspaces": [
@@ -24,12 +24,9 @@
         "build:client": "cd packages/ssr && npm run build:client",
         "build:node": "cd packages/ssr && npm run build:node",
         "serve": "cd packages/ssr && npm run serve",
-
         "test": "cd packages/test && npm run test",
         "cover": "cd packages/test && npm run cover",
-
         "eslint": "cd packages/eslint && npm run eslint",
-
         "start:electron-dev": "cd packages/electron && npm run start:electron-dev",
         "start-main-dev": "cd packages/electron && npm run start-main-dev",
         "start:electron": "cd packages/electron && npm run start:electron",
@@ -39,7 +36,6 @@
         "package-linux": "cd packages/electron && npm run package-linux",
         "package-win": "cd packages/electron && npm run package-win",
         "build-electron": "build --publish never",
-
         "deploy": "tools/deploy.js",
         "precommit-msg": "echo 'Pre-commit checks...' && exit 0"
     },
@@ -48,7 +44,9 @@
         "test",
         "eslint"
     ],
-    "browserslist": ["electron 1.6"],
+    "browserslist": [
+        "electron 1.6"
+    ],
     "main": "./build/electron/index.js",
     "build": {
         "appId": "org.guillaumecisco.website",
@@ -90,5 +88,9 @@
                 }
             ]
         }
+    },
+    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+    "dependencies": {
+        "yarn": "^1.22.22"
     }
 }
