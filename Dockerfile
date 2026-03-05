@@ -42,7 +42,7 @@ ENV NODE_ENV=production \
     REDIS_HOST=$redis_host \
     REDIS_PORT=$redis_port
 
-RUN apk add --update --no-cache python3 make g++ nano
+RUN apk add --update --no-cache python3 make g++
 RUN rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg \
  && npm install -g corepack \
  && corepack enable
