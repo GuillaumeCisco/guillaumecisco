@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/static/css/main.8e8fe385.css",
-    "main.js": "/static/js/main.16e35cc0657b6b904293.js",
-    "modal.js": "/static/js/modal.16e35cc0657b6b904293.chunk.js",
-    "core.js": "/static/js/core.16e35cc0657b6b904293.chunk.js",
-    "planets-experience.js": "/static/js/planets-experience.16e35cc0657b6b904293.chunk.js",
-    "planets-awards.js": "/static/js/planets-awards.16e35cc0657b6b904293.chunk.js",
-    "planets-skills.js": "/static/js/planets-skills.16e35cc0657b6b904293.chunk.js",
-    "spaceship.js": "/static/js/spaceship.16e35cc0657b6b904293.chunk.js",
+    "main.js": "/static/js/main.16a7b2302ba432e4fde2.js",
+    "modal.js": "/static/js/modal.16a7b2302ba432e4fde2.chunk.js",
+    "core.js": "/static/js/core.16a7b2302ba432e4fde2.chunk.js",
+    "planets-experience.js": "/static/js/planets-experience.16a7b2302ba432e4fde2.chunk.js",
+    "planets-awards.js": "/static/js/planets-awards.16a7b2302ba432e4fde2.chunk.js",
+    "planets-skills.js": "/static/js/planets-skills.16a7b2302ba432e4fde2.chunk.js",
+    "spaceship.js": "/static/js/spaceship.16a7b2302ba432e4fde2.chunk.js",
     "static/media/mars.png": "/static/media/mars.3093ad9dcd0e3bcd1b81.png",
     "static/media/blue.png": "/static/media/blue.e4cc071ef12b6c691330.png",
     "static/media/white.png": "/static/media/white.7d2dbed84f10888f09f2.png",
@@ -29,16 +29,16 @@
     "static/media/nunito-regular-webfont.woff2": "/static/media/nunito-regular-webfont.b40017e18fca443c2c35.woff2",
     "static/media/nunito-light-webfont.woff2": "/static/media/nunito-light-webfont.78fcc804b33e35205520.woff2",
     "main.8e8fe385.css.map": "/static/css/main.8e8fe385.css.map",
-    "main.js.map": "/static/js/main.16e35cc0657b6b904293.js.map",
-    "modal.chunk.js.map": "/static/js/modal.16e35cc0657b6b904293.chunk.js.map",
-    "core.chunk.js.map": "/static/js/core.16e35cc0657b6b904293.chunk.js.map",
-    "planets-experience.chunk.js.map": "/static/js/planets-experience.16e35cc0657b6b904293.chunk.js.map",
-    "planets-awards.chunk.js.map": "/static/js/planets-awards.16e35cc0657b6b904293.chunk.js.map",
-    "planets-skills.chunk.js.map": "/static/js/planets-skills.16e35cc0657b6b904293.chunk.js.map",
-    "spaceship.chunk.js.map": "/static/js/spaceship.16e35cc0657b6b904293.chunk.js.map"
+    "main.js.map": "/static/js/main.16a7b2302ba432e4fde2.js.map",
+    "modal.chunk.js.map": "/static/js/modal.16a7b2302ba432e4fde2.chunk.js.map",
+    "core.chunk.js.map": "/static/js/core.16a7b2302ba432e4fde2.chunk.js.map",
+    "planets-experience.chunk.js.map": "/static/js/planets-experience.16a7b2302ba432e4fde2.chunk.js.map",
+    "planets-awards.chunk.js.map": "/static/js/planets-awards.16a7b2302ba432e4fde2.chunk.js.map",
+    "planets-skills.chunk.js.map": "/static/js/planets-skills.16a7b2302ba432e4fde2.chunk.js.map",
+    "spaceship.chunk.js.map": "/static/js/spaceship.16a7b2302ba432e4fde2.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.8e8fe385.css",
-    "static/js/main.16e35cc0657b6b904293.js"
+    "static/js/main.16a7b2302ba432e4fde2.js"
   ]
 }

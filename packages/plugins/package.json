@@ -27,6 +27,7 @@
         "case-sensitive-paths-webpack-plugin": "2.4.0",
         "css-loader": "6.8.1",
         "css-minimizer-webpack-plugin": "5.0.1",
+        "eslint-webpack-plugin": "5.0.3",
         "workbox-webpack-plugin": "7.0.0"
     }
 }

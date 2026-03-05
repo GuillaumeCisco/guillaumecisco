@@ -1,6 +1,6 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
-import {injectSlice} from 'redux-lazy-hmr';
 import rootReducer from './reducers';
+import injectSlice from "../lib/src/injectSlice";
 
 const configureAppStore = (preloadedState) => {
     const store = configureStore({

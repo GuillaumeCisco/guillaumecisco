@@ -10,7 +10,6 @@
         "eslint-plugin-jsx-a11y": "6.10.2",
         "eslint-plugin-mocha": "11.2.0",
         "eslint-plugin-react": "7.37.5",
-        "eslint-webpack-plugin": "5.0.3",
         "globals": "17.4.0"
     },
     "scripts": {
