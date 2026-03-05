@@ -1,7 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
-const Close = ({width, height, color}) => (
+const Close = ({width = 24, height = 24, color = '#eeeeee'}) => (
     <svg
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
@@ -26,12 +25,6 @@ Close.propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
     color: PropTypes.string,
-};
-
-Close.defaultProps = {
-    width: 24,
-    height: 24,
-    color: '#eeeeee',
 };
 
 export default Close;

@@ -1,6 +1,6 @@
 import random from 'lodash-es/random';
 
-const Star = function Stars(w, h, size, orbitA, orbitB, teta, padding) {
+const Star = function Star(w, h, size, orbitA, orbitB, teta, padding) {
     this.originW = this.w = w;
     this.originH = this.h = h;
     this.size = size;

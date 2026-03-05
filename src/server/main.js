@@ -1,5 +1,6 @@
 import path from 'path';
 import express from 'express';
+<<<<<<< HEAD
 import {createHttpTerminator} from 'http-terminator';
 import {createLightship} from 'lightship';
 import React from 'react';
@@ -7,13 +8,24 @@ import {renderToString} from 'react-dom/server';
 import {ChunkExtractor} from '@loadable/server';
 import {Provider} from 'react-redux';
 import {StaticRouter} from 'react-router-dom/server';
+=======
+import { createLifecycleServer } from '@guillaumecisco/terminus-lifecycle'
+import {renderToString} from 'react-dom/server';
+import {ChunkExtractor} from '@loadable/server';
+import {Provider} from 'react-redux';
+import {StaticRouter} from 'react-router';
+>>>>>>> be17549 (update code to last dependencies and last usage)
 import configureAppStore from '../app/store';
 
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const {
+<<<<<<< HEAD
     READINESS_PERIOD_SECONDS, READINESS_FAILURE_THRESHOLD, DASHBOARD_PORT = 3000, LIGHTSHIP_PORT = 9000,
+=======
+    DASHBOARD_PORT = 3000, LIFECYCLE_PORT = 9000,
+>>>>>>> be17549 (update code to last dependencies and last usage)
 } = process.env;
 
 const app = express();
@@ -24,12 +36,20 @@ app.use(express.static(path.join(__dirname, '../../public'), {index: false}));
 // app.use(express.urlencoded());
 
 if (process.env.NODE_ENV !== 'production') {
+<<<<<<< HEAD
     /* eslint-disable global-require, import/no-extraneous-dependencies */
+=======
+
+>>>>>>> be17549 (update code to last dependencies and last usage)
     const {default: webpackConfig} = require('../../config/webpack.config.babel.js');
     const webpackDevMiddleware = require('webpack-dev-middleware');
     const webpackHotMiddleware = require('webpack-hot-middleware');
     const webpack = require('webpack');
+<<<<<<< HEAD
     /* eslint-enable global-require, import/no-extraneous-dependencies */
+=======
+
+>>>>>>> be17549 (update code to last dependencies and last usage)
     const multiCompiler = webpack(webpackConfig);
     const clientCompiler = multiCompiler.compilers[0];
 
@@ -84,7 +104,11 @@ const webStats = path.resolve(
     '../../public/dist/web/loadable-stats.json',
 );
 
+<<<<<<< HEAD
 app.get('*', (req, res) => {
+=======
+app.get('/', (req, res) => {
+>>>>>>> be17549 (update code to last dependencies and last usage)
     const store = configureAppStore();
 
     const nodeExtractor = new ChunkExtractor({statsFile: nodeStats});
@@ -129,6 +153,7 @@ app.get('*', (req, res) => {
 });
 
 const main = async () => {
+<<<<<<< HEAD
     const lightship = await createLightship({
         shutdownDelay: Number(READINESS_PERIOD_SECONDS || 0) * Number(READINESS_FAILURE_THRESHOLD || 0) || 5000,
         detectKubernetes: process.env.NODE_ENV !== 'development',
@@ -157,3 +182,21 @@ const main = async () => {
 };
 
 main();
+=======
+    const lifecycle = createLifecycleServer({
+        port: Number(LIFECYCLE_PORT),
+        onShutdown: async () => {
+            const msg = 'will close server and connections';
+            console.log(msg);
+        },
+    })
+
+    const server = app.listen(Number(DASHBOARD_PORT), async () => {
+        await lifecycle.setReady(true)
+        console.log(`Server started http://localhost:${DASHBOARD_PORT}`);
+        server.keepAliveTimeout = 0;
+    });
+};
+
+main().catch(console.error);
+>>>>>>> be17549 (update code to last dependencies and last usage)

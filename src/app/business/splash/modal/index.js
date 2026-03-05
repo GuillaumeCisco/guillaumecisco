@@ -1,110 +1,58 @@
-import React from 'react';
+import {useCallback} from 'react';
 import PropTypes from 'prop-types';
-import styled from '@emotion/styled';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import universal from 'react-universal-component';
+import {useDispatch, useSelector} from 'react-redux';
 
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import Content from './content';
+import {visible as setModalVisible} from './reducer';
+import Close from '../../../common/ui/svgs/close';
+import style from './style';
 
-import actions from './actions';
+const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
 
-import Close from './close';
+function Modal() {
+  const dispatch = useDispatch();
 
-const Core = universal(import('./core/index'));
-const Experience = universal(import('./planets/experience'));
-const Awards = universal(import('./planets/awards'));
-const Skills = universal(import('./planets/skills'));
-const Spaceshift = universal(import('./spaceshift'));
+  const component = useSelector((state) => state.modal.component);
+  const visible = useSelector((state) => state.modal.visible);
 
-const Container = styled('div')`
-    position: absolute;
-    top: 5%;
-    left: 5%;
-    right: 5%;
-    bottom: 5%;
-    z-index: 2;
-    text-align:center;
-    background-color: rgba(0, 0, 0, 0.9);
-    border-radius: 10px;
-    font-size: 24px;
-    padding: 4%;
-    color: #fff;
-`;
+  const close = useCallback(() => {
+    dispatch(setModalVisible(false));
+  }, [dispatch]);
 
-const CloseComponent = styled('div')`
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    cursor: pointer;
-`;
+  if (!visible) return null;
 
-const Content = ({type}) => {
-    switch (type) {
-        case 'core':
-            return <Core />;
-        case 'experience':
-            return <Experience />;
-        case 'awards':
-            return <Awards />;
-        case 'skills':
-            return <Skills />;
-        case 'spaceshift':
-            return <Spaceshift />;
-        default:
-            return null;
+  const ScrollWrapper = (() => {
+    if (!isBrowser) return ({children}) => children;
+
+    try {
+      const mod = require('react-perfect-scrollbar');
+      const Cmp = mod?.default ?? mod?.PerfectScrollbar ?? mod;
+      return typeof Cmp === 'function' ? Cmp : ({children}) => children;
+    } catch {
+      return ({children}) => children;
     }
-};
+  })();
 
-Content.propTypes = {
-    type: PropTypes.string.isRequired,
-};
-
-class Modal extends React.Component {
-    close = () => {
-        const {setVisible} = this.props;
-        setVisible(false);
-    };
-
-    render() {
-        const {component, visible} = this.props;
-
-        return visible
-            && (
-            <Container>
-                <PerfectScrollbar>
-                    <Content type={component} />
-                </PerfectScrollbar>
-                <CloseComponent onClick={this.close}>
-                    <Close />
-                </CloseComponent>
-            </Container>
-);
-    }
+  return (
+    <div css={style.container}>
+      <ScrollWrapper>
+        <Content type={component} />
+      </ScrollWrapper>
+      <div css={style.close} onClick={close}>
+        <Close />
+      </div>
+    </div>
+  );
 }
 
-const noop = () => {
-};
-
 Modal.propTypes = {
-    setVisible: PropTypes.func,
-    component: PropTypes.string,
-    visible: PropTypes.bool,
+  component: PropTypes.string,
+  visible: PropTypes.bool,
 };
 
 Modal.defaultProps = {
-    component: '',
-    setVisible: noop,
-    visible: false,
+  component: '',
+  visible: false,
 };
 
-const mapStateToProps = (state, ownProps) => ({
-    component: state.modal.component,
-    visible: state.modal.visible,
-});
-
-const mapDispatchToProps = (dispatch) => bindActionCreators({
-    setVisible: actions.visible,
-}, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(Modal);
+export default Modal;

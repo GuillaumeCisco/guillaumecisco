@@ -1,6 +1,7 @@
 {
     "private": true,
     "name": "guillaumecisco",
+    "packageManager": "yarn@4.13.0",
     "productName": "Guillaume Cisco Website",
     "author": "Guillaume Cisco <guillaumecisco@gmail.com>",
     "version": "0.0.1",
@@ -11,86 +12,44 @@
         "url": "https://github.com/GuillaumeCisco/guillaumecisco"
     },
     "engines": {
-        "node": ">=10.24.1",
-        "npm": ">=5.3.0"
+        "node": ">=22.0.0"
     },
     "workspaces": [
         "packages/*"
     ],
     "scripts": {
-        "start": "cd packages/ssr && npm run start",
-        "start:prod": "cd packages/ssr && npm run start:prod",
-        "build:main": "cd packages/ssr && npm run build:main",
-        "build:client": "cd packages/ssr && npm run build:client",
-        "build:node": "cd packages/ssr && npm run build:node",
+        "dev": "cd packages/ssr && yarn build:dev && cd ../.. && nodemon src/server/main.js",
+        "build": "rm -Rf ./public && NODE_ENV=production yarn build:webpack && yarn build:lib",
+        "build:dev": "rm -Rf ./public && NODE_ENV=development yarn build:webpack",
+        "build:webpack": "cd packages/ssr && npm run build:webpack",
+        "build:lib": "cd packages/ssr && npm run build:lib",
+        "start": "NODE_ENV=production node lib/server/main.js",
+        "clean": "rimraf lib && rimraf public",
         "serve": "cd packages/ssr && npm run serve",
         "test": "cd packages/test && npm run test",
         "cover": "cd packages/test && npm run cover",
         "eslint": "cd packages/eslint && npm run eslint",
-        "start:electron-dev": "cd packages/electron && npm run start:electron-dev",
-        "start-main-dev": "cd packages/electron && npm run start-main-dev",
-        "start:electron": "cd packages/electron && npm run start:electron",
-        "build:electron": "cd packages/electron && npm run build:electron",
-        "package": "cd packages/electron && npm run package",
-        "package-all": "cd packages/electron && npm run package-all",
-        "package-linux": "cd packages/electron && npm run package-linux",
-        "package-win": "cd packages/electron && npm run package-win",
-        "build-electron": "build --publish never",
         "deploy": "tools/deploy.js",
         "precommit-msg": "echo 'Pre-commit checks...' && exit 0"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
     },
     "pre-commit": [
         "precommit-msg",
         "test",
         "eslint"
     ],
-    "browserslist": [
-        "electron 1.6"
-    ],
-    "main": "./build/electron/index.js",
-    "build": {
-        "appId": "org.guillaumecisco.website",
-        "productName": "Guillaume Cisco's website",
-        "directories": {
-            "buildResources": "resources",
-            "output": "release"
-        },
-        "files": [
-            "build/electron/**/*"
-        ],
-        "linux": {
-            "target": [
-                "deb",
-                "AppImage"
-            ]
-        },
-        "mac": {
-            "target": "dmg"
-        },
-        "win": {
-            "target": "nsis"
-        },
-        "nsis": {
-            "artifactName": "${productName}_${version}_win.${ext}"
-        },
-        "dmg": {
-            "artifactName": "${productName}_${version}_mac.${ext}",
-            "contents": [
-                {
-                    "x": 130,
-                    "y": 220
-                },
-                {
-                    "x": 410,
-                    "y": 220,
-                    "type": "link",
-                    "path": "/Applications"
-                }
-            ]
-        }
-    },
-    "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
-    "dependencies": {
-        "yarn": "^1.22.22"
+    "devDependencies": {
+        "nodemon": "^3.1.14"
     }
 }

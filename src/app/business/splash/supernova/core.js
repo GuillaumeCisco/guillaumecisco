@@ -1,72 +1,45 @@
-import React, {Component} from 'react';
-import {onlyUpdateForKeys} from 'recompose';
+import {memo, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 
 import Canvas from './canvas';
 
-class Core extends Component {
-    state = {};
+function Core({w, h, radius}) {
+  const canvasRef = useRef(null);
+  const ctxRef = useRef(null);
 
-    componentDidMount() {
-        this.init();
-    }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !w || !h) return;
 
-    static getDerivedStateFromProps = (props, state) => props;
+    canvas.width = w;
+    canvas.height = h;
 
-    componentDidUpdate(prevProps, prevState) {
-        this.resize(prevProps); // redraw on resize
-    }
+    const ctx = canvas.getContext('2d');
+    ctxRef.current = ctx;
 
-    init = () => {
-        const {w, h, radius} = this.props;
+    ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
 
-        // create center
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.radius = radius;
-        this.ctx = this.canvas.getContext('2d');
-        this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
-        this.r = 255;
-        this.g = 250;
-        this.b = 230;
-        this.alpha = 0.9;
-        this.draw();
-    };
+    const r = 255;
+    const g = 250;
+    const b = 230;
+    const alpha = 0.9;
 
-    draw = () => {
-        // center
-        this.ctx.beginPath();
-        this.ctx.arc(0, 0, this.radius, 0, Math.PI * 2); // full centered circle
-        this.ctx.fillStyle = `rgba(${this.r}, ${this.g}, ${this.b}, ${this.alpha})`;
-        this.ctx.shadowBlur = 100;
-        this.ctx.shadowColor = `rgb(${this.r}, ${this.g}, ${this.b})`;
-        this.ctx.fill();
-    };
+    ctx.clearRect(-w, -h, 2 * w, 2 * h);
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    ctx.shadowBlur = 100;
+    ctx.shadowColor = `rgb(${r}, ${g}, ${b})`;
+    ctx.fill();
+  }, [w, h, radius]);
 
-    resize = (props) => {
-        const {w, h, radius} = props;
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.radius = radius;
-        this.ctx.clearRect(-w, -h, 2 * w, 2 * h);
-        this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
-        this.draw();
-    };
-
-    render() {
-        return (
-            <Canvas ref={(e) => {
-                this.canvas = e;
-            }}
-            />
-        );
-    }
+  return <Canvas ref={canvasRef} />;
 }
 
 Core.propTypes = {
-    w: PropTypes.number.isRequired,
-    h: PropTypes.number.isRequired,
-    radius: PropTypes.number.isRequired,
+  w: PropTypes.number.isRequired,
+  h: PropTypes.number.isRequired,
+  radius: PropTypes.number.isRequired,
 };
 
-export default onlyUpdateForKeys(['w', 'h', 'radius'])(Core);
+export default memo(Core);

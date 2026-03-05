@@ -1,7 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
-const Github = ({width, height, color}) => (
+const Github = ({width = 48, height = 48, color = '#c9baba'}) => (
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 50 50"
@@ -20,13 +19,6 @@ Github.propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
     color: PropTypes.string,
-};
-
-Github.defaultProps = {
-    width: 48,
-    height: 48,
-    // color: '#181616'
-    color: '#c9baba',
 };
 
 export default Github;

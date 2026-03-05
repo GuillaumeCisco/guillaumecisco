@@ -1,89 +1,70 @@
-import React, {Component} from 'react';
+import {memo, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import random from 'lodash-es/random';
 import {timer} from 'd3-timer';
-import {onlyUpdateForKeys} from 'recompose';
 
 import Canvas from '../canvas';
 import Star from './star';
 
-class Stars extends Component {
-    state = {};
+function ShootingStars({w, h}) {
+  const canvasRef = useRef(null);
+  const ctxRef = useRef(null);
+  const timerRef = useRef(null);
 
-    constructor(props) {
-        super(props);
-        this.shootingStars = [];
-        this.luck = 100;
-        this.maxSteps = 70;
-    }
+  const shootingStarsRef = useRef([]);
+  const luckRef = useRef(100);
+  const maxStepsRef = useRef(70);
 
-    componentDidMount() {
-        this.init();
-    }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !w || !h) return;
 
-    static getDerivedStateFromProps = (props, state) => props // redraw on resize
-    ;
+    canvas.width = w;
+    canvas.height = h;
+    ctxRef.current = canvas.getContext('2d');
 
-    componentDidUpdate(prevProps, prevState) {
-        this.resize(prevProps); // redraw on resize
-    }
+    timerRef.current?.stop?.();
+    timerRef.current = timer(() => {
+      const ctx = ctxRef.current;
+      if (!ctx) return;
 
-    componentWillUnmount() {
-        this.timer.stop();
-    }
+      ctx.clearRect(-w, -h, 2 * w, 2 * h);
 
-    init = () => {
-        const {w, h} = this.props;
+      if (random(1, luckRef.current) === luckRef.current) {
+        shootingStarsRef.current.push(new Star(w, h));
+      }
 
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.ctx = this.canvas.getContext('2d');
-        this.timer = timer(this.animate);
+      shootingStarsRef.current = shootingStarsRef.current.filter(
+        (star) => star.getStep() <= maxStepsRef.current,
+      );
+
+      shootingStarsRef.current.forEach((star) => {
+        star.move();
+        star.draw(ctx);
+      });
+    });
+
+    return () => {
+      timerRef.current?.stop?.();
     };
+  }, [w, h]);
 
-    animate = (elapsed) => {
-        const {w, h} = this.props;
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = ctxRef.current;
+    if (!canvas || !ctx || !w || !h) return;
 
-        this.ctx.clearRect(-w, -h, 2 * w, 2 * h);
+    canvas.width = w;
+    canvas.height = h;
+    shootingStarsRef.current.forEach((star) => star.update(w, h));
+  }, [w, h]);
 
-        // launch a dice, if 100, add a shootingStar
-        if (random(1, this.luck) === this.luck) { // add shootingStar
-            this.shootingStars.push(new Star(w, h));
-        }
-        // remove finished shootingStars
-        this.shootingStars = this.shootingStars.filter((star) => star.getStep() <= this.maxSteps);
-
-        this.shootingStars.forEach((star) => {
-            // move by one step
-            star.move();
-            // draw new position
-            star.draw(this.ctx);
-        });
-    };
-
-    resize = (props) => {
-        const {w, h} = props;
-
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.shootingStars.forEach((star) => {
-            star.update(w, h);
-        });
-    };
-
-    render() {
-        return (
-            <Canvas ref={(e) => {
-                this.canvas = e;
-            }}
-            />
-        );
-    }
+  return <Canvas ref={canvasRef} />;
 }
 
-Stars.propTypes = {
-    w: PropTypes.number.isRequired,
-    h: PropTypes.number.isRequired,
+ShootingStars.propTypes = {
+  w: PropTypes.number.isRequired,
+  h: PropTypes.number.isRequired,
 };
 
-export default onlyUpdateForKeys(['w', 'h'])(Stars);
+export default memo(ShootingStars);

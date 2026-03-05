@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {actionTypes} from './actions';
 import modal from './business/splash/modal/reducer';
 
@@ -26,4 +27,14 @@ export const general = (state = initialState, {type, payload}) => {
 export default {
     general,
     modal,
+=======
+import generalSlice from './general';
+import uiSlice from './ui';
+import modalSlice from '../business/splash/modal/reducer';
+
+export default {
+    general: generalSlice.reducer,
+    modal: modalSlice.reducer,
+    ui: uiSlice.reducer,
+>>>>>>> be17549 (update code to last dependencies and last usage)
 };

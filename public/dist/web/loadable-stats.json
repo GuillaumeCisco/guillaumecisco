@@ -1,0 +1,919 @@
+{
+  "name": "client",
+  "hash": "fc6bd6b45df4ea7ce7f2",
+  "publicPath": "/dist/web/",
+  "outputPath": "/home/guillaume/Projects/guillaumecisco/public/dist/web",
+  "assetsByChunkName": {
+    "main": [
+      "static/js/main.fc6bd6b45df4ea7ce7f2.js",
+      "static/media/nunito-black-webfont.d6dcd8c52d83c2eb36ba.woff",
+      "static/media/nunito-black-webfont.70e186e41689f69e0f22.woff2",
+      "static/media/nunito-bold-webfont.73da2bd2f03f1251dd58.woff",
+      "static/media/nunito-bold-webfont.4a31a6afd806239d959b.woff2",
+      "static/media/nunito-extrabold-webfont.7ac49610567585fcc570.woff",
+      "static/media/nunito-extrabold-webfont.87c36d3f55e42d3d4454.woff2",
+      "static/media/nunito-extralight-webfont.7ec3dacbfcad83a733b7.woff",
+      "static/media/nunito-extralight-webfont.07bf2782ec178721bdba.woff2",
+      "static/media/nunito-light-webfont.5db290c7b5037e8ecfe3.woff",
+      "static/media/nunito-light-webfont.78fcc804b33e35205520.woff2",
+      "static/media/nunito-medium-webfont.1ccccd47ee16e380162e.woff",
+      "static/media/nunito-medium-webfont.389f18608076ef38bd41.woff2",
+      "static/media/nunito-regular-webfont.e1bc5f0d377163074109.woff",
+      "static/media/nunito-regular-webfont.b40017e18fca443c2c35.woff2",
+      "static/media/nunito-semibold-webfont.8d871c30dd8e25c7426c.woff",
+      "static/media/nunito-semibold-webfont.cd7c5240fb038a58bcbb.woff2",
+      "static/media/blue.e4cc071ef12b6c691330.png",
+      "static/media/mars.3093ad9dcd0e3bcd1b81.png",
+      "static/media/white.7d2dbed84f10888f09f2.png",
+      "static/js/main.fc6bd6b45df4ea7ce7f2.js.map"
+    ],
+    "modal": [
+      "static/js/modal.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "static/js/modal.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+    ],
+    "core": [
+      "static/js/core.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "static/js/core.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+    ],
+    "planets-experience": [
+      "static/js/planets-experience.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "static/js/planets-experience.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+    ],
+    "planets-awards": [
+      "static/js/planets-awards.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "static/js/planets-awards.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+    ],
+    "planets-skills": [
+      "static/js/planets-skills.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "static/js/planets-skills.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+    ],
+    "spaceship": [
+      "static/js/spaceship.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "static/js/spaceship.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+    ]
+  },
+  "assets": [
+    {
+      "type": "asset",
+      "name": "static/js/main.fc6bd6b45df4ea7ce7f2.js",
+      "size": 2407240,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "immutable": true,
+        "fullhash": "fc6bd6b45df4ea7ce7f2",
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "static/js/main.fc6bd6b45df4ea7ce7f2.js.map"
+        }
+      },
+      "chunkNames": [
+        "main"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "main"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "static/media/mars.3093ad9dcd0e3bcd1b81.png",
+      "size": 245654,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/business/splash/supernova/planet/mars.png",
+        "immutable": true,
+        "contenthash": "3093ad9dcd0e3bcd1b81"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/blue.e4cc071ef12b6c691330.png",
+      "size": 220070,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/business/splash/supernova/planet/blue.png",
+        "immutable": true,
+        "contenthash": "e4cc071ef12b6c691330"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/white.7d2dbed84f10888f09f2.png",
+      "size": 191908,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/business/splash/supernova/planet/white.png",
+        "immutable": true,
+        "contenthash": "7d2dbed84f10888f09f2"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/js/vendors-node_modules_react-perfect-scrollbar_lib_index_js.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "size": 47076,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "immutable": true,
+        "fullhash": "fc6bd6b45df4ea7ce7f2",
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "static/js/vendors-node_modules_react-perfect-scrollbar_lib_index_js.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+        }
+      },
+      "chunkNames": [],
+      "chunkIdHints": [
+        "vendors"
+      ],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "vendors-node_modules_react-perfect-scrollbar_lib_index_js"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "static/js/modal.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "size": 38325,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "immutable": true,
+        "fullhash": "fc6bd6b45df4ea7ce7f2",
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "static/js/modal.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+        }
+      },
+      "chunkNames": [
+        "modal"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "modal"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "static/js/planets-experience.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "size": 36881,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "immutable": true,
+        "fullhash": "fc6bd6b45df4ea7ce7f2",
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "static/js/planets-experience.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+        }
+      },
+      "chunkNames": [
+        "planets-experience"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "planets-experience"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-black-webfont.d6dcd8c52d83c2eb36ba.woff",
+      "size": 28992,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-black-webfont.woff",
+        "immutable": true,
+        "contenthash": "d6dcd8c52d83c2eb36ba"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-extrabold-webfont.7ac49610567585fcc570.woff",
+      "size": 28580,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-extrabold-webfont.woff",
+        "immutable": true,
+        "contenthash": "7ac49610567585fcc570"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-semibold-webfont.8d871c30dd8e25c7426c.woff",
+      "size": 28536,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-semibold-webfont.woff",
+        "immutable": true,
+        "contenthash": "8d871c30dd8e25c7426c"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-medium-webfont.1ccccd47ee16e380162e.woff",
+      "size": 28284,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-medium-webfont.woff",
+        "immutable": true,
+        "contenthash": "1ccccd47ee16e380162e"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-bold-webfont.73da2bd2f03f1251dd58.woff",
+      "size": 28004,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-bold-webfont.woff",
+        "immutable": true,
+        "contenthash": "73da2bd2f03f1251dd58"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-extralight-webfont.7ec3dacbfcad83a733b7.woff",
+      "size": 27924,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-extralight-webfont.woff",
+        "immutable": true,
+        "contenthash": "7ec3dacbfcad83a733b7"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-regular-webfont.e1bc5f0d377163074109.woff",
+      "size": 27312,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-regular-webfont.woff",
+        "immutable": true,
+        "contenthash": "e1bc5f0d377163074109"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-light-webfont.5db290c7b5037e8ecfe3.woff",
+      "size": 27012,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-light-webfont.woff",
+        "immutable": true,
+        "contenthash": "5db290c7b5037e8ecfe3"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-black-webfont.70e186e41689f69e0f22.woff2",
+      "size": 22640,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-black-webfont.woff2",
+        "immutable": true,
+        "contenthash": "70e186e41689f69e0f22"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-extrabold-webfont.87c36d3f55e42d3d4454.woff2",
+      "size": 22304,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-extrabold-webfont.woff2",
+        "immutable": true,
+        "contenthash": "87c36d3f55e42d3d4454"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-semibold-webfont.cd7c5240fb038a58bcbb.woff2",
+      "size": 22304,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-semibold-webfont.woff2",
+        "immutable": true,
+        "contenthash": "cd7c5240fb038a58bcbb"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-medium-webfont.389f18608076ef38bd41.woff2",
+      "size": 22036,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-medium-webfont.woff2",
+        "immutable": true,
+        "contenthash": "389f18608076ef38bd41"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-bold-webfont.4a31a6afd806239d959b.woff2",
+      "size": 21796,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-bold-webfont.woff2",
+        "immutable": true,
+        "contenthash": "4a31a6afd806239d959b"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-extralight-webfont.07bf2782ec178721bdba.woff2",
+      "size": 21768,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-extralight-webfont.woff2",
+        "immutable": true,
+        "contenthash": "07bf2782ec178721bdba"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-regular-webfont.b40017e18fca443c2c35.woff2",
+      "size": 21220,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-regular-webfont.woff2",
+        "immutable": true,
+        "contenthash": "b40017e18fca443c2c35"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/media/nunito-light-webfont.78fcc804b33e35205520.woff2",
+      "size": 20880,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "sourceFilename": "src/app/common/ui/fonts/nunito/nunito-light-webfont.woff2",
+        "immutable": true,
+        "contenthash": "78fcc804b33e35205520"
+      },
+      "chunkNames": [],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [
+        "main"
+      ],
+      "auxiliaryChunkIdHints": [],
+      "chunks": [],
+      "auxiliaryChunks": [
+        "main"
+      ]
+    },
+    {
+      "type": "asset",
+      "name": "static/js/core.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "size": 18647,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "immutable": true,
+        "fullhash": "fc6bd6b45df4ea7ce7f2",
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "static/js/core.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+        }
+      },
+      "chunkNames": [
+        "core"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "core"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "static/js/planets-skills.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "size": 16299,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "immutable": true,
+        "fullhash": "fc6bd6b45df4ea7ce7f2",
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "static/js/planets-skills.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+        }
+      },
+      "chunkNames": [
+        "planets-skills"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "planets-skills"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "static/js/vendors-node_modules_web-vitals_dist_web-vitals_js.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "size": 12059,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "immutable": true,
+        "fullhash": "fc6bd6b45df4ea7ce7f2",
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "static/js/vendors-node_modules_web-vitals_dist_web-vitals_js.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+        }
+      },
+      "chunkNames": [],
+      "chunkIdHints": [
+        "vendors"
+      ],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "vendors-node_modules_web-vitals_dist_web-vitals_js"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "static/js/planets-awards.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "size": 8306,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "immutable": true,
+        "fullhash": "fc6bd6b45df4ea7ce7f2",
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "static/js/planets-awards.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+        }
+      },
+      "chunkNames": [
+        "planets-awards"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "planets-awards"
+      ],
+      "auxiliaryChunks": []
+    },
+    {
+      "type": "asset",
+      "name": "static/js/spaceship.fc6bd6b45df4ea7ce7f2.chunk.js",
+      "size": 4150,
+      "emitted": false,
+      "comparedForEmit": false,
+      "cached": true,
+      "info": {
+        "immutable": true,
+        "fullhash": "fc6bd6b45df4ea7ce7f2",
+        "javascriptModule": false,
+        "related": {
+          "sourceMap": "static/js/spaceship.fc6bd6b45df4ea7ce7f2.chunk.js.map"
+        }
+      },
+      "chunkNames": [
+        "spaceship"
+      ],
+      "chunkIdHints": [],
+      "auxiliaryChunkNames": [],
+      "auxiliaryChunkIdHints": [],
+      "filteredRelated": 1,
+      "chunks": [
+        "spaceship"
+      ],
+      "auxiliaryChunks": []
+    }
+  ],
+  "namedChunkGroups": {
+    "main": {
+      "name": "main",
+      "chunks": [
+        "main"
+      ],
+      "assets": [
+        {
+          "name": "static/js/main.fc6bd6b45df4ea7ce7f2.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 20,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "modal": {
+      "name": "modal",
+      "chunks": [
+        "vendors-node_modules_react-perfect-scrollbar_lib_index_js",
+        "modal"
+      ],
+      "assets": [
+        {
+          "name": "static/js/vendors-node_modules_react-perfect-scrollbar_lib_index_js.fc6bd6b45df4ea7ce7f2.chunk.js"
+        },
+        {
+          "name": "static/js/modal.fc6bd6b45df4ea7ce7f2.chunk.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 2,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "core": {
+      "name": "core",
+      "chunks": [
+        "core"
+      ],
+      "assets": [
+        {
+          "name": "static/js/core.fc6bd6b45df4ea7ce7f2.chunk.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "planets-experience": {
+      "name": "planets-experience",
+      "chunks": [
+        "planets-experience"
+      ],
+      "assets": [
+        {
+          "name": "static/js/planets-experience.fc6bd6b45df4ea7ce7f2.chunk.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "planets-awards": {
+      "name": "planets-awards",
+      "chunks": [
+        "planets-awards"
+      ],
+      "assets": [
+        {
+          "name": "static/js/planets-awards.fc6bd6b45df4ea7ce7f2.chunk.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "planets-skills": {
+      "name": "planets-skills",
+      "chunks": [
+        "planets-skills"
+      ],
+      "assets": [
+        {
+          "name": "static/js/planets-skills.fc6bd6b45df4ea7ce7f2.chunk.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    },
+    "spaceship": {
+      "name": "spaceship",
+      "chunks": [
+        "spaceship"
+      ],
+      "assets": [
+        {
+          "name": "static/js/spaceship.fc6bd6b45df4ea7ce7f2.chunk.js"
+        }
+      ],
+      "filteredAssets": 0,
+      "assetsSize": null,
+      "filteredAuxiliaryAssets": 1,
+      "auxiliaryAssetsSize": null,
+      "children": {},
+      "childAssets": {}
+    }
+  },
+  "generator": "loadable-components",
+  "chunks": [
+    {
+      "id": "main",
+      "files": [
+        "static/js/main.fc6bd6b45df4ea7ce7f2.js"
+      ]
+    },
+    {
+      "id": "vendors-node_modules_web-vitals_dist_web-vitals_js",
+      "files": [
+        "static/js/vendors-node_modules_web-vitals_dist_web-vitals_js.fc6bd6b45df4ea7ce7f2.chunk.js"
+      ]
+    },
+    {
+      "id": "modal",
+      "files": [
+        "static/js/modal.fc6bd6b45df4ea7ce7f2.chunk.js"
+      ]
+    },
+    {
+      "id": "core",
+      "files": [
+        "static/js/core.fc6bd6b45df4ea7ce7f2.chunk.js"
+      ]
+    },
+    {
+      "id": "planets-experience",
+      "files": [
+        "static/js/planets-experience.fc6bd6b45df4ea7ce7f2.chunk.js"
+      ]
+    },
+    {
+      "id": "planets-awards",
+      "files": [
+        "static/js/planets-awards.fc6bd6b45df4ea7ce7f2.chunk.js"
+      ]
+    },
+    {
+      "id": "planets-skills",
+      "files": [
+        "static/js/planets-skills.fc6bd6b45df4ea7ce7f2.chunk.js"
+      ]
+    },
+    {
+      "id": "spaceship",
+      "files": [
+        "static/js/spaceship.fc6bd6b45df4ea7ce7f2.chunk.js"
+      ]
+    },
+    {
+      "id": "vendors-node_modules_react-perfect-scrollbar_lib_index_js",
+      "files": [
+        "static/js/vendors-node_modules_react-perfect-scrollbar_lib_index_js.fc6bd6b45df4ea7ce7f2.chunk.js"
+      ]
+    }
+  ]
+}

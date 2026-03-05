@@ -1,8 +1,5 @@
-/* global window */
-
-import React, {Component} from 'react';
-import styled from '@emotion/styled';
-import {css, keyframes} from 'emotion';
+import {useCallback, useEffect, useState} from 'react';
+import {css, keyframes} from '@emotion/react';
 
 const fade = keyframes`
   0% {opacity: 0}
@@ -13,62 +10,50 @@ const fade = keyframes`
 `;
 
 const worker = css`
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 10px;
-    height: 10px;
-    z-index: 1;
-    border-radius: 50%;
-    display: block;    
-    opacity: 0;
-    animation: ${fade} 3s;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 10px;
+  height: 10px;
+  z-index: 1;
+  border-radius: 50%;
+  display: block;
+  opacity: 0;
+  animation: ${fade} 3s;
 `;
 
-const Green = styled('span')`
-    ${worker};
-    background-color: #27e86d;
+const green = css`
+  ${worker};
+  background-color: #27e86d;
 `;
 
-const Red = styled('span')`
-    ${worker};
-    background-color: #c30e15;
+const red = css`
+  ${worker};
+  background-color: #c30e15;
 `;
 
-class ServiceWorker extends Component {
-    constructor() {
-        super();
-        this.update = this.update.bind(this);
+export default function ServiceWorker() {
+  const [status, setStatus] = useState(undefined);
+
+  const update = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      setStatus(window.navigator.onLine);
     }
+  }, []);
 
-    state = {
-        status: undefined,
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    window.addEventListener('online', update);
+    window.addEventListener('offline', update);
+    update();
+
+    return () => {
+      window.removeEventListener('online', update);
+      window.removeEventListener('offline', update);
     };
+  }, [update]);
 
-    componentDidMount() {
-        if (typeof window !== 'undefined') {
-            window.addEventListener('online', this.update);
-            window.addEventListener('offline', this.update);
-        }
-    }
-
-    componentWillUnmount() {
-        if (typeof window !== 'undefined') {
-            window.removeEventListener('online', this.update);
-            window.removeEventListener('offline', this.update);
-        }
-    }
-
-    update() {
-        if (typeof window !== 'undefined') {
-            this.setState({status: window.navigator.onLine});
-        }
-    }
-
-    render() {
-        const {status} = this.state;
-        return typeof window !== 'undefined' && window.navigator && typeof status !== 'undefined' ? (status ? <Green /> : <Red />) : null;
-    }
+  if (!(typeof window !== 'undefined' && window.navigator && typeof status !== 'undefined')) return null;
+  return status ? <span css={green} /> : <span css={red} />;
 }
-
-export default ServiceWorker;

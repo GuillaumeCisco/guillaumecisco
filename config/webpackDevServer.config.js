@@ -53,7 +53,11 @@ module.exports = (proxy, allowedHost) => {
       // In JavaScript code, you can access it with `process.env.PUBLIC_URL`.
       // Note that we only recommend to use `public` folder as an escape hatch
       // for files like `favicon.ico`, `manifest.json`, and libraries that are
+<<<<<<< HEAD
       // for some reason broken when imported through webpack. If you just want to
+=======
+      // for some reason broken when imported through webpack-old. If you just want to
+>>>>>>> be17549 (update code to last dependencies and last usage)
       // use an image, put it in `src` and `import` it from JavaScript instead.
       directory: paths.appPublic,
       publicPath: [paths.publicUrlOrPath],
@@ -82,7 +86,11 @@ module.exports = (proxy, allowedHost) => {
     },
     devMiddleware: {
       // It is important to tell WebpackDevServer to use the same "publicPath" path as
+<<<<<<< HEAD
       // we specified in the webpack config. When homepage is '.', default to serving
+=======
+      // we specified in the webpack-old config. When homepage is '.', default to serving
+>>>>>>> be17549 (update code to last dependencies and last usage)
       // from the root.
       // remove last slash so user can land on `/test` instead of `/test/`
       publicPath: paths.publicUrlOrPath.slice(0, -1),
@@ -96,12 +104,20 @@ module.exports = (proxy, allowedHost) => {
       disableDotRule: true,
       index: paths.publicUrlOrPath,
     },
+<<<<<<< HEAD
     // `proxy` is run between `before` and `after` `webpack-dev-server` hooks
+=======
+    // `proxy` is run between `before` and `after` `webpack-old-dev-server` hooks
+>>>>>>> be17549 (update code to last dependencies and last usage)
     proxy,
     onBeforeSetupMiddleware(devServer) {
       // Keep `evalSourceMapMiddleware`
       // middlewares before `redirectServedPath` otherwise will not have any effect
+<<<<<<< HEAD
       // This lets us fetch source contents from webpack for the error overlay
+=======
+      // This lets us fetch source contents from webpack-old for the error overlay
+>>>>>>> be17549 (update code to last dependencies and last usage)
       devServer.app.use(evalSourceMapMiddleware(devServer));
 
       if (fs.existsSync(paths.proxySetup)) {

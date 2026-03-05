@@ -1,7 +1,6 @@
-import React from 'react';
 import PropTypes from 'prop-types';
 
-const LinkedIn = ({width, height}) => (
+const LinkedIn = ({width = 48, height = 48}) => (
     <svg
         version="1.1"
         viewBox="0 0 48 48"
@@ -20,11 +19,6 @@ const LinkedIn = ({width, height}) => (
 LinkedIn.propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
-};
-
-LinkedIn.defaultProps = {
-    width: 48,
-    height: 48,
 };
 
 export default LinkedIn;

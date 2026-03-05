@@ -1,9 +1,9 @@
 *
 !build
-!webpack/ssr/client.js
-!webpack/ssr/server.js
-!webpack/ssr/vendors.js
-!webpack/utils
+!webpack-old/ssr/client.js
+!webpack-old/ssr/server.js
+!webpack-old/ssr/vendors.js
+!webpack-old/utils
 !Dockerfile
 !packages/ssr/package.json
 !config

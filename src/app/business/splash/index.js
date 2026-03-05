@@ -1,19 +1,14 @@
-import React from 'react';
-import {css} from 'emotion';
-
 import Supernova from './supernova';
 import Intro from './intro';
 import AsyncModal from './asyncModal';
 
-const style = css`
-    height: 100%;
-  `;
+import style from './style'
 
 const Splash = () => (
-    <div className={style}>
-        <Intro />
-        <Supernova />
-        <AsyncModal />
+    <div css={style.container}>
+        <Intro/>
+        <Supernova/>
+        <AsyncModal/>
     </div>
 );
 

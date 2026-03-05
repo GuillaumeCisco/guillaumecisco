@@ -1,105 +1,80 @@
-import React, {Component} from 'react';
+import {memo, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import range from 'lodash-es/range';
 import {timer} from 'd3-timer';
-import {onlyUpdateForKeys} from 'recompose';
-import 'd3-transition'; // needed for interpolating radians
+import 'd3-transition';
 import {interpolate} from 'd3-interpolate';
 
 import Canvas from '../canvas';
 import Star from './star';
 
-class Stars extends Component {
-    state = {};
+function Ellipse({
+  w, h, size, a, b, padding,
+}) {
+  const canvasRef = useRef(null);
+  const ctxRef = useRef(null);
+  const starsRef = useRef([]);
+  const timerRef = useRef(null);
 
-    constructor(props) {
-        super(props);
-        this.stars = [];
-    }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !w || !h) return;
 
-    componentDidMount() {
-        this.init();
-    }
+    canvas.width = w;
+    canvas.height = h;
 
-    static getDerivedStateFromProps = (props, state) => props;
+    const ctx = canvas.getContext('2d');
+    ctxRef.current = ctx;
+    ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
+    ctx.rotate(-Math.PI / 20);
 
-    componentDidUpdate(prevProps, prevState) {
-        this.resize(prevProps); // redraw on resize
-    }
+    const radians = interpolate(0, Math.PI * 2);
 
-    componentWillUnmount() {
-        this.timer.stop();
-    }
+    starsRef.current = [];
+    range(0, size).forEach((o) => {
+      const teta = radians(o / size);
+      starsRef.current.push(new Star(w, h, size, a, b, teta, padding));
+    });
 
-    init = () => {
-        const {
-            w, h, size, a, b, padding,
-        } = this.props;
+    timerRef.current?.stop?.();
+    timerRef.current = timer(() => {
+      ctx.clearRect(-w, -h, 2 * w, 2 * h);
+      starsRef.current.forEach((star) => {
+        star.move();
+        star.draw(ctx);
+      });
+    });
 
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.ctx = this.canvas.getContext('2d');
-        this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
-        this.ctx.rotate(-Math.PI / 20);
-
-        // get interpolation all over the circle
-        const radians = interpolate(0, Math.PI * 2);
-
-        // create x gravitational stars
-        range(0, size).forEach((o) => {
-            // get angle
-            const teta = radians(o / size);
-            const star = new Star(w, h, size, a, b, teta, padding);
-            this.stars.push(star);
-        });
-
-        // launch animation
-        this.timer = timer(this.animate);
+    return () => {
+      timerRef.current?.stop?.();
     };
+  }, [w, h, size, a, b, padding]);
 
-    animate = (elapsed) => {
-        const {w, h} = this.props;
+  useEffect(() => {
+    const ctx = ctxRef.current;
+    const canvas = canvasRef.current;
+    if (!ctx || !canvas || !w || !h) return;
 
-        // console.log(elapsed);
-        this.ctx.clearRect(-w, -h, 2 * w, 2 * h);
-        this.stars.forEach((star) => {
-            // move by + speed angle
-            star.move();
-            // draw new position
-            star.draw(this.ctx);
-        });
-    };
+    canvas.width = w;
+    canvas.height = h;
+    ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
+    ctx.rotate(-Math.PI / 20);
 
-    resize = (props) => {
-        const {
-            w, h, a, b,
-        } = props;
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
-        this.ctx.rotate(-Math.PI / 20);
-        this.stars.forEach((star) => {
-            star.update(a, b);
-        });
-    };
+    starsRef.current.forEach((star) => {
+      star.update(a, b);
+    });
+  }, [w, h, a, b]);
 
-    render() {
-        return (
-            <Canvas ref={(e) => {
-                this.canvas = e;
-            }}
-            />
-        );
-    }
+  return <Canvas ref={canvasRef} />;
 }
 
-Stars.propTypes = {
-    w: PropTypes.number.isRequired,
-    h: PropTypes.number.isRequired,
-    size: PropTypes.number.isRequired,
-    a: PropTypes.number.isRequired,
-    b: PropTypes.number.isRequired,
-    padding: PropTypes.number.isRequired,
+Ellipse.propTypes = {
+  w: PropTypes.number.isRequired,
+  h: PropTypes.number.isRequired,
+  size: PropTypes.number.isRequired,
+  a: PropTypes.number.isRequired,
+  b: PropTypes.number.isRequired,
+  padding: PropTypes.number.isRequired,
 };
 
-export default onlyUpdateForKeys(['w', 'h', 'size', 'a', 'b', 'padding'])(Stars);
+export default memo(Ellipse);

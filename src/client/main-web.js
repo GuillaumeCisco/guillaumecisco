@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* global window, document */
 
 import React from 'react';
@@ -10,6 +11,13 @@ import {LocalizationProvider} from '@mui/x-date-pickers';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFnsV3';
 // eslint-disable-next-line no-unused-vars
 import * as _ from './sentry';
+=======
+import {loadableReady} from '@loadable/component';
+import {hydrateRoot} from 'react-dom/client';
+import {Provider} from 'react-redux';
+import {BrowserRouter} from 'react-router';
+
+>>>>>>> be17549 (update code to last dependencies and last usage)
 
 import configureAppStore from '../app/store';
 import reportWebVitals from './reportWebVitals';
@@ -25,9 +33,13 @@ loadableReady(() => {
     hydrateRoot(document.getElementById('root'),
         <Provider store={store}>
             <BrowserRouter>
+<<<<<<< HEAD
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <App />
                 </LocalizationProvider>
+=======
+                <App />
+>>>>>>> be17549 (update code to last dependencies and last usage)
             </BrowserRouter>
         </Provider>);
 });

@@ -1,35 +1,22 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import styled from '@emotion/styled';
-import {NOT_FOUND} from 'redux-first-router';
+import {useTheme, Global} from '@emotion/react';
+import {Route, Routes} from 'react-router';
 
 import Splash from './business/splash';
+import style from './style'
 import ServiceWorker from './business/common/components/serviceWorker';
+import globalStyles from "./common/ui/globalStyles";
+import Layout from "./layout";
 
-const Container = styled('div')`
-    height: 100%;
-`;
-
-const Routes = ({location}) => (
-    <Container>
-        <ServiceWorker />
-        {location.type === NOT_FOUND
-            ? (
-                <h1>
-                    404 - Not found
-                </h1>
-            )
-            : <Splash />}
-    </Container>
-);
-
-Routes.propTypes = {
-    location: PropTypes.shape({
-        type: PropTypes.string,
-    }).isRequired,
+const App = () => {
+    const theme = useTheme();
+    return <dic css={style.container}>
+        <Global styles={globalStyles(theme)}/>
+        <ServiceWorker/>
+        <Routes>
+            <Route element={<Layout />}>
+                <Route path="/" element={<Splash/>}/>
+            </Route>
+        </Routes>
+    </dic>
 };
-
-const mapStateToProps = ({location}, ownProps) => ({location, ...ownProps});
-
-export default connect(mapStateToProps)(Routes);
+export default App;

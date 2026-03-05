@@ -1,11 +1,19 @@
+<<<<<<< HEAD
 import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
+=======
+import {memo, useCallback, useEffect, useRef, useState} from 'react';
+>>>>>>> be17549 (update code to last dependencies and last usage)
 import PropTypes from 'prop-types';
 import random from 'lodash-es/random';
 import {interpolate} from 'd3-interpolate';
 import {timer} from 'd3-timer';
 import 'd3-transition';
 
+<<<<<<< HEAD
 function SpaceShift({
+=======
+function Spaceship({
+>>>>>>> be17549 (update code to last dependencies and last usage)
   w, h, width, height, onClick,
 }) {
   const timerRef = useRef(null);
@@ -101,7 +109,11 @@ function SpaceShift({
   );
 }
 
+<<<<<<< HEAD
 SpaceShift.propTypes = {
+=======
+Spaceship.propTypes = {
+>>>>>>> be17549 (update code to last dependencies and last usage)
   w: PropTypes.number.isRequired,
   h: PropTypes.number.isRequired,
   width: PropTypes.number.isRequired,
@@ -109,4 +121,8 @@ SpaceShift.propTypes = {
   onClick: PropTypes.func.isRequired,
 };
 
+<<<<<<< HEAD
 export default memo(SpaceShift);
+=======
+export default memo(Spaceship);
+>>>>>>> be17549 (update code to last dependencies and last usage)

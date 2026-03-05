@@ -1,76 +1,54 @@
-import React, {Component} from 'react';
+import {memo, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import range from 'lodash-es/range';
-import {onlyUpdateForKeys} from 'recompose';
 
 import Canvas from '../canvas';
-
 import Star from './star';
 
-class Background extends Component {
-    state = {};
+function Background({w, h, size}) {
+  const canvasRef = useRef(null);
+  const ctxRef = useRef(null);
+  const starsRef = useRef([]);
 
-    constructor(props) {
-        super(props);
-        this.stars = [];
-    }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || !w || !h) return;
 
-    componentDidMount() {
-        this.init();
-    }
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctxRef.current = ctx;
 
-    static getDerivedStateFromProps = (props, state) => props;
+    starsRef.current = [];
+    range(0, size).forEach(() => {
+      const star = new Star(w, h);
+      star.draw(ctx);
+      starsRef.current.push(star);
+    });
+  }, [w, h, size]);
 
-    componentDidUpdate(prevProps, prevState) {
-        this.resize(prevProps); // redraw on resize
-    }
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = ctxRef.current;
+    if (!canvas || !ctx || !w || !h) return;
 
-    init = () => {
-        const {w, h, size} = this.props;
+    canvas.width = w;
+    canvas.height = h;
 
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.ctx = this.canvas.getContext('2d');
+    ctx.clearRect(0, 0, w, h);
+    starsRef.current.forEach((star) => {
+      star.update(w, h);
+      star.draw(ctx);
+    });
+  }, [w, h]);
 
-        range(0, size).forEach((_) => {
-            const star = new Star(w, h);
-            star.draw(this.ctx);
-            this.stars.push(star);
-        });
-    };
-
-    resize = (props) => {
-        const {w, h} = props;
-
-        if (!this.canvas.width || !this.canvas.height) {
-            this.stars.forEach((star) => {
-                star.reinit(w, h);
-            });
-        }
-
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.ctx.clearRect(0, 0, w, h);
-        this.stars.forEach((star) => {
-            star.update(w, h);
-            star.draw(this.ctx);
-        });
-    };
-
-    render() {
-        return (
-            <Canvas ref={(e) => {
-                this.canvas = e;
-            }}
-            />
-        );
-    }
+  return <Canvas ref={canvasRef} />;
 }
 
 Background.propTypes = {
-    w: PropTypes.number.isRequired,
-    h: PropTypes.number.isRequired,
-    size: PropTypes.number.isRequired,
+  w: PropTypes.number.isRequired,
+  h: PropTypes.number.isRequired,
+  size: PropTypes.number.isRequired,
 };
 
-export default onlyUpdateForKeys(['w', 'h', 'size'])(Background);
+export default memo(Background);

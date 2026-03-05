@@ -1,8 +1,7 @@
-import React from 'react';
-import {Container, A} from '../common';
+import style from '../../style';
 
 const Spaceship = () => (
-    <Container>
+    <div css={style.container}>
         <h1>
             Nice catch!
         </h1>
@@ -11,9 +10,9 @@ const Spaceship = () => (
         </p>
         <br />
         <p>
-            <A href="https://github.com/GuillaumeCisco/guillaumecisco" target="_blank" rel="noopener noreferrer">
+            <a css={style.a} href="https://github.com/GuillaumeCisco/guillaumecisco" target="_blank" rel="noopener noreferrer">
                 Here
-            </A>
+            </a>
             {' '}
             you can find the code for making this website!
         </p>
@@ -21,7 +20,7 @@ const Spaceship = () => (
             And guess what? If you love so much this website, a desktop version thanks to electron is available, clone
             the repo and launch the npm scripts for creating os packages, you can either install them!
         </p>
-    </Container>
+    </div>
 );
 
 export default Spaceship;

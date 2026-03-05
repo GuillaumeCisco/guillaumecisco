@@ -9,7 +9,11 @@ const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
 
 // We use `PUBLIC_URL` environment variable or "homepage" field to infer
 // "public path" at which the app is served.
+<<<<<<< HEAD
 // webpack needs to know it to put the right <script> hrefs into HTML even in
+=======
+// webpack-old needs to know it to put the right <script> hrefs into HTML even in
+>>>>>>> be17549 (update code to last dependencies and last usage)
 // single-page apps that may serve index.html for nested URLs like /todos/42.
 // We can't use a relative path in HTML because we don't want to load something
 // like /todos/42/static/js/bundle.7289d.js. We have to know the root.
@@ -35,7 +39,11 @@ const moduleFileExtensions = [
   'jsx',
 ];
 
+<<<<<<< HEAD
 // Resolve file paths in the same order as webpack
+=======
+// Resolve file paths in the same order as webpack-old
+>>>>>>> be17549 (update code to last dependencies and last usage)
 const resolveModule = (resolveFn, filePath) => {
   const extension = moduleFileExtensions.find(extension =>
     fs.existsSync(resolveFn(`${filePath}.${extension}`)),

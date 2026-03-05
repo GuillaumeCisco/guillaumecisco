@@ -1,27 +1,25 @@
-import {actionTypes} from './actions';
+import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
     visible: false,
     component: null,
 };
 
-const modal = (state = initialState, {type, payload}) => {
-    switch (type) {
-    case actionTypes.visible:
-        return {
-            ...state,
-            visible: payload,
-            component: payload ? state.component : null,
-        };
-    case actionTypes.component.SET:
-        return {
-            ...state,
-            visible: true,
-            component: payload,
-        };
-    default:
-        return state;
-    }
-};
+export const ModalSlice = createSlice({
+    name: 'session',
+    initialState,
+    reducers: {
+        visible: (state, {payload}) => {
+            state.visible = payload;
+            state.component = payload ? state.component : null;
+        },
+        set: (state, {payload}) => {
+            state.visible = true;
+            state.component = payload;
+        },
+    },
+});
 
-export default modal;
+export const {visible, set} = ModalSlice.actions;
+
+export default ModalSlice;

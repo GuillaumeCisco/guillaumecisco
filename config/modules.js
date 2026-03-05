@@ -50,7 +50,11 @@ function getAdditionalModulePaths(options = {}) {
 }
 
 /**
+<<<<<<< HEAD
  * Get webpack aliases based on the baseUrl of a compilerOptions object.
+=======
+ * Get webpack-old aliases based on the baseUrl of a compilerOptions object.
+>>>>>>> be17549 (update code to last dependencies and last usage)
  *
  * @param {*} options
  */

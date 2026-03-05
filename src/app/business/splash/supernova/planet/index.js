@@ -1,120 +1,114 @@
-/* global Image */
-
-import React from 'react';
+import {
+    forwardRef, memo, useEffect, useImperativeHandle, useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import {timer} from 'd3-timer';
-import 'd3-transition'; // needed for interpolating radians
+import 'd3-transition';
 import {interpolate} from 'd3-interpolate';
 
 import Canvas from '../canvas';
 
-class Planet extends React.Component {
-    state = {};
+const Planet = forwardRef(function Planet(
+    {
+        w, h, a, b, intervals, teta, img, radius,
+    },
+    ref,
+) {
+    const canvasRef = useRef(null);
 
-    componentDidMount() {
-        this.init();
-    }
+    const ctxRef = useRef(null);
+    const timerRef = useRef(null);
 
-    static getDerivedStateFromProps = (props, state) => props;
+    const orbitARef = useRef(a);
+    const orbitBRef = useRef(b);
+    const intervalsRef = useRef(intervals);
+    const tetaRef = useRef((teta || 0) % (2 * Math.PI));
+    const radiansRef = useRef(interpolate(0, Math.PI * 2));
 
-    componentDidUpdate(prevProps, prevState) {
-        this.resize(prevProps); // redraw on resize
-    }
+    const xRef = useRef(0);
+    const yRef = useRef(0);
 
-    componentWillUnmount() {
-        this.timer.stop();
-    }
+    const canvasRotationRef = useRef(-Math.PI / 20);
+    const originWRef = useRef(w);
+    const originHRef = useRef(h);
 
-    getCoordinate = () => ({
-        x: (this.y * Math.sin(-this.canvasRotation) + this.x * Math.cos(-this.canvasRotation)) + this.w / 2,
-        y: (this.y * Math.cos(-this.canvasRotation) - this.x * Math.sin(-this.canvasRotation)) + this.h / 2,
-    });
+    useImperativeHandle(ref, () => ({
+        getCoordinate: () => ({
+            x: (yRef.current * Math.sin(-canvasRotationRef.current) + xRef.current * Math.cos(-canvasRotationRef.current)) + originWRef.current / 2,
+            y: (yRef.current * Math.cos(-canvasRotationRef.current) - xRef.current * Math.sin(-canvasRotationRef.current)) + originHRef.current / 2,
+        }),
+    }), []);
 
-    animate = (elapsed) => {
-        const {w, h} = this.props;
-        this.ctx.clearRect(-w, -h, 2 * w, 2 * h);
+    useEffect(() => {
+        orbitARef.current = a;
+        orbitBRef.current = b;
+        intervalsRef.current = intervals;
+        originWRef.current = w;
+        originHRef.current = h;
+    }, [a, b, intervals, w, h]);
 
-        // update teta
-        const index = ((this.teta * this.intervals) / (Math.PI * 2)) - 1;
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas || !w || !h) return;
 
-        this.teta = this.radians(index / this.intervals) % (2 * Math.PI);
-        // get x, y
-        this.x = Math.cos(this.teta) * this.orbitA;
-        this.y = Math.sin(this.teta) * this.orbitB;
+        canvas.width = w;
+        canvas.height = h;
 
-        this.draw(this.x, this.y);
-    };
+        const ctx = canvas.getContext('2d');
+        ctxRef.current = ctx;
 
-    draw = (x, y) => {
-        // center
-        const {radius} = this.props;
+        ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
+        ctx.rotate(canvasRotationRef.current);
 
-        // this.ctx.beginPath();
-        // this.ctx.arc(x, y, radius, 0, Math.PI * 2); // full centered circle
-        // this.ctx.rotate(-this.canvasRotation);
-        this.ctx.drawImage(this.img, x - radius, y - radius, radius * 2, radius * 2);
-        // this.ctx.rotate(this.canvasRotation);
-        // this.ctx.shadowBlur = 50;
-        // this.ctx.shadowColor = color;
-        // this.ctx.strokeStyle = color;
-        // this.ctx.stroke();
-    };
+        const image = new Image();
+        image.src = img;
 
-    init = () => {
-        const {
-            w, h, a, b, intervals, teta, img,
-        } = this.props;
+        const onLoad = () => {
+            timerRef.current?.stop?.();
+            timerRef.current = timer(() => {
+                const c = ctxRef.current;
+                if (!c) return;
 
-        this.originW = this.w = w;
-        this.originH = this.h = h;
-        this.orbitA = a;
-        this.orbitB = b;
-        this.intervals = intervals;
-        this.teta = (teta || 0) % (2 * Math.PI);
+                c.clearRect(-w, -h, 2 * w, 2 * h);
 
-        this.img = new Image();
-        this.img.src = img;
+                const index = ((tetaRef.current * intervalsRef.current) / (Math.PI * 2)) - 1;
+                tetaRef.current = radiansRef.current(index / intervalsRef.current) % (2 * Math.PI);
 
-        // create center
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.ctx = this.canvas.getContext('2d');
-        this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
+                xRef.current = Math.cos(tetaRef.current) * orbitARef.current;
+                yRef.current = Math.sin(tetaRef.current) * orbitBRef.current;
 
-        this.canvasRotation = -Math.PI / 20;
-        this.ctx.rotate(this.canvasRotation);
-        // get interpolation all over the circle
-        this.radians = interpolate(0, Math.PI * 2);
+                c.drawImage(
+                    image,
+                    xRef.current - radius,
+                    yRef.current - radius,
+                    radius * 2,
+                    radius * 2,
+                );
+            });
+        };
 
-        this.img.addEventListener('load', () => {
-            this.timer = timer(this.animate);
-        }, false);
-    };
+        image.addEventListener('load', onLoad, false);
 
-    resize = (props) => {
-        const {
-            w, h, a, b,
-        } = props;
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.ctx.clearRect(-w, -h, 2 * w, 2 * h);
-        this.ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
-        this.ctx.rotate(this.canvasRotation);
-        this.orbitA = a;
-        this.orbitB = b;
-        this.w = w;
-        this.h = h;
-    };
+        return () => {
+            image.removeEventListener('load', onLoad, false);
+            timerRef.current?.stop?.();
+        };
+    }, [img, radius, w, h]);
 
-    render() {
-        return (
-            <Canvas ref={(e) => {
-                this.canvas = e;
-            }}
-            />
-        );
-    }
-}
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        const ctx = ctxRef.current;
+        if (!canvas || !ctx || !w || !h) return;
+
+        canvas.width = w;
+        canvas.height = h;
+        ctx.clearRect(-w, -h, 2 * w, 2 * h);
+        ctx.setTransform(1, 0, 0, 1, w / 2, h / 2);
+        ctx.rotate(canvasRotationRef.current);
+    }, [w, h]);
+
+    return <Canvas ref={canvasRef}/>;
+});
 
 Planet.propTypes = {
     w: PropTypes.number.isRequired,
@@ -127,4 +121,4 @@ Planet.propTypes = {
     radius: PropTypes.number.isRequired,
 };
 
-export default Planet;
+export default memo(Planet);
