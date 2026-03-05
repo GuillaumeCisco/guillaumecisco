@@ -22,9 +22,6 @@ For electron, you need to install `libgconf-2-4`
 For testing and developping on the projet with true hot module replacement, run
 `yarn start`
 
-For testing with prod config:
-`yarn start:prod`
-
 For testing in electron, run:
 `yarn start:electron-dev`
 
@@ -38,13 +35,13 @@ yarn package-all
 For building the production website and deploy it, run:
 Before deploying, create a file deploy.js in the tools folder with your param
 ```
-yarn build:main
+yarn build
 yarn deploy
 ```
 
 You can now stop the task on aws ECS, it will restart automatically if you did not define an autoscaling policy.
 
-Do not forget to invalidate the cache on your aws redis instance.
+Remember to invalidate the cache on your aws redis instance.
 Connect with ssh to your ec2 instance, then connect to your redis instance as explained in elasticache documentation.
 https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.ConnectToCacheNode.html#GettingStarted.ConnectToCacheNode.Redis.NoEncrypt
 Then run `flushall`. You should automatize this part.
