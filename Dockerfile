@@ -16,7 +16,7 @@ ENV NODE_ENV=production \
     SECURE_NODE_PORT=8443 \
     RAVEN_URL=$raven_url \
     REDIS_HOST=$redis_host \
-    REDIS_PORT=$redis-port
+    REDIS_PORT=$redis_port
 
 EXPOSE $NODE_PORT $SECURE_NODE_PORT
 

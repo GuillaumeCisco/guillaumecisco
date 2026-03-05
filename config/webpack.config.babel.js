@@ -16,7 +16,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const LoadablePlugin = require('@loadable/webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const {sentryWebpackPlugin} = require('@sentry/webpack-plugin');
-const LazySliceVirtualHMRPlugin = require('redux-lazy-hmr/plugins/LazySliceVirtualHMRPlugin');
+const LazySliceVirtualHMRPlugin = require('../src/lib/plugins/LazySliceVirtualHMRPlugin');
 const packageInfo = require('../package.json');
 
 // Do this as the first thing so that any code reading it knows the right env.
