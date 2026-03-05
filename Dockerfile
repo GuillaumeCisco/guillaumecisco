@@ -2,7 +2,6 @@ FROM node:25.8.0-alpine AS dependencies
 
 WORKDIR /usr/src/app
 
-RUN apk add --update --no-cache python3 make g++
 COPY --link package.json ./package.json
 COPY --link ./packages/base ./packages/base
 COPY --link ./packages/ssr ./packages/ssr
@@ -42,7 +41,6 @@ ENV NODE_ENV=production \
     REDIS_HOST=$redis_host \
     REDIS_PORT=$redis_port
 
-RUN apk add --update --no-cache python3 make g++
 # install only needed node_modules
 COPY --link package.json ./package.json
 COPY --link packages/ssr/ ./packages/ssr
