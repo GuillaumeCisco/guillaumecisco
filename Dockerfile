@@ -43,14 +43,16 @@ ENV NODE_ENV=production \
     REDIS_PORT=$redis_port
 
 RUN apk add --update --no-cache python3 make g++
-RUN rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg \
- && npm install -g corepack \
- && corepack enable
-
 # install only needed node_modules
 COPY --link package.json ./package.json
 COPY --link packages/ssr/ ./packages/ssr
 COPY --link yarn.lock ./yarn.lock
+COPY --link .yarnrc.yml ./.yarnrc.yml
+
+RUN rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg \
+ && npm install -g corepack \
+ && corepack enable
+
 
 RUN yarn workspaces focus ssr-package --production
 RUN rm -f /usr/src/app/.yarnrc.yml
