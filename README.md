@@ -2,58 +2,50 @@
 
 ## Installation
 
-This project uses yarn and the experimental yarn workspaces for package.json splitting and convenience.
+This project uses yarn and yarn workspaces for package.json splitting and convenience.
 
 ```shell
 $>  $> npm -v
-6.14.12
-$> npm install yarn@1.22.22
-$> PYTHON=python2.7 ./node_modules/.bin/yarn version
-yarn version v1.22.22
-info Current version: 0.0.1
-question New version: 
-Done in 1.47s.
+11.11.0
+$> npm install -g corepack
+$> yarn init -2
+$> yarn --version
+4.13.0
 $> $> node -v
-v10.24.1
+v25.8.0
 ```
-
-Please install the last version of yarn and run 
-`PYTHON=python2.7 ./node_modules/.bin/yarn config set workspaces-experimental true`
-
-Then run:
-`PYTHON=python2.7 ./node_modules/.bin/yarn install`
 
 For electron, you need to install `libgconf-2-4`
 
 `sudo apt install libgconf-2-4`
 
 For testing and developping on the projet with true hot module replacement, run
-`PYTHON=python2.7 ./node_modules/.bin/yarn start`
+`yarn start`
 
 For testing with prod config:
-`PYTHON=python2.7 ./node_modules/.bin/yarn start:prod`
+`yarn start:prod`
 
 For testing in electron, run:
-`PYTHON=python2.7 ./node_modules/.bin/yarn start:electron-dev`
+`yarn start:electron-dev`
 
 For packaging for electron:
 ```
-PYTHON=python2.7 ./node_modules/.bin/yarn build:electron
-PYTHON=python2.7 ./node_modules/.bin/yarn build-electron
-PYTHON=python2.7 ./node_modules/.bin/yarn package-all
+yarn build:electron
+yarn build-electron
+yarn package-all
 ```
 
 For building the production website and deploy it, run:
 Before deploying, create a file deploy.js in the tools folder with your param
 ```
-PYTHON=python2.7 ./node_modules/.bin/yarn build:main
-PYTHON=python2.7 ./node_modules/.bin/yarn deploy
+yarn build:main
+yarn deploy
 ```
 
-You can now stop the task on aws ECS, it will restart automatically, if you did not define an autoscaling policy.
+You can now stop the task on aws ECS, it will restart automatically if you did not define an autoscaling policy.
 
-Do no forget to invalidate the cache on your aws redis instance.
-Connect with ssh to your ec2 instance, then connect to your redis instance as explain in elasticache documentation.
+Do not forget to invalidate the cache on your aws redis instance.
+Connect with ssh to your ec2 instance, then connect to your redis instance as explained in elasticache documentation.
 https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.ConnectToCacheNode.html#GettingStarted.ConnectToCacheNode.Redis.NoEncrypt
 Then run `flushall`. You should automatize this part.
 More information in the cache part below.
@@ -61,20 +53,20 @@ More information in the cache part below.
 ## Test and Cover
 
 For running the test suite:
-`PYTHON=python2.7 ./node_modules/.bin/yarn test`
+`yarn test`
 
 For displaying covering:
-`PYTHON=python2.7 ./node_modules/.bin/yarn cover`
+`yarn cover`
 
 
 ## Eslint
 
 For displaying lint errors:
-`PYTHON=python2.7 ./node_modules/.bin/yarn eslint`
+`yarn eslint`
 
 ## Cache
 
-This project use a redis cache manager for the server routes. Allowing us not to rerender the same html production by route.  
+This project uses a redis cache manager for the server routes. Allowing us not to rerender the same html production by route.  
 For deploying with amazon, please create a redis cluster by following this documentation:  
 https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html  
 Don't forget to create a isolated security group for opening port 6379 as described in the documentation.  
@@ -99,7 +91,7 @@ You'll notice I also bind the let's encrypt folder, more information in the next
 
 Then head to https://localhost:8001/
 
-Do not forget to `redis-cli flushall` when testing multiple times.
+Remember to `redis-cli flushall` when testing multiple times.
 
 Disable redis for testing this project in ssl with `-p 8001:8443`.
 
@@ -142,10 +134,10 @@ https://www.digitalocean.com/community/tutorials/how-to-use-certbot-standalone-m
 
 https://medium.freecodecamp.org/going-https-on-amazon-ec2-ubuntu-14-04-with-lets-encrypt-certbot-on-nginx-696770649e76
 
-Be sure you can access you ec2 instance with ssh, then
+Be sure you can access your ec2 instance with ssh, then
 https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html
 
-on your ec2 instance, follow these steps:
+in your ec2 instance, follow these steps:
 ```shell
 $> yum install wget python27-virtualenv
 $> wget https://dl.eff.org/certbot-auto
@@ -158,7 +150,7 @@ Make sure the security group of your ec2 instance has ports 80 and 443 opened.
 $> ./certbot-auto certonly --manual -d guillaumecisco.com -d www.guillaumecisco.com
 ```
 
-After having deployed your app with the new available files, press continue, files will be available now on your ec2 instance.
+After having deployed your app with the new available files, press continue; files will be available now on your ec2 instance.
 
 You now need to make these files accessible to your docker app by modifying its permissions.
 ```shell
@@ -185,7 +177,7 @@ Your site is now secured!
 ###### Renewing
 
 For now, we need to do it manually as the docker instance is binded to port 80 and 443. Cerbot need these port to renew the certificates.
-So we need to stop the docker, launch the command and the docker instance will be automatically renewed thanks to our aws ecs policy.
+So we need to stop the docker, launch the command, and the docker instance will be automatically renewed thanks to our aws ecs policy.
 
 ```shell
 docker stop `docker ps --format '{{.Names}}' | grep ecs-guillaumecisco` && ./certbot-auto renew --standalone
