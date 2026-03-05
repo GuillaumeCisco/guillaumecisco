@@ -1,28 +1,11 @@
-<<<<<<< HEAD
-/* eslint-disable import/no-import-module-exports */
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
-import createSagaMiddleware from 'redux-saga';
-=======
- 
-import {combineReducers, configureStore} from '@reduxjs/toolkit';
->>>>>>> be17549 (update code to last dependencies and last usage)
-
 import {injectSlice} from 'redux-lazy-hmr';
 import rootReducer from './reducers';
 
-<<<<<<< HEAD
-const SagaMiddleware = createSagaMiddleware();
-
-const configureAppStore = (preloadedState) => {
-    const store = configureStore({
-        reducer: combineReducers(rootReducer),
-        middleware: (getDefaultMiddleware) => getDefaultMiddleware({thunk: true}).prepend(SagaMiddleware),
-=======
 const configureAppStore = (preloadedState) => {
     const store = configureStore({
         reducer: combineReducers(rootReducer),
         middleware: (getDefaultMiddleware) => getDefaultMiddleware({thunk: true}),
->>>>>>> be17549 (update code to last dependencies and last usage)
         preloadedState,
     });
 
@@ -40,7 +23,6 @@ const configureAppStore = (preloadedState) => {
         }
     }
 
-    // SagaMiddleware.run(rootSaga);
     return store;
 };
 

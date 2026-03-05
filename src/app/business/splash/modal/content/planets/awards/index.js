@@ -1,19 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-import {css} from '@emotion/react';
-
-import {Container} from '../common';
-
-const contCss = css`
-  text-align: left;
-  margin: 0 auto;
-  display: inline-block;
-`;
-
-const Awards = () => (
-  <div css={contCss}>
-    <Container>
-=======
 import styleParent from '../../../style';
 import style from './style';
 
@@ -21,7 +5,6 @@ import style from './style';
 const Awards = () => (
   <div css={style.container}>
     <div css={styleParent.content}>
->>>>>>> be17549 (update code to last dependencies and last usage)
       <h1>Awards</h1>
       <ul>
         <li>+2000 reputation on stackoverflow</li>
@@ -37,11 +20,7 @@ const Awards = () => (
         <li>Technical books</li>
         <li>Politic, Geopolitic, Economy</li>
       </ul>
-<<<<<<< HEAD
-    </Container>
-=======
     </div>
->>>>>>> be17549 (update code to last dependencies and last usage)
   </div>
 );
 

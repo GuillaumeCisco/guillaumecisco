@@ -46,11 +46,8 @@ dotenvFiles.forEach(dotenvFile => {
 // It works similar to `NODE_PATH` in Node itself:
 // https://nodejs.org/api/modules.html#modules_loading_from_the_global_folders
 // Note that unlike in Node, only *relative* paths from `NODE_PATH` are honored.
-<<<<<<< HEAD
+
 // Otherwise, we risk importing Node.js core modules into an app instead of webpack shims.
-=======
-// Otherwise, we risk importing Node.js core modules into an app instead of webpack-old shims.
->>>>>>> be17549 (update code to last dependencies and last usage)
 // https://github.com/facebook/create-react-app/issues/1023#issuecomment-265344421
 // We also resolve them to make sure all tools using them work consistently.
 const appDirectory = fs.realpathSync(process.cwd());
@@ -61,11 +58,7 @@ process.env.NODE_PATH = (process.env.NODE_PATH || '')
   .join(path.delimiter);
 
 // Grab NODE_ENV and REACT_APP_* environment variables and prepare them to be
-<<<<<<< HEAD
 // injected into the application via DefinePlugin in webpack configuration.
-=======
-// injected into the application via DefinePlugin in webpack-old configuration.
->>>>>>> be17549 (update code to last dependencies and last usage)
 const REACT_APP = /^REACT_APP_/i;
 
 function getClientEnvironment(publicUrl) {
@@ -89,11 +82,7 @@ function getClientEnvironment(publicUrl) {
         // These settings let a developer run multiple simultaneous projects.
         // They are used as the connection `hostname`, `pathname` and `port`
         // in webpackHotDevClient. They are used as the `sockHost`, `sockPath`
-<<<<<<< HEAD
         // and `sockPort` options in webpack-dev-server.
-=======
-        // and `sockPort` options in webpack-old-dev-server.
->>>>>>> be17549 (update code to last dependencies and last usage)
         WDS_SOCKET_HOST: process.env.WDS_SOCKET_HOST,
         WDS_SOCKET_PATH: process.env.WDS_SOCKET_PATH,
         WDS_SOCKET_PORT: process.env.WDS_SOCKET_PORT,
@@ -102,11 +91,7 @@ function getClientEnvironment(publicUrl) {
         FAST_REFRESH: process.env.FAST_REFRESH !== 'false',
       },
     );
-<<<<<<< HEAD
   // Stringify all values so we can feed into webpack DefinePlugin
-=======
-  // Stringify all values so we can feed into webpack-old DefinePlugin
->>>>>>> be17549 (update code to last dependencies and last usage)
   const stringified = {
     'process.env': Object.keys(raw).reduce((env, key) => {
       env[key] = JSON.stringify(raw[key]);
