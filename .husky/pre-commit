@@ -1,0 +1,4 @@
+#!/bin/sh
+echo 'Pre-commit checks...'
+#yarn test
+yarn eslint

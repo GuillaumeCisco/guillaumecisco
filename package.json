@@ -1,54 +1,50 @@
 {
-    "private": true,
-    "name": "guillaumecisco",
-    "packageManager": "yarn@4.13.0",
-    "productName": "Guillaume Cisco Website",
-    "author": "Guillaume Cisco <guillaumecisco@gmail.com>",
-    "version": "0.0.1",
-    "license": "MIT",
-    "description": "Guillaume Cisco's website",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/GuillaumeCisco/guillaumecisco"
-    },
-    "engines": {
-        "node": ">=22.0.0"
-    },
-    "workspaces": [
-        "packages/*"
+  "private": true,
+  "name": "guillaumecisco",
+  "packageManager": "yarn@4.13.0",
+  "productName": "Guillaume Cisco Website",
+  "author": "Guillaume Cisco <guillaumecisco@gmail.com>",
+  "version": "0.0.1",
+  "license": "MIT",
+  "description": "Guillaume Cisco's website",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GuillaumeCisco/guillaumecisco"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build:dev": "rm -Rf ./public && NODE_ENV=development yarn build:webpack",
+    "build:webpack": "cd packages/webpack && npm run build",
+    "clean:webpack": "cd packages/babel && npm run clean",
+    "clean": "yarn clean:webpack && yarn clean:lib",
+    "dev": "cd packages/webpack && yarn build:dev && cd ../.. && nodemon public/dist/node/static/js/main.js",
+    "start": "NODE_ENV=production node public/dist/node/static/js/main.js",
+    "build": "rm -Rf ./public && NODE_ENV=production yarn build:webpack",
+    "test": "cd packages/test && npm run test",
+    "cover": "cd packages/test && npm run cover",
+    "eslint": "cd packages/eslint && npm run eslint",
+    "deploy": "tools/deploy.js",
+    "prepare": "husky"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
     ],
-    "scripts": {
-        "build:dev": "rm -Rf ./public && NODE_ENV=development yarn build:webpack",
-        "build:webpack": "cd packages/webpack && npm run build",
-        "clean:webpack": "cd packages/babel && npm run clean",
-        "clean": "yarn clean:webpack && yarn clean:lib",
-        "dev": "cd packages/webpack && yarn build:dev && cd ../.. && nodemon public/dist/node/static/js/main.js",
-        "start": "NODE_ENV=production node public/dist/node/static/js/main.js",
-        "build": "rm -Rf ./public && NODE_ENV=production yarn build:webpack",
-        "test": "cd packages/test && npm run test",
-        "cover": "cd packages/test && npm run cover",
-        "eslint": "cd packages/eslint && npm run eslint",
-        "deploy": "tools/deploy.js",
-        "precommit-msg": "echo 'Pre-commit checks...' && exit 0"
-    },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
-    "pre-commit": [
-        "precommit-msg",
-        "test",
-        "eslint"
-    ],
-    "devDependencies": {
-        "nodemon": "^3.1.14"
-    }
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "nodemon": "^3.1.14"
+  }
 }

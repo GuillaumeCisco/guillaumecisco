@@ -401,7 +401,6 @@ const main = async () => {
         await Promise.race([redis.connect(), new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Redis connection timeout')), 3000)
         )]);
-        // Invalider le cache au démarrage — les asset hashes ont peut-être changé
         if (isRedisReady()) {
             await redis.del(CACHE_KEY);
             console.log('Redis shell cache cleared on startup');

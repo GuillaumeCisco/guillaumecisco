@@ -52,7 +52,6 @@
         "redux": "5.0.1"
     },
     "devDependencies": {
-        "browser-sync": "3.0.4",
         "compression": "1.8.1",
         "config": "4.4.1",
         "cookie-parser": "1.4.7",
