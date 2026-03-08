@@ -14626,6 +14626,10 @@ __metadata:
     react-typical: "npm:0.1.3"
     redis: "npm:5.11.0"
     redux: "npm:5.0.1"
+    workbox-core: "npm:^7.4.0"
+    workbox-precaching: "npm:7.4.0"
+    workbox-routing: "npm:^7.4.0"
+    workbox-strategies: "npm:^7.4.0"
   languageName: unknown
   linkType: soft
 
@@ -16208,7 +16212,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"workbox-core@npm:7.4.0":
+"workbox-core@npm:7.4.0, workbox-core@npm:^7.4.0":
   version: 7.4.0
   resolution: "workbox-core@npm:7.4.0"
   checksum: 10c0/ae7c762df084b57d3d10f42b83a508a5c0bec5663de4c9cefc2b5c2893922a816f451cf8ec45ee76d204a3a6e90ee52b6c550a6cba9109d9bb644da9e98fb9e8
@@ -16280,7 +16284,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"workbox-routing@npm:7.4.0":
+"workbox-routing@npm:7.4.0, workbox-routing@npm:^7.4.0":
   version: 7.4.0
   resolution: "workbox-routing@npm:7.4.0"
   dependencies:
@@ -16289,7 +16293,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"workbox-strategies@npm:7.4.0":
+"workbox-strategies@npm:7.4.0, workbox-strategies@npm:^7.4.0":
   version: 7.4.0
   resolution: "workbox-strategies@npm:7.4.0"
   dependencies:

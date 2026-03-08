@@ -125,6 +125,7 @@ const buildHead = (linkTags) => `<!DOCTYPE html>
     <meta property="og:description" content="Interactive portfolio of Guillaume Cisco. Explore my experience, skills and hobbies.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://guillaumecisco.com/">
+    <link rel="manifest" href="/manifest.json" />
     ${linkTags}
   </head>
   <body>
@@ -261,6 +262,36 @@ if (process.env.NODE_ENV !== 'production') {
     app.use(koaConnect(devMiddlewareInstance));
     app.use(koaConnect(hotMiddleware));
 }
+
+const pwaRootFiles = {
+    '/service-worker.js': {
+        type: 'application/javascript',
+        file: 'service-worker.js',
+        headers: {'Service-Worker-Allowed': '/'},
+    },
+    '/manifest.json': {
+        type: 'application/json',
+        file: 'manifest.json',
+    },
+};
+app.use(async (ctx, next) => {
+    const entry = pwaRootFiles[ctx.path];
+
+    if (entry) {
+        ctx.type = entry.type;
+
+        if (entry.headers) {
+            Object.entries(entry.headers).forEach(([k, v]) => ctx.set(k, v));
+        }
+
+        ctx.body = fs.createReadStream(
+            path.join(__PROJECT_ROOT__, 'public/dist/web', entry.file)
+        );
+        return;
+    }
+
+    await next();
+});
 
 // ── SSR handler ────────────────────────────────────────────────────────────
 app.use(async (ctx, next) => {
@@ -426,8 +457,8 @@ const main = async () => {
     });
 
     const serverOptions = {
-        key: fs.readFileSync(process.env.SSL_KEY_PATH || path.join(__PROJECT_ROOT__, 'certs/key.pem')),
-        cert: fs.readFileSync(process.env.SSL_CERT_PATH || path.join(__PROJECT_ROOT__, 'certs/cert.pem')),
+        key: fs.readFileSync(process.env.SSL_KEY_PATH || path.join(__PROJECT_ROOT__, 'certs/localhost+2-key.pem')),
+        cert: fs.readFileSync(process.env.SSL_CERT_PATH || path.join(__PROJECT_ROOT__, 'certs/localhost+2.pem')),
         allowHTTP1: true,
     };
 

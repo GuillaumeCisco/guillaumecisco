@@ -16,7 +16,7 @@ const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ReactRefreshRspackPlugin = require('@rspack/plugin-react-refresh');
 const nodeExternals = require('webpack-node-externals');
 const {sentryWebpackPlugin} = require('@sentry/webpack-plugin');
-
+const pwaManifestPlugin = require('./pwaManifest');
 
 const packageInfo = require('../package.json');
 
@@ -739,6 +739,7 @@ const getConfig = target => {
                 filename: 'loadable-stats.json',
                 writeToDisk: true,
             }),
+            target === 'web' && isEnvProduction && pwaManifestPlugin,
         ].filter(Boolean),
         // Turn off performance processing because we utilize
         // our own hints via the FileSizeReporter
