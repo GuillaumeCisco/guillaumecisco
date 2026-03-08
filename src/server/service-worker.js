@@ -8,6 +8,21 @@ self.skipWaiting();
 
 precacheAndRoute(self.__WB_MANIFEST || []);
 
+self.addEventListener('install', (event) => {
+    event.waitUntil(
+        caches.open('offline').then((cache) =>
+            cache.add('/offline.html')
+        )
+    );
+});
+
+registerRoute(
+    ({ request }) => request.mode === 'navigate',
+    async () => {
+        return (await caches.match('/offline.html')) || fetch('/offline.html');
+    }
+);
+
 registerRoute(
     ({ request }) => request.destination === 'image',
     new CacheFirst({

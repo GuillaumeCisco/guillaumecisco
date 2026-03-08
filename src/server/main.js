@@ -273,6 +273,10 @@ const pwaRootFiles = {
         type: 'application/json',
         file: 'manifest.json',
     },
+    '/offline.html': {
+        type: 'text/html',
+        file: 'offline.html',
+    }
 };
 app.use(async (ctx, next) => {
     const entry = pwaRootFiles[ctx.path];
