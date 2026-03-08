@@ -59,5 +59,8 @@
     "scripts": {
         "build": "cd ../.. && rspack -c config/rspack.config.babel.js",
         "clean": "cd ../../ && rimraf public/dist && cd -"
+    },
+    "resolutions": {
+        "serialize-javascript": "^7.0.3"
     }
 }
