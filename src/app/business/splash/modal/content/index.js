@@ -2,19 +2,19 @@ import PropTypes from 'prop-types';
 import loadable from '@loadable/component';
 import Loader from "../../../../common/components/loader";
 
-const Core = loadable(() => import('./core'), {
+const Core = loadable(() => import(/* webpackChunkName: "core" */ './core'), {
     fallback: <Loader/>,
 });
-const Experience = loadable(() => import('./planets/experience'), {
+const Experience = loadable(() => import(/* webpackChunkName: "experience" */ './planets/experience'), {
     fallback: <Loader/>,
 });
-const Awards = loadable(() => import('./planets/awards'), {
+const Awards = loadable(() => import(/* webpackChunkName: "awards" */ './planets/awards'), {
     fallback: <Loader/>,
 });
-const Skills = loadable(() => import('./planets/skills'), {
+const Skills = loadable(() => import(/* webpackChunkName: "skills" */ './planets/skills'), {
     fallback: <Loader/>,
 });
-const Spaceship = loadable(() => import('./spaceship'), {
+const Spaceship = loadable(() => import(/* webpackChunkName: "spaceship" */ './spaceship'), {
     fallback: <Loader/>,
 });
 

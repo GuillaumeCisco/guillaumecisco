@@ -731,10 +731,10 @@ const getConfig = target => {
                     },
                 },
             }),
-            // target === 'node' &&
-            // new rspack.optimize.LimitChunkCountPlugin({
-            //     maxChunks: 1,
-            // }),
+            target === 'node' &&
+            new rspack.optimize.LimitChunkCountPlugin({
+                maxChunks: 1,
+            }),
             new LoadablePlugin({
                 filename: 'loadable-stats.json',
                 writeToDisk: true,

@@ -6,7 +6,7 @@ import 'react-perfect-scrollbar/dist/css/styles.css';
 import Loader from "../../common/components/loader";
 
 
-const Modal = loadable(() => import('./modal'), {
+const Modal = loadable( () => import(/* webpackChunkName: "modal" */ './modal'), {
     fallback: <Loader />,
 });
 

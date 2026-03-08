@@ -355,7 +355,8 @@ app.use(async (ctx, next) => {
 
         tee.on('finish', async () => {
             // Build the tail AFTER render — extractor now knows which chunks were used.
-            const loadableTags = extractor.getScriptTags({nonce});
+            const loadableTags = extractor.getScriptTags({nonce})
+                .replace(/<script[^>]*data-chunk="main"[^>]*>[^<]*<\/script>\n?/g, '');
             const tail = buildTail({nonce, preloadedState, loadableTags, scriptTags});
 
             ctx.res.write(tail);
