@@ -37,7 +37,7 @@ const Skills = () => (
                 <h3 css={styleParent.h3}>Devops</h3>
                 <ul>
                     <li>Amazon Web Services</li>
-                    <ul>
+                    <ul aria-label="AWS services">
                         <li>EC2</li>
                         <li>ECS</li>
                         <li>Route 53</li>
@@ -61,14 +61,24 @@ const Skills = () => (
                 <ul>
                     <li>Fabric Hyperledger</li>
                     <li>
-                        <a css={styleParent.a} href="https://github.com/MorpheoOrg" rel="noopener noreferrer"
-                           target="_blank">
+                        <a
+                            css={styleParent.a}
+                            href="https://github.com/MorpheoOrg"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            aria-label="Morpheo Open Source project on GitHub (opens in new tab)"
+                        >
                             Morpheo Open Source project
                         </a>
                     </li>
                     <li>
-                        <a css={styleParent.a} href="https://github.com/SubstraFoundation" rel="noopener noreferrer"
-                           target="_blank">
+                        <a
+                            css={styleParent.a}
+                            href="https://github.com/SubstraFoundation"
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            aria-label="Substra Open Source project on GitHub (opens in new tab)"
+                        >
                             Substra Open Source project
                         </a>
                     </li>

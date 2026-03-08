@@ -118,6 +118,13 @@ const buildHead = (linkTags) => `<!DOCTYPE html>
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Guillaume Cisco — Senior Lead FullStack Engineer</title>
+    <meta name="description" content="Portfolio of Guillaume Cisco, Senior Lead FullStack Engineer specializing in React, Node.js, Python and cloud architectures. Based in Paris, France.">
+    <meta name="author" content="Guillaume Cisco">
+    <meta property="og:title" content="Guillaume Cisco — Senior Lead FullStack Engineer">
+    <meta property="og:description" content="Interactive portfolio of Guillaume Cisco. Explore my experience, skills and hobbies.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://guillaumecisco.com/">
     ${linkTags}
   </head>
   <body>
