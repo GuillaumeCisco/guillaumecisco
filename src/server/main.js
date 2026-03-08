@@ -233,6 +233,7 @@ if (process.env.NODE_ENV !== 'production') {
     devMiddlewareInstance = webpackDevMiddleware(multiCompiler, {
         serverSideRender: true,
         publicPath: clientCompiler.options.output.publicPath,
+        writeToDisk: (filePath) => filePath.endsWith('loadable-stats.json'),
     });
 
     const hotMiddleware = webpackHotMiddleware(clientCompiler, {
@@ -281,7 +282,7 @@ app.use(async (ctx, next) => {
     // registered for the route.
     let cachedShell = null;
     try {
-        if (isRedisReady()) {
+        if (isRedisReady() && process.env.NODE_ENV === 'production') {
             cachedShell = await redis.get(CACHE_KEY);
         }
     } catch (err) {
@@ -289,11 +290,10 @@ app.use(async (ctx, next) => {
     }
 
     if (cachedShell) {
-        const extractor = new ChunkExtractor({statsFile: LOADABLE_STATS_FILE, publicPath: '/dist/web/'});
-        const loadableTags = extractor.getScriptTags({nonce});
-        const tail = buildTail({nonce, preloadedState, loadableTags, scriptTags});
-
-        ctx.res.write(cachedShell);
+        const {shell, loadableTags} = JSON.parse(cachedShell);
+        const tags = loadableTags.replace(/%%NONCE%%/g, nonce);
+        const tail = buildTail({nonce, preloadedState, loadableTags: tags, scriptTags});
+        ctx.res.write(shell);
         ctx.res.write(tail);
         ctx.res.end();
         return;
@@ -364,10 +364,13 @@ app.use(async (ctx, next) => {
             // Store the shell in Redis after the response is sent.
             // head + emotion-transformed HTML = the full cacheable shell.
             // loadableTags and tail are intentionally excluded — they are request-specific.
-            const shell = head + shellChunks.join('');
+            const shellData = JSON.stringify({
+                shell: head + shellChunks.join(''),
+                loadableTags: extractor.getScriptTags({nonce: '%%NONCE%%'}), // placeholder nonce
+            });
             try {
-                if (isRedisReady()) {
-                    await redis.set(CACHE_KEY, shell, {EX: Number(SHELL_CACHE_TTL)});
+                if (isRedisReady() && process.env.NODE_ENV === 'production') {
+                    await redis.set(CACHE_KEY, shellData, {EX: Number(SHELL_CACHE_TTL)});
                 }
             } catch (err) {
                 console.error('Redis set error:', err);
@@ -394,13 +397,15 @@ const main = async () => {
     // Connect to Redis — non-fatal if unavailable (dev without Redis, or Redis down in prod).
     // A 3s timeout prevents the server from hanging on startup if Redis is unreachable.
     try {
-        await Promise.race([
-            redis.connect(),
-            new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Redis connection timeout')), 3000)
-            ),
-        ]);
-        console.log(`Redis connected at ${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || 6379}`);
+        await Promise.race([redis.connect(), new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Redis connection timeout')), 3000)
+        )]);
+        // Invalider le cache au démarrage — les asset hashes ont peut-être changé
+        if (isRedisReady()) {
+            await redis.del(CACHE_KEY);
+            console.log('Redis shell cache cleared on startup');
+        }
+        console.log(`Redis connected at ${REDIS_HOST}:${REDIS_PORT}`);
     } catch (err) {
         console.warn('Redis unavailable, SSR cache disabled:', err.message);
     }
