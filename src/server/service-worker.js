@@ -8,20 +8,6 @@ self.skipWaiting();
 
 precacheAndRoute(self.__WB_MANIFEST || []);
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open('html-shell').then((cache) => cache.add('/'))
-    );
-});
-
-registerRoute(
-    ({ request }) => request.mode === 'navigate',
-    async () => {
-        const cached = await caches.match('/');
-        return cached || fetch('/');
-    }
-);
-
 registerRoute(
     ({ request }) => request.destination === 'image',
     new CacheFirst({
