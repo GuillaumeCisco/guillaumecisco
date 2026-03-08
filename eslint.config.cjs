@@ -25,6 +25,8 @@ module.exports = [
             globals: {
                 ...globals.node,
                 ...globals.browser,
+                __PROJECT_ROOT__: 'readonly',
+                __SERVER__: 'readonly',
             },
         },
         ...js.configs.recommended,

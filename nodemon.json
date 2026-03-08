@@ -1,7 +1,7 @@
 {
   "verbose": true,
-  "ignore": ["src/client", "src/app", ",public"],
+  "ignore": ["src/client", "src/app", "public"],
   "execMap": {
-    "js": "babel-node"
+    "js": "node"
   }
 }

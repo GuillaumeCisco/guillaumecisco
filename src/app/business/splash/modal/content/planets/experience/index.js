@@ -10,7 +10,7 @@ const Experience = () => (
             <h3 css={styleParent.h3}>I'm passionate about computer science</h3>
 
             <p css={styleParent.p}>
-                Currently I'm a Senior Lead FullStack Developer and work mainly in python and javascript in web
+                Currently I'm a Senior Lead FullStack Engineer and work mainly in python and javascript in web
                 architectures.
                 <br/>
                 Creating websites, software or algorithm for both internal and external tools
@@ -34,13 +34,11 @@ const Experience = () => (
                             platform. Live problematics handling and data science integration.
                             Development of new features, bugs correction, product exchange. Team management. </li>
                         <li css={style.li}>React/Node.js/Redux</li>
-                        <li css={style.li}>Kubernetes/Gcloud/Docker
-                        </li>
+                        <li css={style.li}>Kubernetes/Gcloud/Docker</li>
                         <li css={style.li}>Multiple Database support: postgresql, mongodb, elasticsearch, redis, biquery, bigtable
                             couchbase.
                         </li>
-                        <li css={style.li}>CI/CD ArgoCD
-                        </li>
+                        <li css={style.li}>CI/CD ArgoCD</li>
                         <li css={style.li}>Advanced paradigms and algorithms.</li>
                     </ul>
                 </li>
@@ -83,7 +81,7 @@ const Experience = () => (
                     <span css={style.date}>Mar 2016 – March 2018</span>
                     <br/>
                     <span css={style.company}>Dreem</span>
-                    <span css={style.company}>Paris, France</span>
+                    <span css={style.location}>Paris, France</span>
                     <ul css={style.ul}>
                         <li css={style.li}>Creation of many internal tools for API backend and frontend projects
                         </li>

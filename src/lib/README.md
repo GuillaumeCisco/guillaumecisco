@@ -4,10 +4,10 @@ Replace all your createSlice by createLoadableSlice.
 Add `reducerParent: 'authentication',` in each of your slices.
 Load your slices in your component thanks to:
 ```javascript
-const {sliceLoading, ...rest} = useSlice(() => import('./slice.js'), 'authentication.reset_token');
-// sliceLoading tells us is the chunk is loading, you should return a loader in your component in this case.
+const {__sliceLoading, ...rest} = useSlice(() => import('./slice.js'), 'authentication.reset_token');
+// __sliceLoading tells us is the chunk is loading, you should return a loader in your component in this case.
 ```
-Be careful, to only call your selectors on components whom parent already loaded the slice and sliceLoading is false
+Be careful, to only call your selectors on components whom parent already loaded the slice and __sliceLoading is false
 
 When creating your store, add:
 ```javascript

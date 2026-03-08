@@ -6,5 +6,4 @@ export default {
     general: generalSlice.reducer,
     modal: modalSlice.reducer,
     ui: uiSlice.reducer,
-
 };

@@ -5,13 +5,14 @@ WORKDIR /usr/src/app
 COPY --link package.json ./package.json
 COPY --link ./packages/base ./packages/base
 COPY --link ./packages/ssr ./packages/ssr
-COPY --link ./packages/plugins ./packages/plugins
+COPY --link packages/webpack ./packages/webpack
+COPY --link packages/babel ./packages/babel
 COPY --link .yarnrc.yml ./.yarnrc.yml
 COPY --link yarn.lock ./yarn.lock
 RUN rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg \
  && npm install -g corepack \
  && corepack enable
-RUN yarn workspaces focus base-package ssr-package plugins-package
+RUN yarn workspaces focus base-package ssr-package webpack-package babel-package
 
 FROM dependencies AS build
 
@@ -23,9 +24,8 @@ ENV DISABLE_ESLINT_PLUGIN=true
 COPY --link src ./src/
 COPY --link package.json ./package.json
 COPY --link config ./config
-COPY --link babel.config.js ./babel.config.js
 
-RUN yarn build:webpack && yarn build:lib\
+RUN yarn build:webpack\
   && find ./public -type f \( -iname \*.js -o -iname \*.css \) -exec sed -i "s/^.*#\ssourceMappingURL=.*//g" {} \;
 
 FROM node:25.8.0-alpine AS production
@@ -57,7 +57,6 @@ RUN rm -f /usr/src/app/.yarnrc.yml
 
 EXPOSE $NODE_PORT $SECURE_NODE_PORT
 
-COPY --link --from=build /usr/src/app/lib /usr/src/app/lib/
 COPY --link --from=build /usr/src/app/public /usr/src/app/public/
 
 CMD yarn start

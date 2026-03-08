@@ -1,8 +1,8 @@
-// src/lib/plugins/LazySliceVirtualHMRPlugin.js
+// src/lib/babel/LazySliceVirtualHMRPlugin.js
 const path = require('path');
 const fs = require('fs');
 const glob = require('glob');
-const VirtualModulesPlugin = require('webpack-virtual-modules');
+const { default: VirtualModulesPlugin } = require('rspack-plugin-virtual-module');
 
 class LazySliceVirtualHMRPlugin {
     constructor({sliceDir = 'src/app'} = {}) {
@@ -11,10 +11,15 @@ class LazySliceVirtualHMRPlugin {
             process.cwd(), 'src', '__virtual__', 'hmr-cache-lazy.js',
         );
         this.virtualRequest = '@hmr-cache-lazy';
-        this.vmp = new VirtualModulesPlugin();
+        this.vmp = new VirtualModulesPlugin({
+            [this.virtualModulePath]: '// placeholder',
+        });
     }
 
     apply(compiler) {
+        compiler.options.resolve.alias = compiler.options.resolve.alias || {};
+        compiler.options.resolve.alias[this.virtualRequest] = this.virtualModulePath;
+
         this.vmp.apply(compiler);
 
         compiler.hooks.beforeCompile.tapAsync(
@@ -38,7 +43,6 @@ export default function makeReducersLoadable(store) {
 
                 for (const abs of sliceFiles) {
                     let rel = path.relative(loaderDir, abs).replace(/\\/g, '/');
-                    rel = rel.replace(/\.tsx?$/, '.js');
                     if (!rel.startsWith('.')) rel = `./${rel}`;
 
                     src += `  // Require for HMR tracking (do not inject)
@@ -59,11 +63,6 @@ export default function makeReducersLoadable(store) {
                 callback();
             },
         );
-
-        compiler.hooks.afterResolvers.tap('LazySliceVirtualHMRPlugin', () => {
-            compiler.options.resolve.alias = compiler.options.resolve.alias || {};
-            compiler.options.resolve.alias[this.virtualRequest] = this.virtualModulePath;
-        });
     }
 }
 

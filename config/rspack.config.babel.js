@@ -1,22 +1,23 @@
 const fs = require('fs');
 const path = require('path');
-const webpack = require('webpack');
+const { rspack } = require('@rspack/core');
 const resolve = require('resolve');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const {WebpackManifestPlugin} = require('webpack-manifest-plugin');
-const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const LazySliceVirtualHMRPlugin = require('../src/lib/plugins/LazySliceVirtualHMRPlugin');
+const LoadablePlugin = require('@loadable/webpack-plugin');
+const {TsCheckerRspackPlugin} = require('ts-checker-rspack-plugin');
+const WorkboxWebpackPlugin = require('@aaroon/workbox-rspack-plugin');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ReactRefreshRspackPlugin = require('@rspack/plugin-react-refresh');
 const nodeExternals = require('webpack-node-externals');
 const {sentryWebpackPlugin} = require('@sentry/webpack-plugin');
-const LazySliceVirtualHMRPlugin = require('../src/lib/plugins/LazySliceVirtualHMRPlugin');
-const LoadablePlugin = require('@loadable/webpack-plugin');
+
+
 const packageInfo = require('../package.json');
 
 // Do this as the first thing so that any code reading it knows the right env.
@@ -25,30 +26,10 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const paths = require('./paths');
 const modules = require('./modules');
 const getClientEnvironment = require('./env');
-const ForkTsCheckerWebpackPlugin = process.env.TSC_COMPILE_ON_ERROR === 'true'
-    ? require('react-dev-utils/ForkTsCheckerWarningWebpackPlugin')
-    : require('react-dev-utils/ForkTsCheckerWebpackPlugin');
-
-const createEnvironmentHash = require('./webpack/persistentCache/createEnvironmentHash');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
-const reactRefreshRuntimeEntry = require.resolve('react-refresh/runtime');
-const reactRefreshWebpackPluginRuntimeEntry = require.resolve(
-    '@pmmmwh/react-refresh-webpack-plugin',
-);
-const reactRefreshWebpackPluginOverlayRuntimeEntry = require.resolve(
-    '@pmmmwh/react-refresh-webpack-plugin/overlay',
-);
-const babelRuntimeEntry = require.resolve('babel-preset-react-app');
-const babelRuntimeEntryHelpers = require.resolve(
-    '@babel/runtime/helpers/esm/assertThisInitialized',
-    {paths: [babelRuntimeEntry]},
-);
-const babelRuntimeRegenerator = require.resolve('@babel/runtime/regenerator', {
-    paths: [babelRuntimeEntry],
-});
 
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
 // makes for a smoother build process.
@@ -116,7 +97,7 @@ const getConfig = target => {
         const loaders = [
             target === 'web' && isEnvDevelopment && require.resolve('style-loader'),
             (target === 'node' && isEnvDevelopment || isEnvProduction) && {
-                loader: MiniCssExtractPlugin.loader,
+                loader: rspack.CssExtractRspackPlugin.loader,
                 // css is located in `static/css`, use '../../' to locate index.html folder
                 // in production `paths.publicUrlOrPath` can be a relative path
                 options: paths.publicUrlOrPath.startsWith('.')
@@ -221,12 +202,10 @@ const getConfig = target => {
             // In development, it does not produce real files.
             filename: target === 'node'
                 ? `static/js/[name].js`
-                : isEnvDevelopment && `static/js/[name].[hash].js${contenthash}`,
-            chunkFilename: isEnvProduction
-                ? target === 'node'
-                    ? 'static/js/[name].chunk.js'
-                    : 'static/js/[name].[contenthash:8].chunk.js'
-                : isEnvDevelopment && `static/js/[name].[hash].chunk.js${contenthash}`,
+                : `static/js/[name].[contenthash:8].js`,
+            chunkFilename: target === 'node'
+                ? `static/js/[name].chunk.js`
+                : `static/js/[name].[contenthash:8].chunk.js`,
             assetModuleFilename: 'static/media/[name].[hash][ext]',
             // webpack uses `publicPath` to determine where the app is being served from.
             // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -242,19 +221,6 @@ const getConfig = target => {
                         .replace(/\\/g, '/')
                 : isEnvDevelopment
                 && (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
-        },
-        cache: {
-            type: 'filesystem',
-            version: createEnvironmentHash(env.raw),
-            cacheDirectory: paths.appWebpackCache,
-            store: 'pack',
-            buildDependencies: {
-                defaultWebpack: ['webpack/lib/'],
-                config: [__filename],
-                tsconfig: [paths.appTsConfig, paths.appJsConfig].filter(f =>
-                    fs.existsSync(f),
-                ),
-            },
         },
         infrastructureLogging: {
             level: 'none',
@@ -305,18 +271,29 @@ const getConfig = target => {
                 // This is only used in production mode
                 new CssMinimizerPlugin(),
             ],
-            moduleIds: 'named',
-            chunkIds: 'named',
+            moduleIds: 'deterministic',
+            chunkIds: 'deterministic',
         },
-        externals:
-            target === 'node' ? [nodeExternals({
+        externals: target === 'node' ? [
+            ({request}, callback) => {
+                if (
+                    /webpack-hot-middleware/.test(request) ||
+                    /rspack\/dev-middleware/.test(request) ||
+                    /webpack-dev-middleware/.test(request)
+                ) {
+                    return callback(null, `commonjs ${request}`);
+                }
+                callback();
+            },
+            nodeExternals({
                 allowlist: [
                     /\.css$/i,
                     /^react-perfect-scrollbar$/i,
                     /^@emotion\//,
                     /^emotion$/,
                 ],
-            }),] : undefined,
+            }),
+        ] : undefined,
         resolve: {
             // This allows you to set a fallback for where webpack should look for modules.
             // We placed these paths second because we want `node_modules` to "win"
@@ -345,22 +322,7 @@ const getConfig = target => {
                 }),
                 ...(modules.webpackAliases || {}),
             },
-            plugins: [
-                // Prevents users from importing files from outside of src/ (or node_modules/).
-                // This often causes confusion because we only process files within src/ with babel.
-                // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
-                // please link the files into your node_modules/ and let module-resolution kick in.
-                // Make sure your source files are compiled, as they will not be processed in any way.
-                new ModuleScopePlugin(paths.appSrc, [
-                    paths.appPackageJson,
-                    reactRefreshRuntimeEntry,
-                    reactRefreshWebpackPluginRuntimeEntry,
-                    reactRefreshWebpackPluginOverlayRuntimeEntry,
-                    babelRuntimeEntry,
-                    babelRuntimeEntryHelpers,
-                    babelRuntimeRegenerator,
-                ]),
-            ],
+            plugins: [],
         },
         module: {
             strictExportPresence: true,
@@ -458,6 +420,7 @@ const getConfig = target => {
                                 plugins: [
                                     isEnvDevelopment
                                     && shouldUseReactRefresh
+                                    && target === 'web'
                                     && require.resolve('react-refresh/babel'),
                                     '@emotion/babel-plugin',
                                     '@loadable/babel-plugin'
@@ -476,27 +439,12 @@ const getConfig = target => {
                         {
                             test: /\.(js|mjs)$/,
                             exclude: /@babel(?:\/|\\{1,2})runtime/,
-                            loader: require.resolve('babel-loader'),
-                            options: {
-                                babelrc: false,
-                                configFile: false,
-                                compact: false,
-                                presets: [
-                                    [
-                                        require.resolve('babel-preset-react-app/dependencies'),
-                                        {helpers: true},
-                                    ],
-                                ],
-                                cacheDirectory: true,
-                                // See #6846 for context on why cacheCompression is disabled
-                                cacheCompression: false,
-
-                                // Babel sourcemaps are needed for debugging into node_modules
-                                // code.  Without the options below, debuggers like VSCode
-                                // show incorrect code and set breakpoints on the wrong lines.
-                                sourceMaps: shouldUseSourceMap,
-                                inputSourceMap: shouldUseSourceMap,
+                            loader: 'builtin:swc-loader',
+                            jsc: {
+                                parser: {syntax: 'ecmascript'},
+                                externalHelpers: true,
                             },
+                            env: {targets: 'Chrome >= 48'},
                         },
                         // "postcss" loader applies autoprefixer to our CSS.
                         // "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -522,6 +470,7 @@ const getConfig = target => {
                             // Remove this when webpack adds a warning or an error for this.
                             // See https://github.com/webpack/webpack/issues/6571
                             sideEffects: true,
+                            type: 'javascript/auto',
                         },
                         // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
                         // using the extension .module.css
@@ -537,6 +486,7 @@ const getConfig = target => {
                                     getLocalIdent: getCSSModuleLocalIdent,
                                 },
                             }),
+                            type: 'javascript/auto',
                         },
                         // Opt-in support for SASS (using .scss or .sass extensions).
                         // By default we support SASS Modules with the
@@ -579,6 +529,7 @@ const getConfig = target => {
                                 },
                                 'sass-loader',
                             ),
+                            type: 'javascript/auto',
                         },
                         // "file" loader makes sure those assets get served by WebpackDevServer.
                         // When you `import` an asset, you get its (virtual) filename.
@@ -606,7 +557,7 @@ const getConfig = target => {
             // It is absolutely essential that NODE_ENV is set to production
             // during a production build.
             // Otherwise React will be compiled in the very slow development mode.
-            new webpack.DefinePlugin(
+            new rspack.DefinePlugin(
                 target === 'node'
                     ? {__PROJECT_ROOT__: JSON.stringify(paths.appPath, ), __SERVER__: JSON.stringify(true)} // node: only inject __PROJECT_ROOT__
                     : {
@@ -617,15 +568,18 @@ const getConfig = target => {
             ),
             // Experimental hot reloading for React .
             // https://github.com/facebook/react/tree/main/packages/react-refresh
+            target === 'web' &&
             isEnvDevelopment
-            && shouldUseReactRefresh && new webpack.HotModuleReplacementPlugin(),
+            && shouldUseReactRefresh && new rspack.HotModuleReplacementPlugin(),
+            target === 'web' &&
             isEnvDevelopment
             && shouldUseReactRefresh
-            && new ReactRefreshWebpackPlugin({
+            && new ReactRefreshRspackPlugin({
                 overlay: {
                     sockIntegration: 'whm',
                 },
             }),
+            target === 'web' &&
             isEnvDevelopment
             && shouldUseReactRefresh
             && new LazySliceVirtualHMRPlugin({
@@ -636,7 +590,7 @@ const getConfig = target => {
             // See https://github.com/facebook/create-react-app/issues/240
             isEnvDevelopment && new CaseSensitivePathsPlugin(),
             (target === 'node' && isEnvDevelopment || isEnvProduction)
-            && new MiniCssExtractPlugin({
+            && new rspack.CssExtractRspackPlugin({
                 // Options similar to the same options in webpackOptions.output
                 // both options are optional
                 filename: 'static/css/[name].[contenthash:8].css',
@@ -671,7 +625,7 @@ const getConfig = target => {
             // solution that requires the user to opt into importing specific locales.
             // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
             // You can remove this if you don't use Moment.js:
-            new webpack.IgnorePlugin({
+            new rspack.IgnorePlugin({
                 resourceRegExp: /^\.\/locale$/,
                 contextRegExp: /moment$/,
             }),
@@ -707,7 +661,7 @@ const getConfig = target => {
             }),
             // TypeScript type checking
             useTypeScript
-            && new ForkTsCheckerWebpackPlugin({
+            && new TsCheckerRspackPlugin({
                 async: isEnvDevelopment,
                 typescript: {
                     typescriptPath: resolve.sync('typescript', {
@@ -777,10 +731,10 @@ const getConfig = target => {
                     },
                 },
             }),
-            target === 'node' &&
-            new webpack.optimize.LimitChunkCountPlugin({
-                maxChunks: 1,
-            }),
+            // target === 'node' &&
+            // new rspack.optimize.LimitChunkCountPlugin({
+            //     maxChunks: 1,
+            // }),
             new LoadablePlugin({
                 filename: 'loadable-stats.json',
                 writeToDisk: true,
@@ -796,6 +750,7 @@ const getConfig = target => {
             node: {
                 __dirname: false,
                 __filename: false,
+                global: false,
             },
         } : {}),
     };

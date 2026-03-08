@@ -1,0 +1,44 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                redis_host: redis
+                redis_port: 6379
+        ports:
+            - "8000:3000"
+            - "8443:8443"
+        environment:
+            DASHBOARD_PORT: 3000
+            NODE_ENV: production
+            REDIS_HOST: redis
+            REDIS_PORT: 6379
+            SHELL_CACHE_TTL: 3600
+            SSL_KEY_PATH: /etc/letsencrypt/live/guillaumecisco.com/privkey.pem
+            SSL_CERT_PATH: /etc/letsencrypt/live/guillaumecisco.com/fullchain.pem
+        depends_on:
+            redis:
+                condition: service_healthy
+        restart: unless-stopped
+        volumes:
+            - /etc/letsencrypt:/etc/letsencrypt:ro
+
+    redis:
+        image: redis:7-alpine
+        # Persist cache across container restarts.
+        # Remove the volumes block below if you prefer an ephemeral cache.
+        volumes:
+            - redis_data:/data
+        command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 3s
+            retries: 5
+        ports:
+            - "6379:6379"
+        restart: unless-stopped
+
+volumes:
+    redis_data:

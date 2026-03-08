@@ -1,6 +1,8 @@
 import {loadableReady} from '@loadable/component';
 import {hydrateRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
+import createCache from '@emotion/cache';
+import {CacheProvider} from '@emotion/react';
 import {BrowserRouter} from 'react-router';
 
 
@@ -13,14 +15,20 @@ const store = configureAppStore(window.__PRELOADED_STATE__);
 // Allow the passed state to be garbage-collected
 delete window.__PRELOADED_STATE__;
 
-// TODO use global styles
+import './../app/common/ui/fonts.css';
+
+const cache = createCache({key: 'css'});
+
 loadableReady(() => {
     hydrateRoot(document.getElementById('root'),
-        <Provider store={store}>
-            <BrowserRouter>
-                <App />
-            </BrowserRouter>
-        </Provider>);
+        <CacheProvider value={cache}>
+            <Provider store={store}>
+                <BrowserRouter>
+                    <App/>
+                </BrowserRouter>
+            </Provider>
+        </CacheProvider>
+    );
 });
 
 // If you want to start measuring performance in your app, pass a function
