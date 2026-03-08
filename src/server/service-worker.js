@@ -1,38 +1,32 @@
 import { clientsClaim } from 'workbox-core';
-import { precacheAndRoute } from 'workbox-precaching';
-import { registerRoute } from 'workbox-routing';
-import { CacheFirst } from 'workbox-strategies';
+import { precacheAndRoute, matchPrecache } from 'workbox-precaching';
+import { registerRoute, setCatchHandler, setDefaultHandler } from 'workbox-routing';
+import { CacheFirst, NetworkOnly } from 'workbox-strategies';
+
+console.log('SW VERSION OFFLINE V2 DIST WEB');
 
 clientsClaim();
 self.skipWaiting();
 
 precacheAndRoute(self.__WB_MANIFEST || []);
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open('offline').then((cache) =>
-            cache.add('/offline.html')
-        )
-    );
+// Toutes les navigations tentent le réseau.
+// Si ça échoue, setCatchHandler prend la main.
+setDefaultHandler(new NetworkOnly());
+
+setCatchHandler(async ({ event }) => {
+    if (event.request.destination === 'document') {
+        return (await matchPrecache('/dist/web/offline.html')) || Response.error();
+    }
+    return Response.error();
 });
 
 registerRoute(
-    ({ request }) => request.mode === 'navigate',
-    async () => {
-        return (await caches.match('/offline.html')) || fetch('/offline.html');
-    }
-);
-
-registerRoute(
     ({ request }) => request.destination === 'image',
-    new CacheFirst({
-        cacheName: 'images',
-    })
+    new CacheFirst({ cacheName: 'images' })
 );
 
 registerRoute(
     ({ request }) => request.destination === 'font',
-    new CacheFirst({
-        cacheName: 'fonts',
-    })
+    new CacheFirst({ cacheName: 'fonts' })
 );
