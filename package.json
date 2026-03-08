@@ -48,6 +48,7 @@
     "nodemon": "^3.1.14"
   },
   "resolutions": {
-    "serialize-javascript": "^7.0.3"
+    "serialize-javascript": "^7.0.3",
+    "diff": "^8.0.3"
   }
 }
