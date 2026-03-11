@@ -194,39 +194,41 @@ const getConfig = target => {
             ? './src/server/main.js'
             : [...(isEnvDevelopment ? ['webpack-hot-middleware/client?reload=true'] : []), './src/client/main-web.js'],
         output: {
-            // The build folder.
             path: path.join(paths.appBuild, target),
-            // Add /* filename */ comments to generated require()s in the output.
             pathinfo: isEnvDevelopment,
-            // There will be one main bundle, and one file per asynchronous chunk.
-            // In development, it does not produce real files.
+
             filename: target === 'node'
                 ? `static/js/[name].js`
-                : `static/js/[name].[contenthash:8].js`,
+                : isEnvDevelopment
+                    ? `static/js/[name].js`
+                    : `static/js/[name].[contenthash:8].js`,
+
             chunkFilename: target === 'node'
                 ? `static/js/[name].chunk.js`
-                : `static/js/[name].[contenthash:8].chunk.js`,
+                : isEnvDevelopment
+                    ? `static/js/[name].chunk.js`
+                    : `static/js/[name].[contenthash:8].chunk.js`,
+
             assetModuleFilename: 'static/media/[name].[hash][ext]',
-            // webpack uses `publicPath` to determine where the app is being served from.
-            // It requires a trailing slash, or the file assets will get an incorrect path.
-            // We inferred the "public path" (such as / or /my-project) from homepage.
-            // publicPath: paths.publicUrlOrPath,
             publicPath: `/dist/${target}/`,
             libraryTarget: target === 'node' ? 'commonjs2' : undefined,
-            // Point sourcemap entries to original disk location (format as URL on Windows)
+
+            uniqueName: 'guillaumecisco',
+
             devtoolModuleFilenameTemplate: isEnvProduction
                 ? info =>
                     path
                         .relative(paths.appSrc, info.absoluteResourcePath)
                         .replace(/\\/g, '/')
-                : isEnvDevelopment
-                && (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
+                : isEnvDevelopment &&
+                (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
         },
         infrastructureLogging: {
             level: 'none',
         },
         optimization: {
             minimize: isEnvProduction,
+            runtimeChunk: target === 'web' ? 'single' : false,
             minimizer: [
                 // This is only used in production mode
                 new TerserPlugin({
@@ -422,7 +424,11 @@ const getConfig = target => {
                                     && shouldUseReactRefresh
                                     && target === 'web'
                                     && require.resolve('react-refresh/babel'),
-                                    '@emotion/babel-plugin',
+                                    ['@emotion/babel-plugin', {
+                                        autoLabel: 'always',
+                                        labelFormat: '[dirname]--[local]',  // force chemin dans le label
+                                        sourceMap: false,  // ← ici
+                                    }],
                                     '@loadable/babel-plugin'
                                 ].filter(Boolean),
                                 // This is a feature of `babel-loader` for webpack (not Babel itself).

@@ -1,23 +1,19 @@
 import {css} from '@emotion/react';
 
-const pos = css`
+export default {
+    container: css`
         position: absolute;
-        z-index: 2;
+        top: 20px;
+        z-index: 1;
         left: 15px;
         color: green;
+        line-height: 22px;
 
-        &:after {
-            content: "" !important;
+        & > .typed-cursor {
+            font-weight: bolder;
+            width: 3px;
+            background-color: green;
+            color: transparent;
         }
-    `
-;
-
-export default {
-    intro: css`
-        ${pos};
-        top: 15px;
-    `, intro2: css`
-        ${pos};
-        top: 39px;
-    `
+    `,
 };

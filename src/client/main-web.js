@@ -19,17 +19,21 @@ import './../app/common/ui/fonts.css';
 
 const cache = createCache({key: 'css'});
 
-loadableReady(() => {
-    hydrateRoot(document.getElementById('root'),
-        <CacheProvider value={cache}>
-            <Provider store={store}>
-                <BrowserRouter>
-                    <App/>
-                </BrowserRouter>
-            </Provider>
-        </CacheProvider>
-    );
-});
+if (!window.__APP_HYDRATED__) {
+    window.__APP_HYDRATED__ = true;
+
+    loadableReady(() => (
+        hydrateRoot(document.getElementById('root'),
+            <CacheProvider value={cache}>
+                <Provider store={store}>
+                    <BrowserRouter>
+                        <App/>
+                    </BrowserRouter>
+                </Provider>
+            </CacheProvider>
+        )
+    ));
+}
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
@@ -38,16 +42,22 @@ reportWebVitals();
 
 if (
     process.env.NODE_ENV === 'production' &&
-    'serviceWorker' in navigator
+    'serviceWorker' in navigator &&
+    !window.__SW_REGISTERED__
 ) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-            .then((reg) => {
-                console.log('SW registered:', reg.scope);
-            })
-            .catch((err) => {
-                console.error('SW registration failed:', err);
-            });
+    window.__SW_REGISTERED__ = true;
+
+    window.addEventListener('load', async () => {
+        const registration = await navigator.serviceWorker.getRegistration();
+
+        if (!registration) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then((reg) => {
+                    console.log('SW registered:', reg.scope);
+                })
+                .catch((err) => {
+                    console.error('SW registration failed:', err);
+                });
+        }
     });
 }
-

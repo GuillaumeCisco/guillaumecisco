@@ -1,22 +1,28 @@
-import Typical from 'react-typical';
+import Typed from 'typed.js';
 
 import style from './style'
+import {useEffect, useRef} from "react";
 
-const Intro = () => (
-    <>
-        <Typical
-            steps={['Welcome into (my) space.']}
-            wrapper="span"
-            css={style.intro}
-            aria-label="Welcome into (my) space."
-        />
-        <Typical
-            steps={[1700, 'Please click on the core star for instructions.']}
-            wrapper="span"
-            css={style.intro2}
-            aria-label="Please click on the core star for instructions."
-        />
-    </>
-);
+const Intro = () => {
+    const el = useRef(null);
+
+    useEffect(() => {
+        const typed = new Typed(el.current, {
+            strings: ['Welcome into (my) space.<br/> Please click on the core star for instructions.'],
+            typeSpeed: 60,
+        });
+
+        return () => {
+            typed.destroy();
+        };
+    }, []);
+
+
+    return <div css={style.container}>
+        <span ref={el}  aria-label="Welcome into (my) space."/>
+    </div>
+
+
+};
 
 export default Intro;

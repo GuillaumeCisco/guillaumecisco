@@ -8,6 +8,7 @@ import Koa from 'koa';
 import serve from 'koa-static';
 import mount from 'koa-mount';
 import koaHelmet from 'koa-helmet';
+import compress from 'koa-compress';
 import {createLifecycleServer} from '@guillaumecisco/terminus-lifecycle';
 import {renderToPipeableStream} from 'react-dom/server';
 import {CacheProvider} from '@emotion/react';
@@ -25,6 +26,8 @@ const {
     REDIS_PORT = 6379,
     SHELL_CACHE_TTL = 3600, // seconds — 1 hour default
 } = process.env;
+
+const isProd = process.env.NODE_ENV === 'production';
 
 // ── Redis client ───────────────────────────────────────────────────────────
 // The client is created at startup and shared across requests.
@@ -65,6 +68,30 @@ const CACHE_KEY = 'ssr:shell'; // single key — portfolio has one route
 const buildAssetTags = ({nonce, devMiddlewareInstance, clientCompiler}) => {
     let scriptTags = '';
     let linkTags = '';
+    let preloadTags = '';
+
+    const buildTags = (files, pub) => {
+        const jsFiles = files.filter(f => f.endsWith('.js'));
+        const cssFiles = files.filter(f => f.endsWith('.css'));
+
+        scriptTags = jsFiles
+            .map(f => `<script src="${pub}${f}" nonce="${nonce}" defer></script>`)
+            .join('\n');
+
+        linkTags = cssFiles
+            .map(f => `<link rel="stylesheet" href="${pub}${f}">`)
+            .join('\n');
+
+        const criticalJs = jsFiles[0];
+        const criticalCss = cssFiles[0];
+
+        preloadTags = [
+            criticalJs && `<link rel="preload" href="${pub}${criticalJs}" as="script">`,
+            criticalCss && `<link rel="preload" href="${pub}${criticalCss}" as="style">`,
+        ]
+            .filter(Boolean)
+            .join('\n');
+    };
 
     if (process.env.NODE_ENV !== 'production') {
         const devStats = devMiddlewareInstance?.context?.stats;
@@ -72,50 +99,40 @@ const buildAssetTags = ({nonce, devMiddlewareInstance, clientCompiler}) => {
             const clientStats = devStats.stats
                 ? devStats.stats.find(s => s.compilation.name === 'client')
                 : devStats;
+
             if (clientStats) {
                 const info = clientStats.toJson({all: false, entrypoints: true});
-                const files = info.entrypoints?.main?.assets?.map(a => a.name) || [];
+                const files = (info.entrypoints?.main?.assets || [])
+                    .map(a => a.name)
+                    .filter(name => !name.includes('hot-update'));
                 const pub = clientCompiler.options.output.publicPath;
-                scriptTags = files
-                    .filter(f => f.endsWith('.js'))
-                    .map(f => `<script src="${pub}${f}" nonce="${nonce}" defer></script>`)
-                    .join('\n');
-                linkTags = files
-                    .filter(f => f.endsWith('.css'))
-                    .map(f => `<link rel="stylesheet" href="${pub}${f}">`)
-                    .join('\n');
+
+                buildTags(files, pub);
             }
         }
     } else {
-        // In production, asset URLs are read from the webpack manifest.
-        // entrypoints contains paths relative to publicPath (/dist/web/),
-        // so the prefix must be added explicitly.
         const manifestPath = path.join(__PROJECT_ROOT__, 'public/dist/web/asset-manifest.json');
+
         if (fs.existsSync(manifestPath)) {
             const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
             const files = manifest.entrypoints || [];
             const pub = '/dist/web/';
-            scriptTags = files
-                .filter(f => f.endsWith('.js'))
-                .map(f => `<script src="${pub}${f}" nonce="${nonce}" defer></script>`)
-                .join('\n');
-            linkTags = files
-                .filter(f => f.endsWith('.css'))
-                .map(f => `<link rel="stylesheet" href="${pub}${f}">`)
-                .join('\n');
+
+            buildTags(files, pub);
         }
     }
 
-    return {scriptTags, linkTags};
+    return {scriptTags, linkTags, preloadTags};
 };
 
 /**
  * Build the full HTML head string.
  * linkTags are static (hashed filenames) so they can safely be cached.
  */
-const buildHead = (linkTags) => `<!DOCTYPE html>
+const buildHead = (linkTags, preloadTags) => `<!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta name="emotion-insertion-point" content="emotion-insertion-point" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Guillaume Cisco — Senior Lead FullStack Engineer</title>
@@ -125,7 +142,8 @@ const buildHead = (linkTags) => `<!DOCTYPE html>
     <meta property="og:description" content="Interactive portfolio of Guillaume Cisco. Explore my experience, skills and hobbies.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://guillaumecisco.com/">
-    <link rel="manifest" href="/manifest.json" />
+    ${isProd ? `<link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />` : ''}
+    ${preloadTags}
     ${linkTags}
   </head>
   <body>
@@ -190,6 +208,12 @@ app.use(async (ctx, next) => {
 // is guaranteed to match between the header and the inline script tag.
 app.use(koaHelmet({contentSecurityPolicy: false}));
 
+app.use(compress({
+    br: true,
+    gzip: true,
+    threshold: 1024,
+}));
+
 // ── Dev middleware ─────────────────────────────────────────────────────────
 // __PROJECT_ROOT__ is injected by webpack DefinePlugin (= project root path).
 // Hoisted to module scope so the SSR handler can access clientCompiler
@@ -241,7 +265,9 @@ if (process.env.NODE_ENV !== 'production') {
     devMiddlewareInstance = webpackDevMiddleware(multiCompiler, {
         serverSideRender: true,
         publicPath: clientCompiler.options.output.publicPath,
-        writeToDisk: (filePath) => filePath.endsWith('loadable-stats.json'),
+        writeToDisk: (filePath) =>
+            filePath.endsWith('loadable-stats.json') ||
+            filePath.includes('/dist/node/'),
     });
 
     const hotMiddleware = webpackHotMiddleware(clientCompiler, {
@@ -273,24 +299,26 @@ const pwaRootFiles = {
         type: 'application/json',
         file: 'manifest.json',
     },
-    '/offline.html': {
-        type: 'text/html',
-        file: 'offline.html',
-    }
 };
+
 app.use(async (ctx, next) => {
     const entry = pwaRootFiles[ctx.path];
 
     if (entry) {
+        const filePath = path.join(__PROJECT_ROOT__, 'public/dist/web', entry.file);
+
+        if (!fs.existsSync(filePath)) {
+            await next();
+            return;
+        }
+
         ctx.type = entry.type;
 
         if (entry.headers) {
             Object.entries(entry.headers).forEach(([k, v]) => ctx.set(k, v));
         }
 
-        ctx.body = fs.createReadStream(
-            path.join(__PROJECT_ROOT__, 'public/dist/web', entry.file)
-        );
+        ctx.body = fs.createReadStream(filePath);
         return;
     }
 
@@ -302,7 +330,7 @@ app.use(async (ctx, next) => {
     if (ctx.path !== '/') return next();
 
     const {nonce} = ctx.state;
-    const {scriptTags, linkTags} = buildAssetTags({nonce, devMiddlewareInstance, clientCompiler});
+    const {scriptTags, linkTags, preloadTags} = buildAssetTags({nonce, devMiddlewareInstance, clientCompiler});
 
     // The preloaded state is always fresh — it is never cached.
     const store = configureAppStore();
@@ -360,7 +388,7 @@ app.use(async (ctx, next) => {
         </CacheProvider>
     );
 
-    const head = buildHead(linkTags);
+    const head = buildHead(linkTags, preloadTags);
     ctx.res.write(head);
 
     // Tee the emotion transform output: one branch streams to the client,
