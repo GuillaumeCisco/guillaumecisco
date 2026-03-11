@@ -15,56 +15,60 @@ import {CacheProvider} from '@emotion/react';
 import {ChunkExtractor} from '@loadable/server';
 import {Provider} from 'react-redux';
 import {StaticRouter} from 'react-router';
-import configureAppStore from '../app/store';
-import App from '../app';
 import {createEmotionStream} from './emotionStream';
+
+// App et configureAppStore sont chargés dynamiquement depuis le bundle ssr
+// à chaque requête en dev — jamais importés statiquement.
+// En prod, le bundle est figé au démarrage donc on les importe directement.
+let _App = null;
+let _configureAppStore = null;
+
+const isProd = process.env.NODE_ENV === 'production';
+
+if (isProd) {
+    const nodeRequire = eval('require');
+    const ssrBundle = nodeRequire(path.join(__PROJECT_ROOT__, 'public/dist/ssr/static/js/main.js'));
+    _App = ssrBundle.App;
+    _configureAppStore = ssrBundle.configureAppStore;
+}
+
+const SSR_BUNDLE_PATH = path.join(__PROJECT_ROOT__, 'public/dist/ssr/static/js/main.js');
+
+const getSSRModules = () => {
+    if (isProd) return {App: _App, configureAppStore: _configureAppStore};
+    const nodeRequire = eval('require');
+    // Vider le cache pour recharger le bundle ssr à jour après chaque rebuild
+    delete nodeRequire.cache[SSR_BUNDLE_PATH];
+    const ssrBundle = nodeRequire(SSR_BUNDLE_PATH);
+    return {App: ssrBundle.App, configureAppStore: ssrBundle.configureAppStore};
+};
 
 const {
     DASHBOARD_PORT = 3000,
     LIFECYCLE_PORT = 9000,
     REDIS_HOST = '127.0.0.1',
     REDIS_PORT = 6379,
-    SHELL_CACHE_TTL = 3600, // seconds — 1 hour default
+    SHELL_CACHE_TTL = 3600,
 } = process.env;
 
-const isProd = process.env.NODE_ENV === 'production';
-
-// ── Redis client ───────────────────────────────────────────────────────────
-// The client is created at startup and shared across requests.
-// On connection error we log and continue — cache misses are handled gracefully,
-// the app falls back to a live render so Redis is never a hard dependency.
 const redis = createClient({
     socket: {
         host: REDIS_HOST,
         port: Number(REDIS_PORT),
-        // Disable automatic reconnection in dev to avoid log spam.
-        // In production, retry with exponential backoff up to 3s.
-        reconnectStrategy: process.env.NODE_ENV !== 'production'
+        reconnectStrategy: !isProd
             ? false
             : (retries) => Math.min(retries * 100, 3000),
     },
 });
 
-// isRedisReady guards all Redis calls — if Redis is down, requests fall back
-// to a live render silently without throwing.
 const isRedisReady = () => redis.isReady;
 
 redis.on('error', (err) => {
-    // Silence connection errors when Redis is not ready (e.g. not available in dev).
-    // Once connected, always log errors so prod issues are visible.
-    if (isRedisReady()) {
-        console.error('Redis error:', err);
-    }
+    if (isRedisReady()) console.error('Redis error:', err);
 });
 
-const CACHE_KEY = 'ssr:shell'; // single key — portfolio has one route
+const CACHE_KEY = 'ssr:shell';
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-
-/**
- * Build the asset tags from the webpack manifest (production)
- * or from webpack-dev-middleware stats (development).
- */
 const buildAssetTags = ({nonce, devMiddlewareInstance, clientCompiler}) => {
     let scriptTags = '';
     let linkTags = '';
@@ -88,47 +92,34 @@ const buildAssetTags = ({nonce, devMiddlewareInstance, clientCompiler}) => {
         preloadTags = [
             criticalJs && `<link rel="preload" href="${pub}${criticalJs}" as="script">`,
             criticalCss && `<link rel="preload" href="${pub}${criticalCss}" as="style">`,
-        ]
-            .filter(Boolean)
-            .join('\n');
+        ].filter(Boolean).join('\n');
     };
 
-    if (process.env.NODE_ENV !== 'production') {
+    if (!isProd) {
         const devStats = devMiddlewareInstance?.context?.stats;
         if (devStats) {
             const clientStats = devStats.stats
                 ? devStats.stats.find(s => s.compilation.name === 'client')
                 : devStats;
-
             if (clientStats) {
                 const info = clientStats.toJson({all: false, entrypoints: true});
                 const files = (info.entrypoints?.main?.assets || [])
                     .map(a => a.name)
                     .filter(name => !name.includes('hot-update'));
-                const pub = clientCompiler.options.output.publicPath;
-
-                buildTags(files, pub);
+                buildTags(files, clientCompiler.options.output.publicPath);
             }
         }
     } else {
         const manifestPath = path.join(__PROJECT_ROOT__, 'public/dist/web/asset-manifest.json');
-
         if (fs.existsSync(manifestPath)) {
             const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8'));
-            const files = manifest.entrypoints || [];
-            const pub = '/dist/web/';
-
-            buildTags(files, pub);
+            buildTags(manifest.entrypoints || [], '/dist/web/');
         }
     }
 
     return {scriptTags, linkTags, preloadTags};
 };
 
-/**
- * Build the full HTML head string.
- * linkTags are static (hashed filenames) so they can safely be cached.
- */
 const buildHead = (linkTags, preloadTags) => `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -149,15 +140,6 @@ const buildHead = (linkTags, preloadTags) => `<!DOCTYPE html>
   <body>
     <div id="root">`;
 
-/**
- * Build the tail injected after the React shell.
- * The preloaded state, nonce, and loadable tags are request-specific — never cached.
- *
- * IMPORTANT: loadableTags must be built AFTER renderToPipeableStream completes,
- * because ChunkExtractor only knows which chunks were used once the render is done.
- * loadableTags are placed before scriptTags so async chunks are registered before
- * the main bundle executes.
- */
 const buildTail = ({nonce, preloadedState, loadableTags, scriptTags}) => `</div>
     <script nonce="${nonce}">
       window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
@@ -167,9 +149,6 @@ const buildTail = ({nonce, preloadedState, loadableTags, scriptTags}) => `</div>
   </body>
 </html>`;
 
-// ── Set CSP header ─────────────────────────────────────────────────────────
-// Must be called before writeHead. The nonce is request-scoped so this
-// cannot be delegated to helmet (which would generate its own nonce).
 const setCSP = (res, nonce) => {
     res.setHeader('Content-Security-Policy',
         `default-src 'self'; ` +
@@ -186,70 +165,32 @@ const setCSP = (res, nonce) => {
     );
 };
 
-// ── Loadable stats path ────────────────────────────────────────────────────
-// Resolved once at startup — ChunkExtractor reads this file on every request
-// to determine which chunks were used during SSR and inject the matching
-// <script> tags before the main bundle.
 const LOADABLE_STATS_FILE = path.join(__PROJECT_ROOT__, 'public/dist/web/loadable-stats.json');
 
-// ── Koa app ────────────────────────────────────────────────────────────────
 const app = new Koa();
 
-// ── Nonce generation — must run before SSR handler ─────────────────────────
-// A fresh nonce is generated per request and stored in ctx.state
-// so it can be used consistently in both the CSP header and the HTML script tag.
 app.use(async (ctx, next) => {
     ctx.state.nonce = crypto.randomBytes(16).toString('base64');
     await next();
 });
 
-// ── Helmet — all security headers except CSP ──────────────────────────────
-// CSP is set manually in the SSR handler so that the nonce value
-// is guaranteed to match between the header and the inline script tag.
 app.use(koaHelmet({contentSecurityPolicy: false}));
 
-app.use(compress({
-    br: true,
-    gzip: true,
-    threshold: 1024,
-}));
+app.use(compress({br: true, gzip: true, threshold: 1024}));
 
-// ── Dev middleware ─────────────────────────────────────────────────────────
-// __PROJECT_ROOT__ is injected by webpack DefinePlugin (= project root path).
-// Hoisted to module scope so the SSR handler can access clientCompiler
-// and devMiddlewareInstance without a closure problem.
 let clientCompiler = null;
 let devMiddlewareInstance = null;
 
-if (process.env.NODE_ENV !== 'production') {
-    // eval('require') escapes webpack's static analysis so these dev-only
-    // requires are resolved at runtime by Node, not bundled by webpack.
+if (!isProd) {
     const nodeRequire = eval('require');
-    // const webpackConfig = nodeRequire(path.join(__PROJECT_ROOT__, 'config/webpack.config.babel.js'));
     const webpackConfig = nodeRequire(path.join(__PROJECT_ROOT__, 'config/rspack.config.babel.js'));
     const webpackDevMiddleware = nodeRequire('webpack-dev-middleware');
     const webpackHotMiddleware = nodeRequire('webpack-hot-middleware');
-    // const webpack = nodeRequire('webpack');
     const webpack = nodeRequire('@rspack/core').rspack;
     const multiCompiler = webpack(webpackConfig);
+
     clientCompiler = multiCompiler.compilers.find(c => c.name === 'client');
-
-    // Clear the require cache for client modules after each rebuild
-    // so the SSR handler always picks up the latest compiled output.
-    clientCompiler.hooks.afterEmit.tap('cleanup-the-require-cache', () => {
-        Object.keys(require.cache).forEach((key) => {
-            if (key.includes(path.join(__PROJECT_ROOT__, 'src/client/'))) delete require.cache[key];
-        });
-    });
-
-    // Invalidate the Redis shell cache on every client rebuild in dev
-    // so stale Emotion class names never survive a hot reload.
-    clientCompiler.hooks.done.tap('invalidate-redis-shell-cache', () => {
-        if (isRedisReady()) {
-            redis.del(CACHE_KEY).catch((err) => console.error('Redis cache invalidation error:', err));
-            console.log('Redis shell cache invalidated.');
-        }
-    });
+    const ssrCompiler = multiCompiler.compilers.find(c => c.name === 'ssr');
 
     let bundleStart = null;
     clientCompiler.hooks.compile.tap('Client', () => {
@@ -260,14 +201,20 @@ if (process.env.NODE_ENV !== 'production') {
         console.log(`Bundled in ${Date.now() - bundleStart}ms!`);
     });
 
-    // webpack-dev-middleware serves assets from memory — no writeToDisk needed.
-    // koa-static must not intercept /dist/* in dev to avoid conflicts.
-    devMiddlewareInstance = webpackDevMiddleware(multiCompiler, {
+    // HMR uniquement sur le client — le ssr compiler tourne en watch séparé.
+    devMiddlewareInstance = webpackDevMiddleware(clientCompiler, {
         serverSideRender: true,
         publicPath: clientCompiler.options.output.publicPath,
-        writeToDisk: (filePath) =>
-            filePath.endsWith('loadable-stats.json') ||
-            filePath.includes('/dist/node/'),
+        writeToDisk: (filePath) => filePath.endsWith('loadable-stats.json'),
+    });
+
+    // SSR compiler en watch séparé — écrit sur disque dans dist/ssr/.
+    // Rechargé dynamiquement à chaque requête via getSSRModules().
+    // Pas de nodemon — pas de redémarrage serveur nécessaire.
+    ssrCompiler.watch({aggregateTimeout: 300}, (err, stats) => {
+        if (err) console.error('SSR compiler error:', err);
+        else if (stats?.hasErrors()) console.error('SSR bundle errors:', stats.toString({errors: true}));
+        else console.log('SSR bundle rebuilt.');
     });
 
     const hotMiddleware = webpackHotMiddleware(clientCompiler, {
@@ -276,7 +223,6 @@ if (process.env.NODE_ENV !== 'production') {
         dynamicPublicPath: true,
     });
 
-    // Wrap Connect-style middleware for Koa
     const koaConnect = (fn) => (ctx, next) =>
         new Promise((resolve, reject) => {
             fn(ctx.req, ctx.res, (err) => {
@@ -290,49 +236,34 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const pwaRootFiles = {
-    '/service-worker.js': {
-        type: 'application/javascript',
-        file: 'service-worker.js',
-        headers: {'Service-Worker-Allowed': '/'},
-    },
-    '/manifest.json': {
-        type: 'application/json',
-        file: 'manifest.json',
-    },
+    '/service-worker.js': {type: 'application/javascript', file: 'service-worker.js', headers: {'Service-Worker-Allowed': '/'}},
+    '/manifest.json': {type: 'application/json', file: 'manifest.json'},
 };
 
 app.use(async (ctx, next) => {
     const entry = pwaRootFiles[ctx.path];
-
     if (entry) {
         const filePath = path.join(__PROJECT_ROOT__, 'public/dist/web', entry.file);
-
-        if (!fs.existsSync(filePath)) {
-            await next();
-            return;
-        }
-
+        if (!fs.existsSync(filePath)) { await next(); return; }
         ctx.type = entry.type;
-
-        if (entry.headers) {
-            Object.entries(entry.headers).forEach(([k, v]) => ctx.set(k, v));
-        }
-
+        if (entry.headers) Object.entries(entry.headers).forEach(([k, v]) => ctx.set(k, v));
         ctx.body = fs.createReadStream(filePath);
         return;
     }
-
     await next();
 });
 
-// ── SSR handler ────────────────────────────────────────────────────────────
 app.use(async (ctx, next) => {
     if (ctx.path !== '/') return next();
+
+    ctx.respond = false;
+
+    // Charger App et configureAppStore depuis le bundle ssr à jour
+    const {App, configureAppStore} = getSSRModules();
 
     const {nonce} = ctx.state;
     const {scriptTags, linkTags, preloadTags} = buildAssetTags({nonce, devMiddlewareInstance, clientCompiler});
 
-    // The preloaded state is always fresh — it is never cached.
     const store = configureAppStore();
     const preloadedState = store.getState();
 
@@ -340,21 +271,9 @@ app.use(async (ctx, next) => {
     ctx.res.setHeader('Content-Type', 'text/html');
     ctx.res.writeHead(200);
 
-    // ── Cache hit path ─────────────────────────────────────────────────────
-    // The cached shell contains: the HTML head (with hashed asset links),
-    // the Emotion <style> tags, and the React-rendered HTML.
-    // The tail (preloaded state, nonce, loadable tags) is always appended fresh.
-    //
-    // loadableTags are NOT cached: they embed a nonce and must be rebuilt per
-    // request. On cache hit we reconstruct them from the stats file without
-    // re-rendering — ChunkExtractor without collectChunks returns all entry
-    // chunks, which is correct since the main entry always loads all chunks
-    // registered for the route.
     let cachedShell = null;
     try {
-        if (isRedisReady() && process.env.NODE_ENV === 'production') {
-            cachedShell = await redis.get(CACHE_KEY);
-        }
+        if (isRedisReady() && isProd) cachedShell = await redis.get(CACHE_KEY);
     } catch (err) {
         console.error('Redis get error (falling back to live render):', err);
     }
@@ -369,13 +288,7 @@ app.use(async (ctx, next) => {
         return;
     }
 
-    // ── Cache miss path — live render + capture for caching ───────────────
     const {cache, transform: emotionTransform} = createEmotionStream();
-
-    // ChunkExtractor.collectChunks wraps the app so @loadable/component can
-    // track which chunks are rendered during SSR. getScriptTags() is called
-    // AFTER the render completes (in tee 'finish') so the extractor has the
-    // full picture of which chunks were used.
     const extractor = new ChunkExtractor({statsFile: LOADABLE_STATS_FILE, publicPath: '/dist/web/'});
 
     const jsx = extractor.collectChunks(
@@ -391,10 +304,7 @@ app.use(async (ctx, next) => {
     const head = buildHead(linkTags, preloadTags);
     ctx.res.write(head);
 
-    // Tee the emotion transform output: one branch streams to the client,
-    // the other buffers into an array so we can store the shell in Redis.
     const shellChunks = [];
-
     const tee = new Transform({
         transform(chunk, _encoding, callback) {
             shellChunks.push(chunk.toString());
@@ -402,45 +312,33 @@ app.use(async (ctx, next) => {
         },
     });
 
-    // emotionTransform → tee → res (streaming to client while buffering)
     emotionTransform.pipe(tee);
     tee.pipe(ctx.res, {end: false});
 
     await new Promise((resolve, reject) => {
         const {pipe} = renderToPipeableStream(jsx, {
-            onShellReady() {
-                pipe(emotionTransform);
-            },
+            onShellReady() { pipe(emotionTransform); },
             onShellError(err) {
                 console.error('Shell error:', err);
-                console.error(err?.stack);
                 ctx.res.end('</div></body></html>');
                 reject(err);
             },
-            onError(err) {
-                console.error('Streaming error:', err);
-                console.error(err?.stack);
-            },
+            onError(err) { console.error('Streaming error:', err); },
         });
 
         tee.on('finish', async () => {
-            // Build the tail AFTER render — extractor now knows which chunks were used.
             const loadableTags = extractor.getScriptTags({nonce})
                 .replace(/<script[^>]*data-chunk="main"[^>]*>[^<]*<\/script>\n?/g, '');
             const tail = buildTail({nonce, preloadedState, loadableTags, scriptTags});
-
             ctx.res.write(tail);
             ctx.res.end();
 
-            // Store the shell in Redis after the response is sent.
-            // head + emotion-transformed HTML = the full cacheable shell.
-            // loadableTags and tail are intentionally excluded — they are request-specific.
-            const shellData = JSON.stringify({
-                shell: head + shellChunks.join(''),
-                loadableTags: extractor.getScriptTags({nonce: '%%NONCE%%'}), // placeholder nonce
-            });
             try {
-                if (isRedisReady() && process.env.NODE_ENV === 'production') {
+                if (isRedisReady() && isProd) {
+                    const shellData = JSON.stringify({
+                        shell: head + shellChunks.join(''),
+                        loadableTags: extractor.getScriptTags({nonce: '%%NONCE%%'}),
+                    });
                     await redis.set(CACHE_KEY, shellData, {EX: Number(SHELL_CACHE_TTL)});
                 }
             } catch (err) {
@@ -450,27 +348,18 @@ app.use(async (ctx, next) => {
             resolve();
         });
 
-        tee.on('error', (err) => {
-            ctx.res.destroy(err);
-            reject(err);
-        });
+        tee.on('error', (err) => { ctx.res.destroy(err); reject(err); });
     });
 });
 
-// ── Static files ───────────────────────────────────────────────────────────
-// Serves the public/ directory for production assets (fonts, images, dist/web/*).
-// In dev, webpack-dev-middleware handles /dist/web/* from memory,
-// but koa-static still serves anything else in public/ (e.g. favicons).
 app.use(mount('/', serve(path.join(__PROJECT_ROOT__, 'public'), {index: false})));
 
-// ── Server bootstrap ───────────────────────────────────────────────────────
 const main = async () => {
-    // Connect to Redis — non-fatal if unavailable (dev without Redis, or Redis down in prod).
-    // A 3s timeout prevents the server from hanging on startup if Redis is unreachable.
     try {
-        await Promise.race([redis.connect(), new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Redis connection timeout')), 3000)
-        )]);
+        await Promise.race([
+            redis.connect(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Redis connection timeout')), 3000)),
+        ]);
         if (isRedisReady()) {
             await redis.del(CACHE_KEY);
             console.log('Redis shell cache cleared on startup');
@@ -495,7 +384,6 @@ const main = async () => {
     };
 
     const server = http2.createSecureServer(serverOptions, app.callback());
-
     server.listen(Number(DASHBOARD_PORT), async () => {
         await lifecycle.setReady(true);
         console.log(`Server started https://localhost:${DASHBOARD_PORT} (HTTP/2)`);

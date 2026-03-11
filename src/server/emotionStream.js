@@ -1,6 +1,5 @@
 
 import {Transform} from 'stream';
-import createEmotionServer from '@emotion/server/create-instance';
 import createCache from '@emotion/cache';
 
 /**
@@ -11,20 +10,22 @@ import createCache from '@emotion/cache';
  */
 export const createEmotionStream = () => {
     const cache = createCache({key: 'css'});
-    const {constructStyleTagsFromChunks, extractCriticalToChunks} = createEmotionServer(cache);
-    const flushedIds = new Set();
+    const flushed = new Set();
 
     const transform = new Transform({
         transform(chunk, _encoding, callback) {
             const html = chunk.toString();
-            const styleChunks = extractCriticalToChunks(html);
-            const newStyles = styleChunks.styles.filter(s => {
-                const id = s.key + s.ids.join('');
-                if (flushedIds.has(id)) return false;
-                flushedIds.add(id);
-                return true;
-            });
-            const styleTags = constructStyleTagsFromChunks({html: '', styles: newStyles});
+            let styleTags = '';
+
+            for (const key in cache.inserted) {
+                if (flushed.has(key)) continue;
+                const css = cache.inserted[key];
+                if (typeof css === 'string') {
+                    flushed.add(key);
+                    styleTags += `<style data-emotion="${cache.key} ${key}">${css}</style>`;
+                }
+            }
+
             callback(null, styleTags + html);
         },
     });

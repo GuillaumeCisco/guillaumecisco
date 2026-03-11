@@ -72,11 +72,10 @@ const hasJsxRuntime = (() => {
     }
 })();
 
-const contenthash = process.env.NODE_ENV === 'development' ? '' : '?v=[contenthash:8]';
 
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
-const getConfig = target => {
+const getConfig = (target, {isSSR = false} = {}) => {
     const isEnvDevelopment = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
     const isEnvProduction = process.env.NODE_ENV === 'production';
 
@@ -176,7 +175,7 @@ const getConfig = target => {
     };
 
     return {
-        name: target === 'node' ? 'server' : 'client',
+        name: isSSR ? 'ssr' : target === 'node' ? 'server' : 'client',
         target: [target === 'node' ? target : 'browserslist'],
         // Webpack noise constrained to errors and warnings
         // stats: 'errors-warnings',
@@ -191,10 +190,10 @@ const getConfig = target => {
         // These are the "entry points" to our application.
         // This means they will be the "root" imports that are included in JS bundle.
         entry: target === 'node'
-            ? './src/server/main.js'
+            ? (isSSR ? './src/server/ssr.js' : './src/server/main.js')
             : [...(isEnvDevelopment ? ['webpack-hot-middleware/client?reload=true'] : []), './src/client/main-web.js'],
         output: {
-            path: path.join(paths.appBuild, target),
+            path: path.join(paths.appBuild, isSSR ? 'ssr' : target),
             pathinfo: isEnvDevelopment,
 
             filename: target === 'node'
@@ -213,7 +212,7 @@ const getConfig = target => {
             publicPath: `/dist/${target}/`,
             libraryTarget: target === 'node' ? 'commonjs2' : undefined,
 
-            uniqueName: 'guillaumecisco',
+            uniqueName: isSSR ? 'guillaumecisco-ssr' : 'guillaumecisco',
 
             devtoolModuleFilenameTemplate: isEnvProduction
                 ? info =>
@@ -425,9 +424,9 @@ const getConfig = target => {
                                     && target === 'web'
                                     && require.resolve('react-refresh/babel'),
                                     ['@emotion/babel-plugin', {
-                                        autoLabel: 'always',
-                                        labelFormat: '[dirname]--[local]',  // force chemin dans le label
-                                        sourceMap: false,  // ← ici
+                                        autoLabel: 'never',
+                                        sourceMap: false,
+                                        hoist: true,  // ← force le hoisting des styles, comportement identique dans les deux builds
                                     }],
                                     '@loadable/babel-plugin'
                                 ].filter(Boolean),
@@ -763,4 +762,8 @@ const getConfig = target => {
     };
 };
 
-module.exports = [getConfig('web'), getConfig('node')];
+module.exports = [
+    getConfig('web'),
+    getConfig('node'),
+    getConfig('node', {isSSR: true}),
+];

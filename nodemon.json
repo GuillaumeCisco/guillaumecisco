@@ -1,7 +1,8 @@
 {
-  "verbose": true,
-  "ignore": ["src/client", "src/app", "public"],
-  "execMap": {
-    "js": "node"
-  }
+    "verbose": true,
+    "watch": ["public/dist/node/static/js/main.js"],
+    "ignore": ["src/client", "src/app", "public/dist/ssr"],
+    "execMap": {
+        "js": "node"
+    }
 }
