@@ -17,6 +17,7 @@ const ReactRefreshRspackPlugin = require('@rspack/plugin-react-refresh');
 const nodeExternals = require('webpack-node-externals');
 const {sentryWebpackPlugin} = require('@sentry/webpack-plugin');
 const pwaManifestPlugin = require('./pwaManifest');
+const sentryRelease = require('./sentryRelease');
 
 const packageInfo = require('../package.json');
 
@@ -567,8 +568,7 @@ const getConfig = (target, {isSSR = false} = {}) => {
                     ? {__PROJECT_ROOT__: JSON.stringify(paths.appPath, ), __SERVER__: JSON.stringify(true)} // node: only inject __PROJECT_ROOT__
                     : {
                         ...env.stringified,                              // client: full env substitution
-                        SHORT_SHA: JSON.stringify(process.env.SHORT_SHA),
-                        SENTRY_PROJECT_DASHBOARD: JSON.stringify(process.env.SENTRY_PROJECT_DASHBOARD),
+                        SENTRY_RELEASE: JSON.stringify(sentryRelease),
                         __PROJECT_ROOT__: JSON.stringify(paths.appPath),
                         __SERVER__: JSON.stringify(false)
                     }
@@ -649,16 +649,11 @@ const getConfig = (target, {isSSR = false} = {}) => {
                 // See https://github.com/cra-template/pwa/issues/13#issuecomment-722667270
                 maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
             }),
-            isEnvProduction && sentryWebpackPlugin({
+            target === 'web' && isEnvProduction && sentryWebpackPlugin({
                 org: process.env.SENTRY_ORG,
                 project: process.env.SENTRY_PROJECT_DASHBOARD || 'dashboard',
                 authToken: process.env.SENTRY_AUTH_TOKEN,
-                release: {
-                    name: `${process.env.SENTRY_PROJECT_DASHBOARD || 'dashboard'}@${packageInfo.version}+${process.env.SHORT_SHA}`,
-                    deploy: {
-                        env: process.env.TARGET_ENV || 'production',
-                    },
-                },
+                release: sentryRelease,
                 sourcemaps: {
                     assets: ['./public/dist/web/**/*.{js,map}'],
                     urlPrefix: '~/dist/web',

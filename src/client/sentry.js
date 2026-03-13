@@ -1,12 +1,14 @@
+/* eslint-disable no-undef */
+
+
 import * as Sentry from '@sentry/react';
-import { sentryRelease } from '../shared/sentryRelease';
 
 Sentry.init({
     dsn: process.env.SENTRY_DSN,
 
     environment: process.env.NODE_ENV,
 
-    release: sentryRelease,
+    release: SENTRY_RELEASE,
 
     integrations: [
         Sentry.browserTracingIntegration(),
