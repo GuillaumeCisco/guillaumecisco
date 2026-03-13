@@ -1,3 +1,6 @@
+import './sentry';
+import {ErrorBoundary, captureException} from "@sentry/react";
+
 import {loadableReady} from '@loadable/component';
 import {hydrateRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
@@ -22,17 +25,25 @@ const cache = createCache({key: 'css'});
 if (!window.__APP_HYDRATED__) {
     window.__APP_HYDRATED__ = true;
 
-    loadableReady(() => (
-        hydrateRoot(document.getElementById('root'),
-            <CacheProvider value={cache}>
-                <Provider store={store}>
-                    <BrowserRouter>
-                        <App/>
-                    </BrowserRouter>
-                </Provider>
-            </CacheProvider>
-        )
-    ));
+    const container = document.getElementById('root');
+    loadableReady(() => {
+        try {
+            hydrateRoot(container,
+                <CacheProvider value={cache}>
+                    <Provider store={store}>
+                        <ErrorBoundary fallback={<p>Erreur UI</p>}>
+                            <BrowserRouter>
+                                <App/>
+                            </BrowserRouter>
+                        </ErrorBoundary>
+                    </Provider>
+                </CacheProvider>
+            )
+        } catch (err) {
+            captureException(err);
+        }
+    })
+    ;
 }
 
 // If you want to start measuring performance in your app, pass a function

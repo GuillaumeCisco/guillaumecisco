@@ -1,21 +1,18 @@
-import * as Sentry from '@sentry/react';
+import * as Sentry from '@sentry/node';
+import { sentryRelease } from '../shared/sentryRelease';
 
 Sentry.init({
     dsn: process.env.SENTRY_DSN,
+
     environment: process.env.NODE_ENV,
-    release: process.env.APP_VERSION,
 
-    integrations: [
-        Sentry.browserTracingIntegration(),
-    ],
+    release: sentryRelease,
 
-    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.2 : 1,
-
-    sendDefaultPii: false,
+    tracesSampleRate: 0.05,
 
     beforeSend(event) {
         if (process.env.NODE_ENV !== 'production') {
-            console.log('Sentry event:', event);
+            console.log('Sentry server event:', event);
         }
         return event;
     },

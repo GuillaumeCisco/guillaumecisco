@@ -1,3 +1,6 @@
+import './sentry'
+import {captureException} from '@sentry/node';
+
 import path from 'path';
 import http2 from 'http2';
 import fs from 'fs';
@@ -16,6 +19,22 @@ import {ChunkExtractor} from '@loadable/server';
 import {Provider} from 'react-redux';
 import {StaticRouter} from 'react-router';
 import {createEmotionStream} from './emotionStream';
+
+process.on('uncaughtException', (err) => {
+    captureException(err);
+    console.error('uncaughtException', err);
+});
+
+process.on('unhandledRejection', (reason) => {
+    captureException(reason);
+    console.error('unhandledRejection', reason);
+});
+
+navigator.serviceWorker.register('/service-worker.js')
+    .catch((err) => {
+        captureException(err);
+        console.error(err);
+    });
 
 // App et configureAppStore sont chargés dynamiquement depuis le bundle ssr
 // à chaque requête en dev — jamais importés statiquement.
@@ -156,7 +175,7 @@ const setCSP = (res, nonce) => {
         `style-src 'self' 'unsafe-inline'; ` +
         `font-src 'self'; ` +
         `img-src 'self' data:; ` +
-        `connect-src 'self'; ` +
+        `connect-src 'self' https://o129911.ingest.us.sentry.io; ` +
         `base-uri 'self'; ` +
         `form-action 'self'; ` +
         `frame-ancestors 'self'; ` +
@@ -236,7 +255,11 @@ if (!isProd) {
 }
 
 const pwaRootFiles = {
-    '/service-worker.js': {type: 'application/javascript', file: 'service-worker.js', headers: {'Service-Worker-Allowed': '/'}},
+    '/service-worker.js': {
+        type: 'application/javascript',
+        file: 'service-worker.js',
+        headers: {'Service-Worker-Allowed': '/'}
+    },
     '/manifest.json': {type: 'application/json', file: 'manifest.json'},
 };
 
@@ -244,7 +267,10 @@ app.use(async (ctx, next) => {
     const entry = pwaRootFiles[ctx.path];
     if (entry) {
         const filePath = path.join(__PROJECT_ROOT__, 'public/dist/web', entry.file);
-        if (!fs.existsSync(filePath)) { await next(); return; }
+        if (!fs.existsSync(filePath)) {
+            await next();
+            return;
+        }
         ctx.type = entry.type;
         if (entry.headers) Object.entries(entry.headers).forEach(([k, v]) => ctx.set(k, v));
         ctx.body = fs.createReadStream(filePath);
@@ -317,13 +343,19 @@ app.use(async (ctx, next) => {
 
     await new Promise((resolve, reject) => {
         const {pipe} = renderToPipeableStream(jsx, {
-            onShellReady() { pipe(emotionTransform); },
+            onShellReady() {
+                pipe(emotionTransform);
+            },
             onShellError(err) {
                 console.error('Shell error:', err);
                 ctx.res.end('</div></body></html>');
+                captureException(err);
                 reject(err);
             },
-            onError(err) { console.error('Streaming error:', err); },
+            onError(err) {
+                console.error('Streaming error:', err);
+                captureException(err);
+            },
         });
 
         tee.on('finish', async () => {
@@ -348,7 +380,11 @@ app.use(async (ctx, next) => {
             resolve();
         });
 
-        tee.on('error', (err) => { ctx.res.destroy(err); reject(err); });
+        tee.on('error', (err) => {
+            ctx.res.destroy(err);
+            captureException(err);
+            reject(err);
+        });
     });
 });
 
@@ -390,4 +426,7 @@ const main = async () => {
     });
 };
 
-main().catch(console.error);
+main().catch((err) => {
+    captureException(err);
+    console.error(err);
+});

@@ -567,6 +567,8 @@ const getConfig = (target, {isSSR = false} = {}) => {
                     ? {__PROJECT_ROOT__: JSON.stringify(paths.appPath, ), __SERVER__: JSON.stringify(true)} // node: only inject __PROJECT_ROOT__
                     : {
                         ...env.stringified,                              // client: full env substitution
+                        SHORT_SHA: JSON.stringify(process.env.SHORT_SHA),
+                        SENTRY_PROJECT_DASHBOARD: JSON.stringify(process.env.SENTRY_PROJECT_DASHBOARD),
                         __PROJECT_ROOT__: JSON.stringify(paths.appPath),
                         __SERVER__: JSON.stringify(false)
                     }
@@ -652,17 +654,18 @@ const getConfig = (target, {isSSR = false} = {}) => {
                 project: process.env.SENTRY_PROJECT_DASHBOARD || 'dashboard',
                 authToken: process.env.SENTRY_AUTH_TOKEN,
                 release: {
-                    name: `dashboard@${packageInfo.version}+${process.env.SHORT_SHA}`,
+                    name: `${process.env.SENTRY_PROJECT_DASHBOARD || 'dashboard'}@${packageInfo.version}+${process.env.SHORT_SHA}`,
                     deploy: {
                         env: process.env.TARGET_ENV || 'production',
                     },
                 },
                 sourcemaps: {
-                    assets: ['./public/**/*.{css,js,map}', './src/**/*.js'],
-                    filesToDeleteAfterUpload: './public/**/*.map',
+                    assets: ['./public/dist/web/**/*.{js,map}'],
+                    urlPrefix: '~/dist/web',
+                    filesToDeleteAfterUpload: ['./public/dist/web/**/*.map'],
                 },
-                silent: true,
                 telemetry: false,
+                silent: false,
             }),
             // TypeScript type checking
             useTypeScript

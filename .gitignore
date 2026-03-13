@@ -40,3 +40,6 @@ tools/deploy.js
 .node_version
 
 dist
+
+
+.env
