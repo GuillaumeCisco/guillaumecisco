@@ -30,12 +30,6 @@ process.on('unhandledRejection', (reason) => {
     console.error('unhandledRejection', reason);
 });
 
-navigator.serviceWorker.register('/service-worker.js')
-    .catch((err) => {
-        captureException(err);
-        console.error(err);
-    });
-
 // App et configureAppStore sont chargés dynamiquement depuis le bundle ssr
 // à chaque requête en dev — jamais importés statiquement.
 // En prod, le bundle est figé au démarrage donc on les importe directement.

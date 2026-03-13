@@ -67,6 +67,7 @@ if (
                     console.log('SW registered:', reg.scope);
                 })
                 .catch((err) => {
+                    captureException(err);
                     console.error('SW registration failed:', err);
                 });
         }
