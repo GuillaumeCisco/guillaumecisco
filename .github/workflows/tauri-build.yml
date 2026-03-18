@@ -8,7 +8,9 @@ on:
 
 jobs:
     build:
+        timeout-minutes: 120
         strategy:
+            fail-fast: false
             matrix:
                 include:
                     - os: ubuntu-22.04
@@ -25,21 +27,30 @@ jobs:
         steps:
             - uses: actions/checkout@v4
 
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 20
+            -   name: Setup Node
+                uses: actions/setup-node@v4
+                with:
+                    node-version: 25
+                    cache: 'yarn'
 
-            - name: Setup Rust
-              uses: dtolnay/rust-toolchain@stable
-              with:
-                  targets: ${{ matrix.target }}
+            -   name: Setup Rust
+                uses: dtolnay/rust-toolchain@stable
+                with:
+                    targets: ${{ matrix.target }}
+
+            -   name: Cache Rust
+                uses: swatinem/rust-cache@v2
+                with:
+                    workspaces: src-tauri
 
             - name: Install Linux dependencies
               if: matrix.os == 'ubuntu-22.04'
               run: |
                   sudo apt update
                   sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+            - name: Enable Corepack
+              run: corepack enable
 
             - name: Install dependencies
               run: yarn install
