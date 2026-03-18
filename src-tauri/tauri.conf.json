@@ -1,0 +1,37 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "guillaumecisco",
+  "version": "0.1.0",
+  "identifier": "com.guillaumecisco.app",
+  "build": {
+      "frontendDist": "../public/dist/tauri",
+      "devUrl": "https://localhost:3000",
+      "beforeDevCommand": "yarn --cwd $(git rev-parse --show-toplevel) dev",
+      "beforeBuildCommand": "node $(git rev-parse --show-toplevel)/config/generateTauriIndex.js && NODE_ENV=production $(git rev-parse --show-toplevel)/node_modules/.bin/rspack build --config $(git rev-parse --show-toplevel)/config/rspack.config.tauri.js"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "guillaumecisco",
+        "width": 800,
+        "height": 600,
+        "resizable": true,
+        "fullscreen": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+        "icons/32x32.png",
+        "icons/128x128.png",
+        "icons/128x128@2x.png",
+        "icons/icon.icns",
+        "icons/icon.ico"
+    ]
+  }
+}

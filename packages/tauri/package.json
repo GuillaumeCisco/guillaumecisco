@@ -1,0 +1,11 @@
+{
+    "name": "tauri-package",
+    "version": "0.0.1",
+    "devDependencies": {
+        "@tauri-apps/cli": "2.10.1"
+    },
+    "scripts": {
+        "dev": "cd ../.. && npx tauri dev",
+        "build": "cd ../.. && npx tauri build"
+    }
+}

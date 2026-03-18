@@ -29,7 +29,9 @@
         "cover": "cd packages/test && npm run cover",
         "eslint": "cd packages/eslint && npm run eslint",
         "deploy": "tools/deploy.js",
-        "prepare": "husky"
+        "prepare": "husky",
+        "tauri:dev": "cd packages/tauri && npm run dev",
+        "tauri:build": "cd packages/tauri && npm run build"
     },
     "browserslist": {
         "production": [
