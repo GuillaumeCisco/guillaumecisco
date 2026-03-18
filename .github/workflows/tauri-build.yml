@@ -48,8 +48,10 @@ jobs:
                     sudo apt update
                     sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-            -   name: Install Yarn 4
-                run: npm install -g yarn@4.13.0
+            -   name: Enable Corepack and prepare Yarn
+                run: |
+                    corepack enable
+                    corepack prepare yarn@4.13.0 --activate
 
             -   name: Get yarn cache directory
                 id: yarn-cache-dir
