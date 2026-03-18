@@ -54,15 +54,22 @@ jobs:
             -   name: Prepare Yarn 4
                 run: corepack prepare yarn@4.13.0 --activate
 
-            -   name: Get yarn cache directory
-                id: yarn-cache-dir
+            -   name: Get yarn cache directory (Unix)
+                if: runner.os != 'Windows'
+                id: yarn-cache-dir-unix
                 run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
                 shell: bash
+
+            -   name: Get yarn cache directory (Windows)
+                if: runner.os == 'Windows'
+                id: yarn-cache-dir-windows
+                run: echo "dir=$(yarn config get cacheFolder)" >> $env:GITHUB_OUTPUT
+                shell: pwsh
 
             -   name: Cache yarn
                 uses: actions/cache@v4
                 with:
-                    path: ${{ steps.yarn-cache-dir.outputs.dir }}
+                    path: ${{ steps.yarn-cache-dir-unix.outputs.dir || steps.yarn-cache-dir-windows.outputs.dir }}
                     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
                     restore-keys: ${{ runner.os }}-yarn-
 
