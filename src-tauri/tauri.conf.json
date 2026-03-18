@@ -7,7 +7,7 @@
       "frontendDist": "../public/dist/tauri",
       "devUrl": "https://localhost:3000",
       "beforeDevCommand": "yarn dev",
-      "beforeBuildCommand": "node ./config/generateTauriIndex.js && NODE_ENV=production ./node_modules/.bin/rspack build --config ./config/rspack.config.tauri.js"
+      "beforeBuildCommand": "node config/buildTauri.js"
   },
   "app": {
     "windows": [
