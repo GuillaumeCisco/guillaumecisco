@@ -50,6 +50,7 @@ jobs:
 
             -   name: Enable Corepack
                 run: corepack enable
+                shell: bash
 
             -   name: Get yarn cache directory
                 id: yarn-cache-dir
@@ -68,6 +69,7 @@ jobs:
 
             -   name: Install dependencies
                 run: yarn install
+                shell: bash
 
             - name: Build Tauri
               uses: tauri-apps/tauri-action@v0
