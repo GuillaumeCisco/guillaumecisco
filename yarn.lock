@@ -4397,7 +4397,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tauri-apps/cli@npm:^2.10.1":
+"@tauri-apps/cli@npm:2.10.1":
   version: 2.10.1
   resolution: "@tauri-apps/cli@npm:2.10.1"
   dependencies:
@@ -15256,7 +15256,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tauri-package@workspace:packages/tauri"
   dependencies:
-    "@tauri-apps/cli": "npm:^2.10.1"
+    "@tauri-apps/cli": "npm:2.10.1"
   languageName: unknown
   linkType: soft
 
