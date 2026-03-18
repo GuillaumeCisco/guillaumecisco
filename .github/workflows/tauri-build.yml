@@ -31,7 +31,6 @@ jobs:
                 uses: actions/setup-node@v4
                 with:
                     node-version: 25
-                    cache: 'yarn'
 
             -   name: Setup Rust
                 uses: dtolnay/rust-toolchain@stable
@@ -49,11 +48,22 @@ jobs:
                   sudo apt update
                   sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-            - name: Enable Corepack
-              run: corepack enable
+            -   name: Enable Corepack
+                run: corepack enable
 
-            - name: Install dependencies
-              run: yarn install
+            -   name: Get yarn cache directory
+                id: yarn-cache-dir
+                run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+            -   name: Cache yarn
+                uses: actions/cache@v4
+                with:
+                    path: ${{ steps.yarn-cache-dir.outputs.dir }}
+                    key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+                    restore-keys: ${{ runner.os }}-yarn-
+
+            -   name: Install dependencies
+                run: yarn install
 
             - name: Build Tauri
               uses: tauri-apps/tauri-action@v0
