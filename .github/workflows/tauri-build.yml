@@ -68,16 +68,13 @@ jobs:
             -   name: Install dependencies
                 run: yarn install
 
-            - name: Build Tauri
-              uses: tauri-apps/tauri-action@v0
-              with:
-                  args: --target ${{ matrix.target }}
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Upload artifacts
-              uses: actions/upload-artifact@v4
-              with:
-                  name: tauri-${{ matrix.os }}-${{ matrix.target }}
-                  path: |
-                      src-tauri/target/${{ matrix.target }}/release/bundle/
+            -   name: Build Tauri
+                uses: tauri-apps/tauri-action@v0
+                with:
+                    args: --target ${{ matrix.target }}
+                    tagName: ${{ github.ref_name }}
+                    releaseName: guillaumecisco ${{ github.ref_name }}
+                    releaseDraft: true
+                    prerelease: false
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
