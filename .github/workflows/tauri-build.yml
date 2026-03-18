@@ -59,7 +59,10 @@ jobs:
             -   name: Cache yarn
                 uses: actions/cache@v4
                 with:
-                    path: ${{ steps.yarn-cache-dir.outputs.dir }}
+                    path: |
+                        ${{ runner.os == 'Windows' && 'C:\\Users\\runneradmin\\AppData\\Local\\Yarn\\Cache' || '' }}
+                        ${{ runner.os == 'macOS' && '/Users/runner/Library/Caches/yarn' || '' }}
+                        ${{ runner.os == 'Linux' && '/home/runner/.cache/yarn' || '' }}
                     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
                     restore-keys: ${{ runner.os }}-yarn-
 
