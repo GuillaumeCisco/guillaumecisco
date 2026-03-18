@@ -42,15 +42,14 @@ jobs:
                 with:
                     workspaces: src-tauri
 
-            - name: Install Linux dependencies
-              if: matrix.os == 'ubuntu-22.04'
-              run: |
-                  sudo apt update
-                  sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+            -   name: Install Linux dependencies
+                if: matrix.os == 'ubuntu-22.04'
+                run: |
+                    sudo apt update
+                    sudo apt install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-            -   name: Enable Corepack
-                run: corepack enable
-                shell: bash
+            -   name: Install Yarn 4
+                run: npm install -g yarn@4.13.0
 
             -   name: Get yarn cache directory
                 id: yarn-cache-dir
@@ -60,16 +59,12 @@ jobs:
             -   name: Cache yarn
                 uses: actions/cache@v4
                 with:
-                    path: |
-                        ${{ runner.os == 'Windows' && 'C:\\Users\\runneradmin\\AppData\\Local\\Yarn\\Cache' || '' }}
-                        ${{ runner.os == 'macOS' && '/Users/runner/Library/Caches/yarn' || '' }}
-                        ${{ runner.os == 'Linux' && '/home/runner/.cache/yarn' || '' }}
+                    path: ${{ steps.yarn-cache-dir.outputs.dir }}
                     key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
                     restore-keys: ${{ runner.os }}-yarn-
 
             -   name: Install dependencies
                 run: yarn install
-                shell: bash
 
             - name: Build Tauri
               uses: tauri-apps/tauri-action@v0
