@@ -147,96 +147,156 @@ Then head to https://localhost:8001/
 
 Remember to `redis-cli flushall` when testing multiple times.
 
-## Encryption files creation
+## SSL (Let's Encrypt) — EC2 + Nginx
 
-For creating your own self-signed certificates:
+### Installation
 
-https://blog.didierstevens.com/2008/12/30/howto-make-your-own-cert-with-openssl/
-
-```shell
-cd encryption
-openssl genrsa -out ca.key 4096
-openssl req -new -x509 -days 1826 -key ca.key -out ca.crt
-openssl genrsa -out ia.key 4096
-openssl req -new -key ia.key -out ia.csr
-openssl x509 -req -days 730 -in ia.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out ia.crt
-```
-
-#### With Let's Encrypt
-
-##### Dev mode
+On your EC2 instance:
 
 ```shell
-sudo certbot certonly --manual -d guillaumecisco.com -d www.guillaumecisco.com
+sudo yum install certbot
 ```
 
-Place the files in the folder `./well-known/acme-challenge` and build and deploy your website, then continue the process for validating ownership. Then place the generated files in the `encryption` folder.
+---
 
-The certificates will only last 90 days, so be sure to create a cronjob with:
-```shell
-sudo certbot renew
+### Nginx Configuration (required)
+
+`/etc/nginx/conf.d/guillaumecisco.conf`
+
+```nginx
+# HTTP
+server {
+    listen 80;
+    server_name guillaumecisco.com www.guillaumecisco.com;
+
+    # ACME challenge (required for Let's Encrypt)
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/html;
+        default_type "text/plain";
+        try_files $uri =404;
+    }
+
+    # Redirect everything else to HTTPS
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# HTTPS
+server {
+    listen 443 ssl;
+    server_name guillaumecisco.com www.guillaumecisco.com;
+
+    ssl_certificate     /etc/letsencrypt/live/guillaumecisco.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/guillaumecisco.com/privkey.pem;
+
+    # ACME challenge (also required here)
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/html;
+        default_type "text/plain";
+        try_files $uri =404;
+    }
+
+    # Proxy to Docker container
+    location / {
+        proxy_pass https://127.0.0.1:8001;
+
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        proxy_ssl_server_name on;
+        proxy_ssl_verify     off;
+    }
+}
 ```
 
-##### EC2
-
-You should run these commands on the server running the Docker app (i.e. the EC2 instance).
-
-https://www.digitalocean.com/community/tutorials/how-to-use-certbot-standalone-mode-to-retrieve-let-s-encrypt-ssl-certificates
-
-Be sure you can access your EC2 instance with SSH:
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html
-
-Then in your EC2 instance:
-
-```shell
-$> yum install wget python27-virtualenv
-$> wget https://dl.eff.org/certbot-auto
-$> chmod a+x certbot-auto
-```
-
-Be careful — when running the next command, you will need to create two files before pressing `continue` for the third time, then build and deploy your Docker app again. These two files need to be placed in `.well-known/acme-challenge`. Make sure the security group of your EC2 instance has ports 80 and 443 open.
-
-```shell
-$> ./certbot-auto certonly --manual -d guillaumecisco.com -d www.guillaumecisco.com
-```
-
-After deploying your app with the new files available, press continue — the files will now be accessible on your EC2 instance.
-
-You now need to make these files accessible to your Docker app by modifying permissions:
-
-```shell
-$> sudo groupadd certaccess
-$> whoami
-ec2-user
-$> sudo usermod -a -G certaccess ec2-user
-$> sudo usermod -a -G certaccess root
-$> sudo chown ec2-user.certaccess /etc/letsencrypt/
-$> sudo chown ec2-user.certaccess /etc/letsencrypt/live
-$> sudo chown ec2-user.certaccess /etc/letsencrypt/archive
-```
-
-Now create a volume in your ECS task configuration `/etc/letsencrypt/:/etc/letsencrypt/`:
-https://docs.aws.amazon.com/AmazonECS/latest/developerguide/using_data_volumes.html
-
-Or run the Docker run command like this:
-
-```shell
-$> docker run -it -v /etc/letsencrypt/:/etc/letsencrypt/ -p 8001:8443 984406419997.dkr.ecr.eu-central-1.amazonaws.com/guillaumecisco:latest
-```
-
-Your site is now secured!
-
-###### Renewing
-
-For now this must be done manually as the Docker instance is bound to ports 80 and 443, which Certbot needs for renewal. Stop the Docker container, run the command, then the ECS policy will restart it automatically.
+Reload nginx:
 
 ```shell
-docker stop `docker ps --format '{{.Names}}' | grep ecs-guillaumecisco` && ./certbot-auto renew --standalone
+sudo systemctl reload nginx
 ```
 
-TODO: create a cronjob for renewing the certificate and `docker restart container_name`
+---
 
-Tip: to get the container name: `docker ps --format '{{.Names}}' | grep ecs-guillaumecisco`
+### Certificate generation
+
+```shell
+sudo certbot certonly --webroot -w /var/www/html -d guillaumecisco.com -d www.guillaumecisco.com
+```
+
+Certificates are generated here:
+
+```
+/etc/letsencrypt/live/guillaumecisco.com/
+```
+
+---
+
+### 🔄 Automatic renewal (CRON)
+
+Add a cron job:
+
+```shell
+sudo crontab -e
+```
+
+```shell
+0 3 * * * certbot renew --quiet --deploy-hook "systemctl reload nginx"
+```
+
+#### Behavior
+
+- Runs every day at 03:00
+- Renews only if needed (<30 days before expiration)
+- Reloads nginx only if the certificate was renewed
+
+---
+
+### 🧪 Renewal test
+
+```shell
+sudo certbot renew --dry-run
+```
+
+---
+
+### ⚠️ Important notes
+
+- The directory `/var/www/html/.well-known/acme-challenge` must be accessible
+- Port **80 must remain open** (AWS Security Group)
+- Do not remove this nginx block:
+
+```nginx
+location ^~ /.well-known/acme-challenge/
+```
+
+---
+
+### 🚫 Important
+
+- `certbot-auto` is **deprecated** → do not use
+- `standalone` mode is not compatible with nginx in production
+- Manual renewal is no longer required
+
+---
+
+### 🔗 Docker + certificates
+
+Mount certificates into your container:
+
+```shell
+-v /etc/letsencrypt/:/etc/letsencrypt/
+```
+
+---
+
+### ✅ Result
+
+- Automatically renewed valid certificate
+- Zero downtime
+- No manual intervention required
 
 ### Deploy
 
@@ -250,39 +310,4 @@ Create a `deploy.js` file with the right variables.
 $> sudo systemctl reload nginx
 ```
 
-### Nginx conf
-
-`/etc/nginx/conf.d/guillaumecisco.conf`
-
-```nginx
-# Redirection HTTP -> HTTPS
-server {
-    listen 80;
-    server_name guillaumecisco.com www.guillaumecisco.com;
-
-    return 301 https://$host$request_uri;
-}
-
-# Virtual host HTTPS
-server {
-    listen 443 ssl;
-    server_name guillaumecisco.com www.guillaumecisco.com;
-
-    ssl_certificate     /etc/letsencrypt/live/guillaumecisco.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/guillaumecisco.com/privkey.pem;
-
-    # Proxy to Docker container
-    location / {
-        proxy_pass https://127.0.0.1:8001;
-
-        proxy_set_header Host              $host;
-        proxy_set_header X-Real-IP         $remote_addr;
-        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-
-        # Backend uses HTTPS with a self-signed certificate, disable verification
-        proxy_ssl_server_name on;
-        proxy_ssl_verify     off;
-    }
-}
 ```
