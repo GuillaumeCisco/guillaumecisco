@@ -3,7 +3,6 @@ const { rspack } = require('@rspack/core');
 const TerserPlugin = require('terser-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const { HtmlRspackPlugin } = require('@rspack/core');
-const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 
 const paths = require('./paths');
 const modules = require('./modules');
@@ -163,9 +162,9 @@ module.exports = {
                         }
                     },
                     { test: cssRegex, exclude: cssModuleRegex, use: getStyleLoaders({ importLoaders: 1, sourceMap: shouldUseSourceMap, modules: { mode: 'icss' } }), sideEffects: true, type: 'javascript/auto' },
-                    { test: cssModuleRegex, use: getStyleLoaders({ importLoaders: 1, sourceMap: shouldUseSourceMap, modules: { mode: 'local', getLocalIdent: getCSSModuleLocalIdent } }), type: 'javascript/auto' },
+                    { test: cssModuleRegex, use: getStyleLoaders({ importLoaders: 1, sourceMap: shouldUseSourceMap, modules: { localIdentName: '[name]__[local]__[hash:base64:5]' } }), type: 'javascript/auto' },
                     { test: sassRegex, exclude: sassModuleRegex, use: getStyleLoaders({ importLoaders: 3, sourceMap: shouldUseSourceMap, modules: { mode: 'icss' } }, 'sass-loader'), sideEffects: true },
-                    { test: sassModuleRegex, use: getStyleLoaders({ importLoaders: 3, sourceMap: shouldUseSourceMap, modules: { mode: 'local', getLocalIdent: getCSSModuleLocalIdent } }, 'sass-loader'), type: 'javascript/auto' },
+                    { test: sassModuleRegex, use: getStyleLoaders({ importLoaders: 3, sourceMap: shouldUseSourceMap, modules: { localIdentName: '[name]__[local]__[hash:base64:5]' } }, 'sass-loader'), type: 'javascript/auto' },
                     { exclude: [/^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/], type: 'asset/resource' },
                 ],
             },

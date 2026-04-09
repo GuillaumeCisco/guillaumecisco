@@ -10,16 +10,12 @@ const LazySliceVirtualHMRPlugin = require('../src/lib/plugins/LazySliceVirtualHM
 const LoadablePlugin = require('@loadable/webpack-plugin');
 const {TsCheckerRspackPlugin} = require('ts-checker-rspack-plugin');
 const WorkboxWebpackPlugin = require('@aaroon/workbox-rspack-plugin');
-const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const ESLintPlugin = require('eslint-webpack-plugin');
-const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ReactRefreshRspackPlugin = require('@rspack/plugin-react-refresh');
 const nodeExternals = require('webpack-node-externals');
 const {sentryWebpackPlugin} = require('@sentry/webpack-plugin');
 const pwaManifestPlugin = require('./pwaManifest');
 const sentryRelease = require('./sentryRelease');
-
-const packageInfo = require('../package.json');
 
 // Do this as the first thing so that any code reading it knows the right env.
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
@@ -488,8 +484,7 @@ const getConfig = (target, {isSSR = false} = {}) => {
                                     ? shouldUseSourceMap
                                     : isEnvDevelopment,
                                 modules: {
-                                    mode: 'local',
-                                    getLocalIdent: getCSSModuleLocalIdent,
+                                    localIdentName: '[name]__[local]__[hash:base64:5]',
                                 },
                             }),
                             type: 'javascript/auto',
@@ -529,8 +524,7 @@ const getConfig = (target, {isSSR = false} = {}) => {
                                         ? shouldUseSourceMap
                                         : isEnvDevelopment,
                                     modules: {
-                                        mode: 'local',
-                                        getLocalIdent: getCSSModuleLocalIdent,
+                                        localIdentName: '[name]__[local]__[hash:base64:5]',
                                     },
                                 },
                                 'sass-loader',
@@ -557,7 +551,6 @@ const getConfig = (target, {isSSR = false} = {}) => {
             ].filter(Boolean),
         },
         plugins: [
-            new ModuleNotFoundPlugin(paths.appPath),
             // Makes some environment variables available to the JS code, for example:
             // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
             // It is absolutely essential that NODE_ENV is set to production
@@ -715,7 +708,7 @@ const getConfig = (target, {isSSR = false} = {}) => {
                 // Plugin options
                 files: ['**/*.{js,mjs,jsx,ts,tsx}'],
                 exclude: ['**/src/__virtual__/**', '**/__virtual__/**'],
-                formatter: require.resolve('react-dev-utils/eslintFormatter'),
+                formatter: 'stylish',
                 eslintPath: require.resolve('eslint'),
                 failOnError: !(isEnvDevelopment && emitErrorsAsWarnings),
                 context: paths.appSrc,

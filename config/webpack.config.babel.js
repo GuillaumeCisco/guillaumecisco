@@ -8,10 +8,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const {WebpackManifestPlugin} = require('webpack-manifest-plugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const ESLintPlugin = require('eslint-webpack-plugin');
-const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
 const {sentryWebpackPlugin} = require('@sentry/webpack-plugin');
@@ -25,9 +22,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const paths = require('./paths');
 const modules = require('./modules');
 const getClientEnvironment = require('./env');
-const ForkTsCheckerWebpackPlugin = process.env.TSC_COMPILE_ON_ERROR === 'true'
-    ? require('react-dev-utils/ForkTsCheckerWarningWebpackPlugin')
-    : require('react-dev-utils/ForkTsCheckerWebpackPlugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const createEnvironmentHash = require('./webpack/persistentCache/createEnvironmentHash');
 
@@ -345,22 +340,6 @@ const getConfig = target => {
                 }),
                 ...(modules.webpackAliases || {}),
             },
-            plugins: [
-                // Prevents users from importing files from outside of src/ (or node_modules/).
-                // This often causes confusion because we only process files within src/ with babel.
-                // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
-                // please link the files into your node_modules/ and let module-resolution kick in.
-                // Make sure your source files are compiled, as they will not be processed in any way.
-                new ModuleScopePlugin(paths.appSrc, [
-                    paths.appPackageJson,
-                    reactRefreshRuntimeEntry,
-                    reactRefreshWebpackPluginRuntimeEntry,
-                    reactRefreshWebpackPluginOverlayRuntimeEntry,
-                    babelRuntimeEntry,
-                    babelRuntimeEntryHelpers,
-                    babelRuntimeRegenerator,
-                ]),
-            ],
         },
         module: {
             strictExportPresence: true,
@@ -533,8 +512,7 @@ const getConfig = target => {
                                     ? shouldUseSourceMap
                                     : isEnvDevelopment,
                                 modules: {
-                                    mode: 'local',
-                                    getLocalIdent: getCSSModuleLocalIdent,
+                                    localIdentName: '[name]__[local]__[hash:base64:5]',
                                 },
                             }),
                         },
@@ -573,8 +551,7 @@ const getConfig = target => {
                                         ? shouldUseSourceMap
                                         : isEnvDevelopment,
                                     modules: {
-                                        mode: 'local',
-                                        getLocalIdent: getCSSModuleLocalIdent,
+                                        localIdentName: '[name]__[local]__[hash:base64:5]',
                                     },
                                 },
                                 'sass-loader',
@@ -600,7 +577,6 @@ const getConfig = target => {
             ].filter(Boolean),
         },
         plugins: [
-            new ModuleNotFoundPlugin(paths.appPath),
             // Makes some environment variables available to the JS code, for example:
             // if (process.env.NODE_ENV === 'production') { ... }. See `./env.js`.
             // It is absolutely essential that NODE_ENV is set to production
@@ -758,7 +734,7 @@ const getConfig = target => {
                 // Plugin options
                 files: ['**/*.{js,mjs,jsx,ts,tsx}'],
                 exclude: ['**/src/__virtual__/**', '**/__virtual__/**'],
-                formatter: require.resolve('react-dev-utils/eslintFormatter'),
+                formatter: 'stylish',
                 eslintPath: require.resolve('eslint'),
                 failOnError: !(isEnvDevelopment && emitErrorsAsWarnings),
                 context: paths.appSrc,
