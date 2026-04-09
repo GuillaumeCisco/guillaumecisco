@@ -1,5 +1,5 @@
 {
-    "verbose": true,
+    "verbose": false,
     "watch": ["public/dist/node/static/js/main.js"],
     "ignore": ["src/client", "src/app", "public/dist/ssr"],
     "execMap": {

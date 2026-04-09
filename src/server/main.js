@@ -353,8 +353,12 @@ app.use(async (ctx, next) => {
         });
 
         tee.on('finish', async () => {
-            const loadableTags = extractor.getScriptTags({nonce})
-                .replace(/<script[^>]*data-chunk="main"[^>]*>[^<]*<\/script>\n?/g, '');
+            const stripMainChunk = (html) => {
+                return html.split('<script').filter(chunk => !chunk.includes('data-chunk="main"')).map((chunk, i) => (i === 0 ? chunk : '<script' + chunk)).join('');
+            };
+            const loadableTags = stripMainChunk(
+                extractor.getScriptTags({ nonce })
+            );
             const tail = buildTail({nonce, preloadedState, loadableTags, scriptTags});
             ctx.res.write(tail);
             ctx.res.end();
