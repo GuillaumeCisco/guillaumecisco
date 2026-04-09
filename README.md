@@ -309,5 +309,3 @@ Create a `deploy.js` file with the right variables.
 ```shell
 $> sudo systemctl reload nginx
 ```
-
-```
