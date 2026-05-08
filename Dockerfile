@@ -1,4 +1,4 @@
-FROM node:25.8.0-alpine AS dependencies
+FROM node:26.1.0-alpine AS dependencies
 
 WORKDIR /usr/src/app
 
@@ -28,7 +28,7 @@ COPY --link config ./config
 RUN yarn build:webpack\
   && find ./public -type f \( -iname \*.js -o -iname \*.css \) -exec sed -i "s/^.*#\ssourceMappingURL=.*//g" {} \;
 
-FROM node:25.8.0-alpine AS production
+FROM node:26.1.0-alpine AS production
 
 ARG redis_host=127.0.0.1
 ARG redis_port=6379

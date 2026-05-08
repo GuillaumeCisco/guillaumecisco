@@ -2,156 +2,298 @@
 
 ## Installation
 
-This project uses yarn and yarn workspaces for package.json splitting and convenience.
+This project uses Yarn Berry (v4) and Yarn workspaces for package management and dependency splitting.
 
-```shell
-$> npm -v
-11.11.0
-$> npm install -g corepack
-$> yarn init -2
-$> yarn --version
-4.13.0
-$> node -v
-v25.8.0
+## Required versions
+
+```text
+npm 11.11.0
+yarn 4.13.0
+node v26.1.0
 ```
 
-For Tauri, you need to install the Rust toolchain and system dependencies:
+## Install Node.js
+
+Verify your Node.js version:
 
 ```shell
-# Rust
+node -v
+npm -v
+```
+
+---
+
+## Install Corepack + Yarn v4
+
+Enable Corepack:
+
+```shell
+npm install -g corepack
+corepack enable
+```
+
+Verify Yarn version:
+
+```shell
+yarn --version
+```
+
+---
+
+# Tauri requirements
+
+For Tauri, install the Rust toolchain and system dependencies.
+
+## Rust
+
+```shell
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-
-# Linux system dependencies
-sudo apt install libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 ```
 
-For testing and developing on the project with true hot module replacement, run:
+## Linux dependencies
+
 ```shell
-yarn start
+sudo apt install \
+  libwebkit2gtk-4.1-dev \
+  libappindicator3-dev \
+  librsvg2-dev \
+  patchelf
 ```
 
-For testing in the Tauri desktop app (dev mode):
+---
+
+# Development
+
+Run the project with true hot module replacement:
+
+```shell
+yarn dev
+```
+
+---
+
+# Tauri Desktop App
+
+The desktop application is built with Tauri v2.
+
+## Development mode
+
 ```shell
 yarn tauri:dev
 ```
 
-For building the Tauri desktop app:
+## Production build
+
 ```shell
 yarn tauri:build
 ```
 
-For building the production website and deploying it, run:
+---
+
+# Production website build
+
 ```shell
 yarn build
 yarn deploy
 ```
 
-You can now stop the task on AWS ECS, it will restart automatically if you did not define an autoscaling policy.
+---
 
-Remember to invalidate the cache on your AWS Redis instance.
-Connect with SSH to your EC2 instance, then connect to your Redis instance as explained in the ElastiCache documentation.
-https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.ConnectToCacheNode.html#GettingStarted.ConnectToCacheNode.Redis.NoEncrypt
-Then run `flushall`. You should automate this part.
-More information in the cache part below.
+# Tests
 
-## Test and Cover
+## Run tests
 
-For running the test suite:
 ```shell
 yarn test
 ```
 
-For displaying coverage:
+## Coverage
+
 ```shell
 yarn cover
 ```
 
-## Eslint
+---
 
-For displaying lint errors:
+# ESLint
+
 ```shell
 yarn eslint
 ```
 
-## Tauri Desktop App
+---
 
-The desktop app is built with [Tauri v2](https://tauri.app/) and lives in `packages/tauri/` (manifest) and `src-tauri/` (Rust backend).
+# Tauri architecture
 
-### Structure
+## Structure
 
-```
-src-tauri/          # Rust backend (Cargo.toml, tauri.conf.json, src/)
-packages/tauri/     # npm package wrapping the Tauri CLI
-src/client/         # main-tauri.js — dedicated entry point (no SSR, no loadable)
+```text
+src-tauri/          Rust backend
+packages/tauri/     npm package wrapping the Tauri CLI
+src/client/         main-tauri.js entry point
+
 config/
-  rspack.config.tauri.js      # Rspack build config for the Tauri frontend
-  generateTauriIndex.js       # Generates public/index.html before the Tauri build
+  rspack.config.tauri.js
+  generateTauriIndex.js
 ```
 
-### How it works
+---
 
-- In **dev mode**, Tauri loads your Koa SSR server at `https://localhost:3000` via `devUrl`.
-- In **production build**, a static frontend is compiled by Rspack (`yarn build:tauri`) into `public/dist/tauri/`, then bundled into the desktop app by Tauri.
-- `@loadable/component` is aliased to a thin `React.lazy` wrapper (`src/lib/loadable-static.js`) so the existing app code works without SSR infrastructure.
+## How it works
 
-### Scripts
+* In development mode, Tauri loads the Koa SSR server through `devUrl`
+* In production mode, a static frontend is generated into `public/dist/tauri/`
+* `@loadable/component` is replaced by a lightweight `React.lazy` wrapper
 
-| Command | Description |
-|---------|-------------|
-| `yarn tauri:dev` | Start the desktop app in dev mode (starts the Koa server automatically) |
-| `yarn tauri:build` | Build the static frontend then package the desktop app |
+---
 
-### Icons
+## Tauri scripts
 
-Icons are generated from the source PNG using the Tauri CLI:
+| Command            | Description                               |
+| ------------------ | ----------------------------------------- |
+| `yarn tauri:dev`   | Launch desktop app in development mode    |
+| `yarn tauri:build` | Build and package the desktop application |
+
+---
+
+## Icons
+
+Generate application icons:
 
 ```shell
 npx tauri icon src/assets/img/launcher-icon-high-res.png
 ```
 
-This generates all required sizes and formats (`.ico`, `.icns`, PNG variants) into `src-tauri/icons/`.
+Generated files are stored in:
 
-## Cache
-
-This project uses a Redis cache manager for the server routes, avoiding re-rendering the same HTML per route.
-
-For deploying with Amazon, please create a Redis cluster by following this documentation:
-https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html
-
-Don't forget to create an isolated security group for opening port 6379 as described in the documentation.
-For keeping costs low on Amazon, you can simply run a Redis Docker instance on your EC2 instance and get the container instance IP for your Redis.
-
-```shell
-$> docker run --name redis -p 6379:6379 -d redis
-$> docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redis
+```text
+src-tauri/icons/
 ```
 
-You will need to go inside this Docker container for flushing the cache in the future.
+---
+
+# Cache
+
+This project uses Redis for SSR shell caching.
+
+---
+
+## AWS ElastiCache
+
+To deploy on AWS, create a Redis cluster:
+
+[Amazon ElastiCache Documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html?utm_source=chatgpt.com)
+
+Make sure port `6379` is accessible from your EC2 instance.
+
+---
+
+## Local Redis container
+
+Create the shared Docker network:
 
 ```shell
-$> docker exec -it redis bash
-# redis-cli flushall
+docker network create app-net
 ```
 
-### Test
-
-For testing your generated Docker image with your locally hosted Redis, update your `deploy.js` file and do not forget to comment out the part that pushes to your registry, then:
+Run Redis:
 
 ```shell
-$> redis-cli flushall && docker run -it -v /etc/letsencrypt/:/etc/letsencrypt/ --net="host" -p 8000:8000 docker_image_name:latest
+docker run -d \
+  --name redis \
+  --network app-net \
+  redis
 ```
 
-You'll notice the Let's Encrypt folder is also bound — more information in the next section.
+---
 
-Then head to https://localhost:8001/
+## Redis shell access
 
-Remember to `redis-cli flushall` when testing multiple times.
+```shell
+docker exec -it redis sh
+redis-cli flushall
+```
 
-## SSL (Let's Encrypt) — EC2 + Nginx
+---
 
-### Installation
+# Docker local testing
 
-On your EC2 instance:
+For testing your Docker image locally:
+
+```shell
+redis-cli flushall
+
+docker run -it \
+  -v /etc/letsencrypt/:/etc/letsencrypt/ \
+  --network app-net \
+  -e REDIS_HOST=redis \
+  -e REDIS_PORT=6379 \
+  -e SSL_KEY_PATH=/etc/letsencrypt/live/guillaumecisco.com/privkey.pem \
+  -e SSL_CERT_PATH=/etc/letsencrypt/live/guillaumecisco.com/fullchain.pem \
+  -p 8001:3000 \
+  docker_image_name:latest
+```
+
+Then open:
+
+```text
+https://localhost:8001/
+```
+
+---
+
+# SSL (Let's Encrypt) — EC2 + Nginx + Docker
+
+## AWS CLI installation
+
+Install the AWS CLI.
+
+### Linux
+
+```shell
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+```
+
+### macOS
+
+```shell
+brew install awscli
+```
+
+Verify installation:
+
+```shell
+aws --version
+```
+
+---
+
+## Configure AWS credentials
+
+```shell
+aws configure
+```
+
+You will be prompted for:
+
+* AWS Access Key ID
+* AWS Secret Access Key
+* AWS region
+* Output format
+
+Recommended region:
+
+```text
+eu-central-1
+```
+
+---
+
+## Install Certbot
+
+On the EC2 instance:
 
 ```shell
 sudo yum install certbot
@@ -159,9 +301,13 @@ sudo yum install certbot
 
 ---
 
-### Nginx Configuration (required)
+## Nginx configuration
 
-`/etc/nginx/conf.d/guillaumecisco.conf`
+File:
+
+```text
+/etc/nginx/conf.d/guillaumecisco.conf
+```
 
 ```nginx
 # HTTP
@@ -169,14 +315,14 @@ server {
     listen 80;
     server_name guillaumecisco.com www.guillaumecisco.com;
 
-    # ACME challenge (required for Let's Encrypt)
+    # ACME challenge
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/html;
         default_type "text/plain";
         try_files $uri =404;
     }
 
-    # Redirect everything else to HTTPS
+    # Redirect to HTTPS
     location / {
         return 301 https://$host$request_uri;
     }
@@ -184,20 +330,20 @@ server {
 
 # HTTPS
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name guillaumecisco.com www.guillaumecisco.com;
 
     ssl_certificate     /etc/letsencrypt/live/guillaumecisco.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/guillaumecisco.com/privkey.pem;
 
-    # ACME challenge (also required here)
+    # ACME challenge
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/html;
         default_type "text/plain";
         try_files $uri =404;
     }
 
-    # Proxy to Docker container
+    # Reverse proxy
     location / {
         proxy_pass https://127.0.0.1:8001;
 
@@ -207,7 +353,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
 
         proxy_ssl_server_name on;
-        proxy_ssl_verify     off;
+        proxy_ssl_verify off;
     }
 }
 ```
@@ -220,41 +366,41 @@ sudo systemctl reload nginx
 
 ---
 
-### Certificate generation
+## Generate SSL certificates
 
 ```shell
-sudo certbot certonly --webroot -w /var/www/html -d guillaumecisco.com -d www.guillaumecisco.com
+sudo certbot certonly \
+  --webroot \
+  -w /var/www/html \
+  -d guillaumecisco.com \
+  -d www.guillaumecisco.com
 ```
 
-Certificates are generated here:
+Certificates are stored in:
 
-```
+```text
 /etc/letsencrypt/live/guillaumecisco.com/
 ```
 
 ---
 
-### 🔄 Automatic renewal (CRON)
+## Automatic renewal
 
-Add a cron job:
+Edit the root crontab:
 
 ```shell
 sudo crontab -e
 ```
 
+Add:
+
 ```shell
-0 3 * * * certbot renew --quiet --deploy-hook "systemctl reload nginx"
+0 3 * * * certbot renew --quiet --deploy-hook "/usr/bin/systemctl reload nginx"
 ```
-
-#### Behavior
-
-- Runs every day at 03:00
-- Renews only if needed (<30 days before expiration)
-- Reloads nginx only if the certificate was renewed
 
 ---
 
-### 🧪 Renewal test
+## Renewal test
 
 ```shell
 sudo certbot renew --dry-run
@@ -262,50 +408,87 @@ sudo certbot renew --dry-run
 
 ---
 
-### ⚠️ Important notes
+# Deployment
 
-- The directory `/var/www/html/.well-known/acme-challenge` must be accessible
-- Port **80 must remain open** (AWS Security Group)
-- Do not remove this nginx block:
+## Create deploy.js
 
-```nginx
-location ^~ /.well-known/acme-challenge/
+Copy the deployment template:
+
+```shell
+cp tools/deploy_template.js deploy.js
+```
+
+Template location:
+
+```text
+tools/deploy_template.js
+```
+
+Update the following values:
+
+* Docker registry
+* image name
+* Redis host
+* Redis port
+* optional Sentry DSN
+
+---
+
+## Login to AWS ECR
+
+```shell
+aws ecr get-login-password --region eu-central-1 \
+  | docker login --username AWS --password-stdin \
+  984406419997.dkr.ecr.eu-central-1.amazonaws.com
 ```
 
 ---
 
-### 🚫 Important
-
-- `certbot-auto` is **deprecated** → do not use
-- `standalone` mode is not compatible with nginx in production
-- Manual renewal is no longer required
-
----
-
-### 🔗 Docker + certificates
-
-Mount certificates into your container:
+## Build and push Docker image
 
 ```shell
--v /etc/letsencrypt/:/etc/letsencrypt/
+yarn deploy
 ```
 
 ---
 
-### ✅ Result
+## Production container
 
-- Automatically renewed valid certificate
-- Zero downtime
-- No manual intervention required
-
-### Deploy
+The backend server itself runs HTTPS + HTTP/2 internally.
 
 ```shell
-$> aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 984406419997.dkr.ecr.eu-central-1.amazonaws.com
+docker run -d \
+  --name guillaumecisco \
+  --network app-net \
+  -v /etc/letsencrypt/:/etc/letsencrypt/:ro \
+  -e REDIS_HOST=redis \
+  -e REDIS_PORT=6379 \
+  -e SSL_KEY_PATH=/etc/letsencrypt/live/guillaumecisco.com/privkey.pem \
+  -e SSL_CERT_PATH=/etc/letsencrypt/live/guillaumecisco.com/fullchain.pem \
+  -p 8001:3000 \
+  984406419997.dkr.ecr.eu-central-1.amazonaws.com/guillaumecisco:latest
 ```
 
-Create a `deploy.js` file with the right variables.
+---
 
-```shell
-$> sudo systemctl reload nginx
-```
+# Important notes
+
+* Port `80` must remain open for Let's Encrypt
+* Do not remove the nginx ACME challenge block
+* `certbot-auto` is deprecated
+* The Docker container requires:
+
+    * mounted Let's Encrypt certificates
+    * Redis connectivity
+    * SSL environment variables
+
+---
+
+# Result
+
+* HTTPS + HTTP/2 frontend
+* HTTPS + HTTP/2 backend
+* Automatic SSL renewal
+* Zero downtime
+* Redis SSR cache support
+* Dockerized production deployment
