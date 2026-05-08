@@ -1,29 +1,53 @@
-# Guillaume Cisco's interactive website
+# Guillaume Cisco Website
 
-## Installation
+Interactive SSR website built with React, Webpack, Redis caching, HTTPS local development, and Tauri desktop support.
 
-This project uses Yarn Berry (v4) and Yarn workspaces for package management and dependency splitting.
+---
 
-## Required versions
+# Stack
+
+* React
+* Webpack
+* Node.js SSR
+* Redis
+* Docker
+* AWS EC2
+* Nginx
+* Let's Encrypt
+* Tauri v2
+* Yarn Berry (v4)
+
+---
+
+# Requirements
+
+## Node.js
+
+Required version:
 
 ```text
-npm 11.11.0
-yarn 4.13.0
-node v26.1.0
+>=22.0.0
 ```
 
-## Install Node.js
+Recommended:
 
-Verify your Node.js version:
+```text
+node v26.1.0
+npm 11.11.0
+yarn 4.13.0
+```
+
+Verify versions:
 
 ```shell
 node -v
 npm -v
+yarn -v
 ```
 
 ---
 
-## Install Corepack + Yarn v4
+# Install Corepack + Yarn Berry
 
 Enable Corepack:
 
@@ -32,69 +56,116 @@ npm install -g corepack
 corepack enable
 ```
 
-Verify Yarn version:
+Activate Yarn:
 
 ```shell
-yarn --version
+corepack prepare yarn@4.13.0 --activate
+```
+
+Verify:
+
+```shell
+yarn -v
 ```
 
 ---
 
-# Tauri requirements
-
-For Tauri, install the Rust toolchain and system dependencies.
-
-## Rust
+# Install dependencies
 
 ```shell
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+yarn install
 ```
 
-## Linux dependencies
+---
+
+# Local HTTPS certificates
+
+Development mode requires local HTTPS certificates generated with `mkcert`.
+
+---
+
+## Install mkcert
+
+### Linux
+
+Install NSS tools:
 
 ```shell
-sudo apt install \
-  libwebkit2gtk-4.1-dev \
-  libappindicator3-dev \
-  librsvg2-dev \
-  patchelf
+sudo apt install libnss3-tools
+```
+
+Install mkcert:
+
+```shell
+curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"
+
+chmod +x mkcert-v*-linux-amd64
+
+sudo mv mkcert-v*-linux-amd64 /usr/local/bin/mkcert
+```
+
+---
+
+### macOS
+
+```shell
+brew install mkcert
+```
+
+---
+
+## Install local CA
+
+```shell
+mkcert -install
+```
+
+---
+
+## Generate local certificates
+
+```shell
+yarn certs
+```
+
+Expected files:
+
+```text
+certs/
+├── localhost+2-key.pem
+└── localhost+2.pem
 ```
 
 ---
 
 # Development
 
-Run the project with true hot module replacement:
+Run the SSR development server with HTTPS and HMR:
 
 ```shell
 yarn dev
 ```
 
----
+Application URL:
 
-# Tauri Desktop App
-
-The desktop application is built with Tauri v2.
-
-## Development mode
-
-```shell
-yarn tauri:dev
-```
-
-## Production build
-
-```shell
-yarn tauri:build
+```text
+https://localhost:3000
 ```
 
 ---
 
-# Production website build
+# Production build
+
+Build the production application:
 
 ```shell
 yarn build
-yarn deploy
+```
+
+Run production locally:
+
+```shell
+yarn start
 ```
 
 ---
@@ -106,6 +177,8 @@ yarn deploy
 ```shell
 yarn test
 ```
+
+---
 
 ## Coverage
 
@@ -123,80 +196,63 @@ yarn eslint
 
 ---
 
-# Tauri architecture
+# Tauri Desktop App
 
-## Structure
-
-```text
-src-tauri/          Rust backend
-packages/tauri/     npm package wrapping the Tauri CLI
-src/client/         main-tauri.js entry point
-
-config/
-  rspack.config.tauri.js
-  generateTauriIndex.js
-```
+The desktop application uses Tauri v2.
 
 ---
 
-## How it works
-
-* In development mode, Tauri loads the Koa SSR server through `devUrl`
-* In production mode, a static frontend is generated into `public/dist/tauri/`
-* `@loadable/component` is replaced by a lightweight `React.lazy` wrapper
-
----
-
-## Tauri scripts
-
-| Command            | Description                               |
-| ------------------ | ----------------------------------------- |
-| `yarn tauri:dev`   | Launch desktop app in development mode    |
-| `yarn tauri:build` | Build and package the desktop application |
-
----
-
-## Icons
-
-Generate application icons:
+## Install Rust
 
 ```shell
-npx tauri icon src/assets/img/launcher-icon-high-res.png
-```
-
-Generated files are stored in:
-
-```text
-src-tauri/icons/
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
 ---
 
-# Cache
+## Linux dependencies
 
-This project uses Redis for SSR shell caching.
-
----
-
-## AWS ElastiCache
-
-To deploy on AWS, create a Redis cluster:
-
-[Amazon ElastiCache Documentation](https://docs.aws.amazon.com/AmazonElastiCache/latest/UserGuide/GettingStarted.CreateCluster.html?utm_source=chatgpt.com)
-
-Make sure port `6379` is accessible from your EC2 instance.
+```shell
+sudo apt install \
+  libwebkit2gtk-4.1-dev \
+  libappindicator3-dev \
+  librsvg2-dev \
+  patchelf
+```
 
 ---
 
-## Local Redis container
+## Development mode
 
-Create the shared Docker network:
+```shell
+yarn tauri:dev
+```
+
+---
+
+## Production build
+
+```shell
+yarn tauri:build
+```
+
+---
+
+# Redis cache
+
+The project uses Redis for SSR shell caching.
+
+---
+
+## Create Docker network
 
 ```shell
 docker network create app-net
 ```
 
-Run Redis:
+---
+
+## Start Redis container
 
 ```shell
 docker run -d \
@@ -211,6 +267,11 @@ docker run -d \
 
 ```shell
 docker exec -it redis sh
+```
+
+Flush Redis:
+
+```shell
 redis-cli flushall
 ```
 
@@ -218,11 +279,9 @@ redis-cli flushall
 
 # Docker local testing
 
-For testing your Docker image locally:
+Run the production container locally:
 
 ```shell
-redis-cli flushall
-
 docker run -it \
   -v /etc/letsencrypt/:/etc/letsencrypt/ \
   --network app-net \
@@ -237,32 +296,32 @@ docker run -it \
 Then open:
 
 ```text
-https://localhost:8001/
+https://localhost:8001
 ```
 
 ---
 
-# SSL (Let's Encrypt) — EC2 + Nginx + Docker
+# AWS CLI
 
-## AWS CLI installation
-
-Install the AWS CLI.
-
-### Linux
+## Linux
 
 ```shell
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
 unzip awscliv2.zip
+
 sudo ./aws/install
 ```
 
-### macOS
+---
+
+## macOS
 
 ```shell
 brew install awscli
 ```
 
-Verify installation:
+Verify:
 
 ```shell
 aws --version
@@ -270,18 +329,11 @@ aws --version
 
 ---
 
-## Configure AWS credentials
+# AWS configuration
 
 ```shell
 aws configure
 ```
-
-You will be prompted for:
-
-* AWS Access Key ID
-* AWS Secret Access Key
-* AWS region
-* Output format
 
 Recommended region:
 
@@ -291,17 +343,44 @@ eu-central-1
 
 ---
 
-## Install Certbot
+# Nginx configuration
 
-On the EC2 instance:
+Main nginx file:
 
-```shell
-sudo yum install certbot
+```text
+/etc/nginx/nginx.conf
+```
+
+Enable gzip inside the `http {}` block:
+
+```nginx
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_min_length 1024;
+
+    gzip_types
+        text/plain
+        text/css
+        text/javascript
+        application/javascript
+        application/json
+        application/xml
+        application/rss+xml
+        image/svg+xml;
+
+    include /etc/nginx/conf.d/*.conf;
+}
 ```
 
 ---
 
-## Nginx configuration
+## Virtual host
 
 File:
 
@@ -315,14 +394,12 @@ server {
     listen 80;
     server_name guillaumecisco.com www.guillaumecisco.com;
 
-    # ACME challenge
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/html;
         default_type "text/plain";
         try_files $uri =404;
     }
 
-    # Redirect to HTTPS
     location / {
         return 301 https://$host$request_uri;
     }
@@ -336,14 +413,12 @@ server {
     ssl_certificate     /etc/letsencrypt/live/guillaumecisco.com/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/guillaumecisco.com/privkey.pem;
 
-    # ACME challenge
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/html;
         default_type "text/plain";
         try_files $uri =404;
     }
 
-    # Reverse proxy
     location / {
         proxy_pass https://127.0.0.1:8001;
 
@@ -358,6 +433,12 @@ server {
 }
 ```
 
+Validate nginx:
+
+```shell
+sudo nginx -t
+```
+
 Reload nginx:
 
 ```shell
@@ -366,7 +447,23 @@ sudo systemctl reload nginx
 
 ---
 
-## Generate SSL certificates
+# Install Certbot
+
+Amazon Linux:
+
+```shell
+sudo yum install certbot
+```
+
+Ubuntu:
+
+```shell
+sudo apt install certbot
+```
+
+---
+
+# Generate production SSL certificates
 
 ```shell
 sudo certbot certonly \
@@ -376,7 +473,7 @@ sudo certbot certonly \
   -d www.guillaumecisco.com
 ```
 
-Certificates are stored in:
+Certificates:
 
 ```text
 /etc/letsencrypt/live/guillaumecisco.com/
@@ -384,9 +481,9 @@ Certificates are stored in:
 
 ---
 
-## Automatic renewal
+# Automatic SSL renewal
 
-Edit the root crontab:
+Edit crontab:
 
 ```shell
 sudo crontab -e
@@ -400,7 +497,7 @@ Add:
 
 ---
 
-## Renewal test
+# Renewal test
 
 ```shell
 sudo certbot renew --dry-run
@@ -410,22 +507,15 @@ sudo certbot renew --dry-run
 
 # Deployment
 
-## Create deploy.js
+---
 
-Copy the deployment template:
+## Create deploy.js
 
 ```shell
 cp tools/deploy_template.js deploy.js
 ```
 
-Template location:
-
-```text
-tools/deploy_template.js
-```
-
-Update the following values:
-
+Update:
 * Docker registry
 * image name
 * Redis host
@@ -444,7 +534,7 @@ aws ecr get-login-password --region eu-central-1 \
 
 ---
 
-## Build and push Docker image
+## Deploy
 
 ```shell
 yarn deploy
@@ -452,9 +542,7 @@ yarn deploy
 
 ---
 
-## Production container
-
-The backend server itself runs HTTPS + HTTP/2 internally.
+# Production container
 
 ```shell
 docker run -d \
@@ -471,24 +559,40 @@ docker run -d \
 
 ---
 
+# Architecture
+
+```text
+packages/
+├── webpack/
+├── tauri/
+├── eslint/
+└── test/
+
+src/
+public/
+tools/
+src-tauri/
+```
+
+---
+
 # Important notes
 
-* Port `80` must remain open for Let's Encrypt
-* Do not remove the nginx ACME challenge block
-* `certbot-auto` is deprecated
-* The Docker container requires:
-
-    * mounted Let's Encrypt certificates
-    * Redis connectivity
-    * SSL environment variables
+* Port `80` must stay open for Let's Encrypt
+* Local development requires mkcert certificates
+* Redis is required for SSR caching
+* HTTPS is enabled in both development and production
+* The production backend serves HTTP/2 internally
+* The application uses SSR with dynamic chunk loading
 
 ---
 
 # Result
 
-* HTTPS + HTTP/2 frontend
-* HTTPS + HTTP/2 backend
+* SSR React website
+* HTTPS local development
 * Automatic SSL renewal
-* Zero downtime
-* Redis SSR cache support
 * Dockerized production deployment
+* Redis SSR cache
+* Tauri desktop support
+* Dynamic code splitting

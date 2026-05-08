@@ -22,6 +22,7 @@
         "build:webpack": "cd packages/webpack && npm run build",
         "clean:webpack": "cd packages/webpack && npm run clean",
         "clean": "yarn clean:webpack",
+        "certs": "mkdir -p certs && mkcert -key-file certs/localhost+2-key.pem -cert-file certs/localhost+2.pem localhost 127.0.0.1 ::1",
         "dev": "cd packages/webpack && yarn build:dev && cd ../.. && nodemon public/dist/node/static/js/main.js",
         "start": "NODE_ENV=production node public/dist/node/static/js/main.js",
         "build": "yarn clean && NODE_ENV=production yarn build:webpack",

@@ -80,7 +80,7 @@ redis.on('error', (err) => {
     if (isRedisReady()) console.error('Redis error:', err);
 });
 
-const CACHE_KEY = 'ssr:shell';
+const CACHE_KEY = 'ssr:shell:v1';
 
 const buildAssetTags = ({nonce, devMiddlewareInstance, clientCompiler}) => {
     let scriptTags = '';
@@ -99,12 +99,16 @@ const buildAssetTags = ({nonce, devMiddlewareInstance, clientCompiler}) => {
             .map(f => `<link rel="stylesheet" href="${pub}${f}">`)
             .join('\n');
 
-        const criticalJs = jsFiles[0];
-        const criticalCss = cssFiles[0];
+        const criticalJs =
+            jsFiles.find(f => f.includes('main')) ||
+            jsFiles[0];
+        const criticalCss =
+            cssFiles.find(f => f.includes('main')) ||
+            cssFiles[0];
 
         preloadTags = [
-            criticalJs && `<link rel="preload" href="${pub}${criticalJs}" as="script">`,
-            criticalCss && `<link rel="preload" href="${pub}${criticalCss}" as="style">`,
+            criticalJs && `<link rel="modulepreload" href="${pub}${criticalJs}" as="script">`,
+            criticalCss && `<link rel="modulepreload" href="${pub}${criticalCss}" as="style">`,
         ].filter(Boolean).join('\n');
     };
 
@@ -146,7 +150,7 @@ const buildHead = (linkTags, preloadTags) => `<!DOCTYPE html>
     <meta property="og:description" content="Interactive portfolio of Guillaume Cisco. Explore my experience, skills and hobbies.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://guillaumecisco.com/">
-    ${isProd ? `<link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />` : ''}
+    ${isProd ? `<link rel="manifest" href="/manifest.json" />` : ''}
     ${preloadTags}
     ${linkTags}
   </head>
