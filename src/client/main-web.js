@@ -22,28 +22,26 @@ import './../app/common/ui/fonts.css';
 
 const cache = createCache({key: 'css'});
 
+const app = (
+    <CacheProvider value={cache}>
+        <Provider store={store}>
+            <ErrorBoundary fallback={<p>UI Error</p>}>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+            </ErrorBoundary>
+        </Provider>
+    </CacheProvider>
+);
+
 if (!window.__APP_HYDRATED__) {
     window.__APP_HYDRATED__ = true;
 
     const container = document.getElementById('root');
+
     loadableReady(() => {
-        try {
-            hydrateRoot(container,
-                <CacheProvider value={cache}>
-                    <Provider store={store}>
-                        <ErrorBoundary fallback={<p>Erreur UI</p>}>
-                            <BrowserRouter>
-                                <App/>
-                            </BrowserRouter>
-                        </ErrorBoundary>
-                    </Provider>
-                </CacheProvider>
-            )
-        } catch (err) {
-            captureException(err);
-        }
-    })
-    ;
+        hydrateRoot(container, app);
+    });
 }
 
 // If you want to start measuring performance in your app, pass a function

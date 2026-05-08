@@ -3,9 +3,7 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const rspack = path.join(root, 'node_modules', '.bin', 'rspack');
-const config = path.join(root, 'config', 'rspack.config.tauri.js');
-
-require('./generateTauriIndex');
+const config = path.join(root, 'config', 'rspack.tauri.config.js');
 
 execSync(`"${rspack}" build --config "${config}"`, {
     cwd: root,

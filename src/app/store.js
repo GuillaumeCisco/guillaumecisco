@@ -11,7 +11,6 @@ const configureAppStore = (preloadedState) => {
 
     // reducer lazy load handling
     store.injectSlice = injectSlice(store, rootReducer);
-    // reducer HMR handling
     if (process.env.NODE_ENV !== 'production' && module.hot) {
         try {
             const mod = require('@hmr-cache-lazy');
@@ -19,13 +18,7 @@ const configureAppStore = (preloadedState) => {
             const enableLazySliceHMR =
                 typeof mod === 'function'
                     ? mod
-                    : typeof mod.default === 'function'
-                        ? mod.default
-                        : null;
-
-            if (!enableLazySliceHMR) {
-                throw new Error('No callable export found');
-            }
+                    : mod.default;
 
             enableLazySliceHMR(store);
 
@@ -34,7 +27,6 @@ const configureAppStore = (preloadedState) => {
             console.error('Could not load @hmr-cache-lazy:', e);
         }
     }
-
     return store;
 };
 

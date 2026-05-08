@@ -13,6 +13,23 @@ import App from '../app';
 
 import './../app/common/ui/fonts.css';
 
+if (!window.requestIdleCallback) {
+    window.requestIdleCallback = (callback) => {
+        return setTimeout(() => {
+            callback({
+                didTimeout: false,
+                timeRemaining: () => 0,
+            });
+        }, 1);
+    };
+}
+
+if (!window.cancelIdleCallback) {
+    window.cancelIdleCallback = (id) => {
+        clearTimeout(id);
+    };
+}
+
 const store = configureAppStore({});
 const cache = createCache({ key: 'css' });
 

@@ -1,18 +1,9 @@
 import { useEffect, useState } from 'react';
-import loadable from '@loadable/component';
 
 import Intro from './intro';
 import style from './style';
-
-const Supernova = loadable(
-    () => import(/* webpackChunkName: "supernova" */ './supernova'),
-    { fallback: null }
-);
-
-const AsyncModal = loadable(
-    () => import(/* webpackChunkName: "async-modal" */ './asyncModal'),
-    { fallback: null }
-);
+import Supernova from './supernova';
+import AsyncModal from './asyncModal';
 
 const Splash = () => {
     const [ready, setReady] = useState(false);

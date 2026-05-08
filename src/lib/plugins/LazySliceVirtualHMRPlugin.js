@@ -22,9 +22,23 @@ class LazySliceVirtualHMRPlugin {
 
         this.vmp.apply(compiler);
 
+
+
         compiler.hooks.beforeCompile.tapAsync(
             'LazySliceVirtualHMRPlugin',
             (_params, callback) => {
+                const isWeb = compiler.options.name === 'client';
+                if (!isWeb) {
+                    this.vmp.writeModule(
+                        this.virtualModulePath,
+                        'export default function() {}',
+                    );
+
+                    callback();
+
+                    return;
+                }
+
                 const absSliceDir = path.resolve(process.cwd(), this.sliceDir);
                 const pattern = path.join(absSliceDir, '**/*.{js,jsx,ts,tsx}');
                 const files = glob.sync(pattern, {absolute: true});
@@ -33,11 +47,17 @@ class LazySliceVirtualHMRPlugin {
                     fs.readFileSync(f, 'utf8').includes('createLoadableSlice('),
                 );
 
+
+
                 let src = `// Auto-generated HMR helper
 export default function makeReducersLoadable(store) {
   if (!module.hot) return;
 
 `;
+
+                if (!sliceFiles.length) {
+                    src += 'console.log("[HMR] No lazy slices found");\n';
+                }
 
                 const loaderDir = path.dirname(this.virtualModulePath);
 
@@ -45,9 +65,7 @@ export default function makeReducersLoadable(store) {
                     let rel = path.relative(loaderDir, abs).replace(/\\/g, '/');
                     if (!rel.startsWith('.')) rel = `./${rel}`;
 
-                    src += `  // Require for HMR tracking (do not inject)
-  require('${rel}');
-  module.hot.accept('${rel}', async () => {
+                    src += `  module.hot.accept('${rel}', async () => {
     const m = await import('${rel}');
     console.log('[HMR] Reloading slice: ${rel}');
     store.injectSlice(m.default);
