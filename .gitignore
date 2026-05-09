@@ -39,7 +39,7 @@ certs/*
 tools/deploy.js
 .node_version
 
-dist
+public/*
 
 
 .env
