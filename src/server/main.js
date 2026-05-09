@@ -8,9 +8,9 @@ import fs from 'fs';
 import crypto from 'crypto';
 import {createClient} from 'redis';
 import {Transform} from 'stream';
+import httpProxy from 'http-proxy';
 import Koa from 'koa';
 import serve from 'koa-static';
-import proxy from 'koa-proxies';
 import koaHelmet from 'koa-helmet';
 import compress from 'koa-compress';
 import {createLifecycleServer} from '@guillaumecisco/terminus-lifecycle';
@@ -62,6 +62,7 @@ const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
 
 const DEV_ORIGIN = 'https://localhost:8080';
+const DEV_PROXY_PATHS = ['/_rspack', '/dist/web'];
 
 const BUILD_ID = fs.existsSync(
     path.join(ROOT, '.build-id'),
@@ -380,29 +381,53 @@ const setCSP = (res, nonce) => {
  */
 
 const app = new Koa();
+let devProxy = null;
 
 /**
  * Dev proxies
  */
 
 if (isDev) {
-    app.use(
-        proxy('/_rspack', {
-            target: DEV_ORIGIN,
-            changeOrigin: true,
-            secure: false,
-            ws: true,
-        }),
-    );
+    devProxy = httpProxy.createProxyServer({
+        target: DEV_ORIGIN,
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+    });
 
-    app.use(
-        proxy('/dist/web', {
-            target: DEV_ORIGIN,
-            changeOrigin: true,
-            secure: false,
-            ws: true,
-        }),
-    );
+    devProxy.on('error', (err, _req, res) => {
+        if (res?.writeHead) {
+            res.writeHead(502, {
+                'Content-Type': 'text/plain',
+            });
+            res.end('Bad Gateway');
+            return;
+        }
+        console.error('Dev proxy error:', err);
+    });
+
+    app.use(async (ctx, next) => {
+        const shouldProxy = DEV_PROXY_PATHS.some((prefix) => (
+            ctx.path === prefix ||
+            ctx.path.startsWith(`${prefix}/`)
+        ));
+
+        if (!shouldProxy) {
+            return next();
+        }
+
+        await new Promise((resolve, reject) => {
+            devProxy.web(ctx.req, ctx.res, {}, (err) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve();
+            });
+        });
+
+        ctx.respond = false;
+    });
 }
 
 /**
@@ -799,6 +824,23 @@ const main = async () => {
             serverOptions,
             app.callback(),
         );
+
+    if (isDev) {
+        server.on('upgrade', (req, socket, head) => {
+            const reqPath = req.url || '';
+            const shouldProxy = DEV_PROXY_PATHS.some((prefix) => (
+                reqPath === prefix ||
+                reqPath.startsWith(`${prefix}/`)
+            ));
+
+            if (!shouldProxy) {
+                socket.destroy();
+                return;
+            }
+
+            devProxy.ws(req, socket, head);
+        });
+    }
 
     server.listen(Number(DASHBOARD_PORT), async () => {
         await lifecycle.setReady(true);
