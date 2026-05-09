@@ -8,6 +8,7 @@ const WorkboxWebpackPlugin = require('@aaroon/workbox-rspack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const {RspackManifestPlugin} = require('rspack-manifest-plugin');
 const nodeExternals = require('webpack-node-externals');
+// const {RsdoctorRspackPlugin} = require('@rsdoctor/rspack-plugin');
 const {sentryWebpackPlugin} = require('@sentry/webpack-plugin');
 const pwaManifestPlugin = require('./pwaManifest');
 const sentryRelease = require('./sentryRelease');
@@ -290,7 +291,9 @@ const getConfig = (target, {isSSR = false} = {}) => {
                 new rspack.SwcJsMinimizerRspackPlugin(),
                 new rspack.LightningCssMinimizerRspackPlugin(),
             ],
-            runtimeChunk: 'single',
+            runtimeChunk: isEnvProduction
+                ? 'single'
+                : false,
 
             ...(isEnvProduction
                 ? {
@@ -318,6 +321,8 @@ const getConfig = (target, {isSSR = false} = {}) => {
             }),
         ] : undefined,
         resolve: {
+            conditionNames: ['import', 'module', 'browser', 'default'],
+            mainFields: ['browser', 'module', 'main'],
             // This allows you to set a fallback for where webpack should look for modules.
             // We placed these paths second because we want `node_modules` to "win"
             // if there are any conflicts. This matches Node resolution mechanism.
@@ -596,6 +601,7 @@ const getConfig = (target, {isSSR = false} = {}) => {
             ].filter(Boolean),
         },
         plugins: [
+            // new RsdoctorRspackPlugin(),
             {
                 apply(compiler) {
                     let buildStart = 0;
@@ -765,7 +771,7 @@ https://localhost:3000
             }),
             target === 'web' && new LoadablePlugin({
                 filename: 'loadable-stats.json',
-                writeToDisk: true,
+                writeToDisk: isEnvProduction,
                 outputAsset: false,
 
                 publicPath: '/dist/web/',

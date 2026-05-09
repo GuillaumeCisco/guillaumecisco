@@ -39,9 +39,17 @@ if (!window.__APP_HYDRATED__) {
 
     const container = document.getElementById('root');
 
-    loadableReady(() => {
-        hydrateRoot(container, app);
-    });
+    try {
+        if (process.env.NODE_ENV === 'development') {
+            hydrateRoot(container, app);
+        } else {
+            loadableReady(() => {
+                hydrateRoot(container, app);
+            });
+        }
+    } catch (err) {
+        captureException(err);
+    }
 }
 
 // If you want to start measuring performance in your app, pass a function

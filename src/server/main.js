@@ -63,7 +63,15 @@ const isDev = !isProd;
 
 const DEV_ORIGIN = 'https://localhost:8080';
 
-const CACHE_KEY = 'ssr:shell:v1';
+const BUILD_ID = fs.existsSync(
+    path.join(ROOT, '.build-id'),
+)
+    ? fs.readFileSync(
+        path.join(ROOT, '.build-id'),
+        'utf8',
+    ).trim()
+    : 'dev';
+const CACHE_KEY = `ssr:shell:${BUILD_ID}`;
 
 /**
  * Error handling
@@ -181,11 +189,14 @@ const buildAssetTags = ({nonce}) => {
         };
     }
 
-    const files = manifest.entrypoints || [];
+    const files = (manifest.entrypoints || [])
+        .filter((f) => !f.includes('.hot-update.'));
 
-    const jsFiles = files.filter((f) => (
-        f.endsWith('.js')
-    ));
+    const jsFiles = files
+        .filter((f) => f.endsWith('.js'))
+        .filter((f) => (
+            isProd || !f.includes('runtime')
+        ));
 
     const cssFiles = files.filter((f) => (
         f.endsWith('.css')
@@ -284,7 +295,16 @@ Guillaume Cisco — Senior Lead FullStack Engineer
 >
 
 ${isProd
-    ? '<link rel="manifest" href="/manifest.json" />'
+    ? `
+<link
+    rel="preload"
+    href="/manifest.json"
+    as="fetch"
+    crossorigin="anonymous"
+/>
+
+<link rel="manifest" href="/manifest.json" />
+`
     : ''}
 
 ${preloadTags}
@@ -299,6 +319,7 @@ const buildTail = ({
                        nonce,
                        preloadedState,
                        loadableTags,
+                       scriptTags,
                    }) => `</div>
 
 <script nonce="${nonce}">
@@ -307,6 +328,7 @@ ${JSON.stringify(preloadedState).replace(/</g, '\\u003c')}
 </script>
 
 ${loadableTags}
+${scriptTags}
 
 </body>
 </html>`;
@@ -493,6 +515,7 @@ app.use(async (ctx, next) => {
     const {nonce} = ctx.state;
 
     const {
+        scriptTags,
         linkTags,
         preloadTags,
     } = buildAssetTags({nonce});
@@ -547,6 +570,7 @@ app.use(async (ctx, next) => {
             nonce,
             preloadedState,
             loadableTags: tags,
+            scriptTags,
         });
 
         ctx.res.write(shell);
@@ -561,10 +585,15 @@ app.use(async (ctx, next) => {
         transform: emotionTransform,
     } = createEmotionStream();
 
-    const extractor = new ChunkExtractor({
-        statsFile: PATHS.loadableStats,
-        publicPath: getPublicPath(),
-    });
+    const extractor = isProd
+        ? new ChunkExtractor({
+            statsFile: PATHS.loadableStats,
+            publicPath: getPublicPath(),
+        })
+        : {
+            collectChunks: (app) => app,
+            getScriptTags: () => '',
+        };
 
     const jsx = extractor.collectChunks(
         <CacheProvider value={cache}>
@@ -651,6 +680,7 @@ app.use(async (ctx, next) => {
                 nonce,
                 preloadedState,
                 loadableTags,
+                scriptTags
             });
 
             ctx.res.write(tail);

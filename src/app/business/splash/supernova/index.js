@@ -18,233 +18,243 @@ import blue from './planet/blue.png';
 import white from './planet/white.png';
 
 function SuperNova() {
-  // redux hooks
-  const dispatch = useDispatch();
-  const intro = useSelector((state) => state.general.intro);
+    // redux hooks
+    const dispatch = useDispatch();
+    const intro = useSelector((state) => state.general.intro);
+    const [isMobile, setIsMobile] = useState(false);
 
-  // constants (old: this.nbBackgroundStars / this.nbStars / this.padding)
-  const nbBackgroundStars = 100;
-  const nbStars = 1000;
-  const padding = 50;
+    // constants (old: this.nbBackgroundStars / this.nbStars / this.padding)
+    const nbBackgroundStars = isMobile ? 40 : 100;
+    const nbStars = isMobile ? 200 : 1000;
+    const padding = isMobile ? 10 : 50;
 
-  const wrapperRef = useRef(null);
-  const redPlanetRef = useRef(null);
-  const bluePlanetRef = useRef(null);
-  const orangePlanetRef = useRef(null);
+    const wrapperRef = useRef(null);
+    const redPlanetRef = useRef(null);
+    const bluePlanetRef = useRef(null);
+    const orangePlanetRef = useRef(null);
 
-  const [state, setState] = useState({
-    over: false,
-    loaded: false,
-    w: 0,
-    h: 0,
-    a: 0,
-    b: 0,
-    coreRadius: 0,
-    redPlanet: null,
-    bluePlanet: null,
-    orangePlanet: null,
-  });
+    const [state, setState] = useState({
+        over: false,
+        loaded: false,
+        w: 0,
+        h: 0,
+        a: 0,
+        b: 0,
+        coreRadius: 0,
+        redPlanet: null,
+        bluePlanet: null,
+        orangePlanet: null,
+    });
 
-  const resize = useCallback(() => {
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
+    useEffect(() => {
+        setIsMobile(typeof window !== 'undefined'
+            && window.matchMedia('(max-width: 767px)').matches);
+    }, []);
 
-    const w = wrapper.offsetWidth;
-    const h = wrapper.offsetHeight;
-    const a = w / 2.5;
-    const b = a / 2.3;
-    const coreRadius = (a - b) / 5;
+    const resize = useCallback(() => {
+        const wrapper = wrapperRef.current;
+        if (!wrapper) return;
 
-    const redPlanet = {
-      radius: (a - b) / 12,
-      a: (3 * a) / 8,
-      b: ((3 * a) / 8) / 2,
-    };
+        const w = wrapper.offsetWidth;
+        const h = wrapper.offsetHeight;
+        const a = w / (isMobile ? 3.4 : 2.5);
+        const b = a / (isMobile ? 3 : 2.3);
+        const coreRadius = (a - b) / (isMobile ? 3.2 : 5);
 
-    const bluePlanet = {
-      radius: (a - b) / 8,
-      a: (9 * a) / 8,
-      b: ((9 * a) / 8) / 2,
-    };
+        const redPlanet = {
+            radius: (a - b) / (isMobile ? 7 : 12),
+            a: (3 * a) / (isMobile ? 5 : 8),
+            b: ((3 * a) / 8) / 2,
+        };
 
-    const orangePlanet = {
-      radius: (a - b) / 9,
-      a: (4 * a) / 8,
-      b: ((4 * a) / 8) / 2,
-    };
+        const bluePlanet = {
+            radius: (a - b) / (isMobile ? 5 : 8),
+            a: (9 * a) / (isMobile ? 6 : 8),
+            b: ((9 * a) / 8) / 2,
+        };
 
-    setState((prev) => ({
-      ...prev,
-      loaded: true,
-      w,
-      h,
-      a,
-      b,
-      coreRadius,
-      redPlanet,
-      bluePlanet,
-      orangePlanet,
-    }));
-  }, []);
+        const orangePlanet = {
+            radius: (a - b) / (isMobile ? 7 : 9),
+            a: (4 * a) / (isMobile ? 6 : 8),
+            b: ((4 * a) / 8) / 2,
+        };
 
-  useEffect(() => {
-    resize();
+        setState((prev) => ({
+            ...prev,
+            loaded: true,
+            w,
+            h,
+            a,
+            b,
+            coreRadius,
+            redPlanet,
+            bluePlanet,
+            orangePlanet,
+        }));
+    }, []);
 
-    const onResize = () => resize();
-    window.addEventListener('resize', onResize);
-    window.addEventListener('orientationchange', onResize);
+    useEffect(() => {
+        resize();
 
-    return () => {
-      window.removeEventListener('resize', onResize);
-      window.removeEventListener('orientationchange', onResize);
-    };
-  }, [resize]);
+        const onResize = () => resize();
+        window.addEventListener('resize', onResize);
+        window.addEventListener('orientationchange', onResize);
 
-  const isInCircle = useCallback(
-    (x, y, r, a, b) => ((a - x) ** 2) + ((b - y) ** 2) < (r ** 2),
-    [],
-  );
+        return () => {
+            window.removeEventListener('resize', onResize);
+            window.removeEventListener('orientationchange', onResize);
+        };
+    }, [resize]);
 
-  const isInCore = useCallback(
-    (x, y) => {
-      const {w, h, coreRadius} = state;
-      return isInCircle(w / 2, h / 2, coreRadius, x, y);
-    },
-    [isInCircle, state],
-  );
+    const isInCircle = useCallback(
+        (x, y, r, a, b) => ((a - x) ** 2) + ((b - y) ** 2) < (r ** 2),
+        [],
+    );
 
-  const isInPlanet = useCallback(
-    (a, b, planetRef, radius) => {
-      const planet = planetRef.current;
-      if (!planet) return false;
-      const coord = planet.getCoordinate?.();
-      if (!coord) return false;
-      return isInCircle(a, b, radius, coord.x, coord.y);
-    },
-    [isInCircle],
-  );
+    const isInCore = useCallback(
+        (x, y) => {
+            const {w, h, coreRadius} = state;
+            return isInCircle(w / 2, h / 2, coreRadius, x, y);
+        },
+        [isInCircle, state],
+    );
 
-  const click = useCallback(
-    (e) => {
-      const wrapper = wrapperRef.current;
-      if (!wrapper) return;
+    const isInPlanet = useCallback(
+        (a, b, planetRef, radius) => {
+            const planet = planetRef.current;
+            if (!planet) return false;
+            const coord = planet.getCoordinate?.();
+            if (!coord) return false;
+            return isInCircle(a, b, radius, coord.x, coord.y);
+        },
+        [isInCircle],
+    );
 
-      const {redPlanet, orangePlanet, bluePlanet} = state;
-      if (!redPlanet || !orangePlanet || !bluePlanet) return;
+    const click = useCallback(
+        (e) => {
+            const wrapper = wrapperRef.current;
+            if (!wrapper) return;
 
-      const [x, y] = pointer(e, wrapper);
+            const {redPlanet, orangePlanet, bluePlanet} = state;
+            if (!redPlanet || !orangePlanet || !bluePlanet) return;
 
-      if (isInCore(x, y)) {
-        dispatch(setModalComponent('core'));
-        dispatch(setIntro(true));
-      }
+            const [x, y] = pointer(e, wrapper);
 
-      if (isInPlanet(x, y, redPlanetRef, redPlanet.radius)) {
-        dispatch(setModalComponent('skills'));
-      }
+            if (isInCore(x, y)) {
+                dispatch(setModalComponent('core'));
+                dispatch(setIntro(true));
+            }
 
-      if (isInPlanet(x, y, orangePlanetRef, orangePlanet.radius)) {
-        dispatch(setModalComponent('awards'));
-      }
+            if (isInPlanet(x, y, redPlanetRef, redPlanet.radius)) {
+                dispatch(setModalComponent('skills'));
+            }
 
-      if (isInPlanet(x, y, bluePlanetRef, bluePlanet.radius)) {
-        dispatch(setModalComponent('experience'));
-      }
-    },
-    [dispatch, isInCore, isInPlanet, state],
-  );
+            if (isInPlanet(x, y, orangePlanetRef, orangePlanet.radius)) {
+                dispatch(setModalComponent('awards'));
+            }
 
-  const mouseMove = useCallback(
-    (e) => {
-      const wrapper = wrapperRef.current;
-      if (!wrapper) return;
+            if (isInPlanet(x, y, bluePlanetRef, bluePlanet.radius)) {
+                dispatch(setModalComponent('experience'));
+            }
+        },
+        [dispatch, isInCore, isInPlanet, state],
+    );
 
-      const {redPlanet, orangePlanet, bluePlanet, over} = state;
-      if (!redPlanet || !orangePlanet || !bluePlanet) return;
+    const mouseMove = useCallback(
+        (e) => {
+            const wrapper = wrapperRef.current;
+            if (!wrapper) return;
 
-      const [x, y] = pointer(e, wrapper);
+            const {redPlanet, orangePlanet, bluePlanet, over} = state;
+            if (!redPlanet || !orangePlanet || !bluePlanet) return;
 
-      const nextOver = (
-        isInCore(x, y)
-        || isInPlanet(x, y, redPlanetRef, redPlanet.radius)
-        || isInPlanet(x, y, orangePlanetRef, orangePlanet.radius)
-        || isInPlanet(x, y, bluePlanetRef, bluePlanet.radius)
-      );
+            const [x, y] = pointer(e, wrapper);
 
-      if (nextOver !== over) {
-        setState((prev) => ({...prev, over: nextOver}));
-      }
-    },
-    [isInCore, isInPlanet, state],
-  );
+            const nextOver = (
+                isInCore(x, y)
+                || isInPlanet(x, y, redPlanetRef, redPlanet.radius)
+                || isInPlanet(x, y, orangePlanetRef, orangePlanet.radius)
+                || isInPlanet(x, y, bluePlanetRef, bluePlanet.radius)
+            );
 
-  const spaceshipClick = useCallback(() => {
-    dispatch(setModalComponent('spaceship'));
-  }, [dispatch]);
+            if (nextOver !== over) {
+                setState((prev) => ({...prev, over: nextOver}));
+            }
+        },
+        [isInCore, isInPlanet, state],
+    );
 
-  const {
-    loaded, w, h, coreRadius, a, b, redPlanet, bluePlanet, orangePlanet,
-  } = state;
+    const spaceshipClick = useCallback(() => {
+        dispatch(setModalComponent('spaceship'));
+    }, [dispatch]);
 
-  return (
-    <div
-      ref={wrapperRef}
-      css={style.wrapper(state.over)}
-      onClick={click}
-      onMouseMove={mouseMove}
-    >
-      {loaded && (
-        <>
-          <Background w={w} h={h} size={nbBackgroundStars} />
-          <ShootingStars w={w} h={h} />
-          <Core w={w} h={h} radius={coreRadius} />
-          <Ellipse w={w} h={h} size={nbStars} a={a} b={b} padding={padding} />
-          <SpaceShip w={w} h={h} width={48} height={48} onClick={spaceshipClick} />
+    const {
+        loaded, w, h, coreRadius, a, b, redPlanet, bluePlanet, orangePlanet,
+    } = state;
 
-          {intro && redPlanet && bluePlanet && orangePlanet && (
-            <>
-              <Planet
-                w={w}
-                h={h}
-                color="#97140c"
-                radius={redPlanet.radius}
-                a={redPlanet.a}
-                b={redPlanet.b}
-                intervals={4000}
-                teta={Math.PI / 2}
-                img={mars}
-                ref={redPlanetRef}
-              />
-              <Planet
-                w={w}
-                h={h}
-                color="#7399b8"
-                radius={bluePlanet.radius}
-                a={bluePlanet.a}
-                b={bluePlanet.b}
-                intervals={3500}
-                teta={-Math.PI / 2}
-                img={blue}
-                ref={bluePlanetRef}
-              />
-              <Planet
-                w={w}
-                h={h}
-                color="#8a451f"
-                radius={orangePlanet.radius}
-                a={orangePlanet.a}
-                b={orangePlanet.b}
-                intervals={2000}
-                teta={0}
-                img={white}
-                ref={orangePlanetRef}
-              />
-            </>
-          )}
-        </>
-      )}
-    </div>
-  );
+    return (
+        <div
+            ref={wrapperRef}
+            css={style.wrapper(state.over)}
+            onClick={click}
+            onMouseMove={mouseMove}
+        >
+            {loaded && (
+                <>
+                    <Background w={w} h={h} size={nbBackgroundStars}/>
+                    {!isMobile && (
+                        <ShootingStars w={w} h={h}/>
+                    )}
+                    <Core w={w} h={h} radius={coreRadius}/>
+                    <Ellipse w={w} h={h} size={nbStars} a={a} b={b} padding={padding}/>
+                    {!isMobile && (
+                        <SpaceShip w={w} h={h} width={48} height={48} onClick={spaceshipClick}/>
+                    )}
+
+                    {intro && redPlanet && bluePlanet && orangePlanet && (
+                        <>
+                            <Planet
+                                w={w}
+                                h={h}
+                                color="#97140c"
+                                radius={redPlanet.radius}
+                                a={redPlanet.a}
+                                b={redPlanet.b}
+                                intervals={4000}
+                                teta={Math.PI / 2}
+                                img={mars}
+                                ref={redPlanetRef}
+                            />
+                            <Planet
+                                w={w}
+                                h={h}
+                                color="#7399b8"
+                                radius={bluePlanet.radius}
+                                a={bluePlanet.a}
+                                b={bluePlanet.b}
+                                intervals={3500}
+                                teta={-Math.PI / 2}
+                                img={blue}
+                                ref={bluePlanetRef}
+                            />
+                            <Planet
+                                w={w}
+                                h={h}
+                                color="#8a451f"
+                                radius={orangePlanet.radius}
+                                a={orangePlanet.a}
+                                b={orangePlanet.b}
+                                intervals={2000}
+                                teta={0}
+                                img={white}
+                                ref={orangePlanetRef}
+                            />
+                        </>
+                    )}
+                </>
+            )}
+        </div>
+    );
 }
 
 export default SuperNova;

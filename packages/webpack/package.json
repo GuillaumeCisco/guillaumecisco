@@ -21,6 +21,7 @@
     "devDependencies": {
         "@aaroon/workbox-rspack-plugin": "0.3.3",
         "@loadable/webpack-plugin": "5.15.2",
+        "@rsdoctor/rspack-plugin": "1.5.10",
         "@rspack/cli": "2.0.2",
         "@rspack/core": "2.0.2",
         "@rspack/dev-client": "0.4.1",
@@ -49,7 +50,6 @@
         "source-map-loader": "5.0.0",
         "style-loader": "4.0.0",
         "webpack": "5.106.2",
-        "webpack-bundle-analyzer": "5.2.0",
         "webpack-dev-middleware": "7.4.2",
         "webpack-hot-middleware": "2.26.1",
         "webpack-node-externals": "3.0.0",

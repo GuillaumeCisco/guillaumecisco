@@ -8,10 +8,9 @@ const TYPED_CONFIG = {
     typeSpeed: 60,
 };
 
-const Intro = () => {
+const TypedIntro = () => {
     const el = useRef(null);
     const typedRef = useRef(null);
-
     useEffect(() => {
         if (!el.current) return;
 
@@ -34,4 +33,4 @@ const Intro = () => {
     );
 };
 
-export default Intro;
+export default TypedIntro;
