@@ -57,12 +57,15 @@
     "resolutions": {
         "brace-expansion@^1.1.0": "1.1.13",
         "diff": "8.0.3",
+        "fast-uri": "3.1.1",
         "flatted": "3.4.2",
+        "ip-address": "5.1.1",
         "lodash": "4.18.1",
         "node-forge": "1.4.0",
         "path-to-regexp@npm:~0.1.12": "0.1.13",
         "picomatch@^4.0.0": "4.0.4",
         "picomatch@^2.0.0": "2.3.2",
+        "postcss": "8.5.14",
         "serialize-javascript": "7.0.5",
         "tar": "7.5.11",
         "yaml": "1.10.3"
