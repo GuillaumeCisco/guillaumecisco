@@ -2,16 +2,16 @@ import {useEffect, useState} from 'react';
 import loadable from "@loadable/component";
 
 import StaticIntro from './staticIntro';
-import Supernova from './supernova';
-import AsyncModal from './asyncModal';
 import style from './style';
 
 
 const TypedIntro = loadable(() => import(/* webpackChunkName: "typedIntro" */  './typedIntro'));
+const Supernova = loadable(() => import(/* webpackChunkName: "supernova" */ './supernova'));
+const AsyncModal = loadable(() => import(/* webpackChunkName: "asyncModal" */ './asyncModal'));
 
 const Splash = () => {
     const [ready, setReady] = useState(false);
-    const [isMobile, setIsMobile] = useState(null);
+    const [isMobile, setIsMobile] = useState(false);
     const [showTyped, setShowTyped] = useState(false);
 
     useEffect(() => {
@@ -22,9 +22,7 @@ const Splash = () => {
     }, []);
 
     useEffect(() => {
-        if (!isMobile) {
-            setShowTyped(true);
-        }
+        setShowTyped(!isMobile);
     }, [isMobile]);
 
     useEffect(() => {
@@ -49,7 +47,7 @@ const Splash = () => {
 
     return (
         <div css={style.container}>
-            {isMobile !== null ? showTyped ? <TypedIntro/> : <StaticIntro/> : <p>{' '}</p>}
+            {showTyped ? <TypedIntro/> : <StaticIntro/>}
             {ready && (
                 <>
                     <Supernova/>
