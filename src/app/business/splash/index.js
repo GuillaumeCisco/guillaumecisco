@@ -11,39 +11,45 @@ const TypedIntro = loadable(() => import(/* webpackChunkName: "typedIntro" */  '
 
 const Splash = () => {
     const [ready, setReady] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(null);
     const [showTyped, setShowTyped] = useState(false);
 
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            requestIdleCallback(() => {
-                setReady(true);
-            });
+        setIsMobile(
+            typeof window !== 'undefined'
+            && window.matchMedia('(max-width: 767px)').matches,
+        );
+    }, []);
+
+    useEffect(() => {
+        if (!isMobile) {
+            setShowTyped(true);
+        }
+    }, [isMobile]);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+
+        let idleId = null;
+        const timeoutId = window.setTimeout(() => {
+            if (window.requestIdleCallback) {
+                idleId = window.requestIdleCallback(() => setReady(true));
+                return;
+            }
+            setReady(true);
         }, 100);
 
-        return () => clearTimeout(timeout);
+        return () => {
+            window.clearTimeout(timeoutId);
+            if (idleId !== null && window.cancelIdleCallback) {
+                window.cancelIdleCallback(idleId);
+            }
+        };
     }, []);
-
-    useEffect(() => {
-        setIsMobile(typeof window !== 'undefined'
-            && window.matchMedia('(max-width: 767px)').matches);
-    }, []);
-
-    useEffect(() => {
-        let id;
-        if (!isMobile) {
-            id = setTimeout(() => {
-                setShowTyped(true);
-            }, 100);
-        }
-
-
-        return () => id && clearTimeout(id);
-    }, [isMobile]);
 
     return (
         <div css={style.container}>
-            {showTyped ? <TypedIntro/> : <StaticIntro/>}
+            {isMobile !== null ? showTyped ? <TypedIntro/> : <StaticIntro/> : <p>{' '}</p>}
             {ready && (
                 <>
                     <Supernova/>

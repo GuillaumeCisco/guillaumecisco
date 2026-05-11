@@ -28,7 +28,6 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 // makes for a smoother build process.
 // const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 
-const emitErrorsAsWarnings = process.env.ESLINT_NO_DEV_ERRORS === 'true';
 const disableESLintPlugin = process.env.DISABLE_ESLINT_PLUGIN === 'true';
 
 const imageInlineSizeLimit = parseInt(
@@ -447,37 +446,35 @@ const getConfig = (target, {isSSR = false} = {}) => {
                         {
                             test: /\.[jt]sx?$/,
                             include: paths.appSrc,
-                            loader: 'builtin:swc-loader',
+                            loader: require.resolve('babel-loader'),
                             options: {
-                                jsc: {
-                                    parser: useTypeScript
-                                        ? {
-                                            syntax: 'typescript',
-                                            tsx: true,
-                                        }
-                                        : {
-                                            syntax: 'ecmascript',
-                                            jsx: true,
-                                        },
-                                    transform: {
-                                        react: {
+                                babelrc: false,
+                                configFile: false,
+                                presets: [
+                                    [
+                                        require.resolve('@babel/preset-env'),
+                                        {modules: false},
+                                    ],
+                                    [
+                                        require.resolve('@babel/preset-react'),
+                                        {
                                             runtime: 'automatic',
-                                            refresh: target === 'web' && shouldUseReactRefresh,
                                             importSource: '@emotion/react',
+                                            development: isEnvDevelopment,
                                         },
-                                    },
-                                    experimental: {
-                                        plugins: [
-                                            [
-                                                '@swc/plugin-emotion',
-                                                {
-                                                    sourceMap: false,
-                                                    autoLabel: 'never',
-                                                },
-                                            ],
-                                        ],
-                                    },
-                                },
+                                    ],
+                                ],
+                                plugins: [
+                                    [
+                                        require.resolve('@emotion/babel-plugin'),
+                                        {
+                                            sourceMap: false,
+                                            autoLabel: 'never',
+                                        },
+                                    ],
+                                    require.resolve('@loadable/babel-plugin'),
+                                    isEnvDevelopment && target === 'web' && shouldUseReactRefresh && require.resolve('react-refresh/babel'),
+                                ].filter(Boolean),
                             },
                         },
                         // Process any JS outside of the app with Babel.
@@ -748,7 +745,10 @@ https://localhost:3000
                 exclude: ['**/src/__virtual__/**', '**/__virtual__/**'],
                 formatter: 'stylish',
                 eslintPath: require.resolve('eslint'),
-                failOnError: !(isEnvDevelopment && emitErrorsAsWarnings),
+                failOnError: false,
+                failOnWarning: false,
+                emitError: false,
+                emitWarning: true,
                 context: paths.appSrc,
                 cache: true,
                 cacheLocation: path.resolve(

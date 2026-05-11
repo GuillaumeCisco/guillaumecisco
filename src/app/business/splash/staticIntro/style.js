@@ -8,5 +8,10 @@ export default {
         left: 15px;
         color: green;
         line-height: 22px;
+        max-width: 520px;
+
+        & > span {
+            margin: 0;
+        }
     `,
 };

@@ -6,7 +6,9 @@ const StaticIntro = () => {
             <span
                 aria-live="polite"
                 aria-label="Welcome into my space"
-            > </span>
+            >
+                Welcome into (my) space. Please click on the core star for instructions.
+            </span>
         </div>
     );
 };

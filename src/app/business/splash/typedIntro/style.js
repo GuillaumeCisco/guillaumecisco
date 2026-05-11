@@ -9,6 +9,10 @@ export default {
         color: green;
         line-height: 22px;
 
+        & > span {
+            margin: 0;
+        }
+
         & > .typed-cursor {
             font-weight: bolder;
             width: 3px;
