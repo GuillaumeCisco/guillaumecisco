@@ -165,10 +165,9 @@ const getConfig = (target, {isSSR = false} = {}) => {
         name: isSSR ? 'ssr' : target === 'node' ? 'server' : 'client',
         target: [target === 'node' ? target : 'browserslist'],
         // Webpack noise constrained to errors and warnings
-        stats: {
-            preset: 'errors-warnings',
-            errorDetails: true,
-        },
+        stats: process.env.RSPACK_FULL_STATS === 'true'
+            ? { all: false, modules: true, chunks: true, chunkModules: true, reasons: false, ids: true }
+            : { preset: 'errors-warnings', errorDetails: true },
         mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
         // Stop compilation early in production
         bail: isEnvProduction,

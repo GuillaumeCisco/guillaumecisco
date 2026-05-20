@@ -9,7 +9,6 @@ Sentry.init({
     environment: process.env.NODE_ENV,
 
     release: SENTRY_RELEASE,
-
     integrations: [
         Sentry.browserTracingIntegration(),
     ],

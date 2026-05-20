@@ -1,6 +1,7 @@
 import {useCallback} from 'react';
 import PropTypes from 'prop-types';
 import {useDispatch, useSelector} from 'react-redux';
+import 'react-perfect-scrollbar/dist/css/styles.css';
 
 import Content from './content';
 import {visible as setModalVisible} from './reducer';

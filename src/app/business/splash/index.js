@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import loadable from "@loadable/component";
+import {useSelector} from "react-redux";
 
 import StaticIntro from './staticIntro';
 import style from './style';
@@ -10,6 +11,7 @@ const Supernova = loadable(() => import(/* webpackChunkName: "supernova" */ './s
 const AsyncModal = loadable(() => import(/* webpackChunkName: "asyncModal" */ './asyncModal'));
 
 const Splash = () => {
+    const intro = useSelector((state) => state.general.intro);
     const [ready, setReady] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [showTyped, setShowTyped] = useState(false);
@@ -22,20 +24,29 @@ const Splash = () => {
     }, []);
 
     useEffect(() => {
-        setShowTyped(!isMobile);
+        if (typeof window === 'undefined') return undefined;
+
+        if (!isMobile) {
+            setShowTyped(true);
+            return undefined;
+        }
+
+        setShowTyped(false);
+        return undefined;
     }, [isMobile]);
 
     useEffect(() => {
         if (typeof window === 'undefined') return undefined;
 
         let idleId = null;
+        const readyDelay = isMobile ? 900 : 100;
         const timeoutId = window.setTimeout(() => {
             if (window.requestIdleCallback) {
                 idleId = window.requestIdleCallback(() => setReady(true));
                 return;
             }
             setReady(true);
-        }, 100);
+        }, readyDelay);
 
         return () => {
             window.clearTimeout(timeoutId);
@@ -43,7 +54,7 @@ const Splash = () => {
                 window.cancelIdleCallback(idleId);
             }
         };
-    }, []);
+    }, [isMobile]);
 
     return (
         <div css={style.container}>
@@ -51,7 +62,7 @@ const Splash = () => {
             {ready && (
                 <>
                     <Supernova/>
-                    <AsyncModal/>
+                    {intro && <AsyncModal/>}
                 </>
             )}
         </div>

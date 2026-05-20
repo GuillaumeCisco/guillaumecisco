@@ -1,17 +1,39 @@
-import './sentry';
-import {ErrorBoundary, captureException} from "@sentry/react";
-
 import {loadableReady} from '@loadable/component';
 import {hydrateRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
 import createCache from '@emotion/cache';
 import {CacheProvider} from '@emotion/react';
 import {BrowserRouter} from 'react-router';
+import {Component} from 'react';
 
 
 import configureAppStore from '../app/store';
 import reportWebVitals from './reportWebVitals';
 import App from '../app';
+
+class AppErrorBoundary extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {hasError: false};
+    }
+
+    static getDerivedStateFromError() {
+        return {hasError: true};
+    }
+
+    componentDidCatch(error) {
+        if (typeof window !== 'undefined' && typeof window.__captureException === 'function') {
+            window.__captureException(error);
+        }
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return <p>UI Error</p>;
+        }
+        return this.props.children;
+    }
+}
 
 const store = configureAppStore(window.__PRELOADED_STATE__);
 
@@ -22,14 +44,20 @@ import './../app/common/ui/fonts.css';
 
 const cache = createCache({key: 'css'});
 
+const captureException = (error) => {
+    if (typeof window !== 'undefined' && typeof window.__captureException === 'function') {
+        window.__captureException(error);
+    }
+};
+
 const app = (
     <CacheProvider value={cache}>
         <Provider store={store}>
-            <ErrorBoundary fallback={<p>UI Error</p>}>
+            <AppErrorBoundary>
                 <BrowserRouter>
                     <App />
                 </BrowserRouter>
-            </ErrorBoundary>
+            </AppErrorBoundary>
         </Provider>
     </CacheProvider>
 );
@@ -56,6 +84,25 @@ if (!window.__APP_HYDRATED__) {
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+if (
+    process.env.NODE_ENV === 'production' &&
+    typeof window !== 'undefined' &&
+    !window.__SENTRY_LOADED__
+) {
+    window.__SENTRY_LOADED__ = true;
+    window.addEventListener('load', () => {
+        window.setTimeout(async () => {
+            try {
+                await import('./sentry');
+                const sentryModule = await import('@sentry/react');
+                window.__captureException = sentryModule.captureException;
+            } catch {
+                window.__captureException = () => {};
+            }
+        }, 0);
+    });
+}
 
 if (
     process.env.NODE_ENV === 'production' &&

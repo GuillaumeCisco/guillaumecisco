@@ -22,10 +22,16 @@ function SuperNova() {
     const dispatch = useDispatch();
     const intro = useSelector((state) => state.general.intro);
     const [isMobile, setIsMobile] = useState(false);
+    const [isConstrainedDevice, setIsConstrainedDevice] = useState(false);
+    const [isMobileWarm, setIsMobileWarm] = useState(false);
 
     // constants (old: this.nbBackgroundStars / this.nbStars / this.padding)
-    const nbBackgroundStars = isMobile ? 40 : 100;
-    const nbStars = isMobile ? 200 : 1000;
+    const nbBackgroundStars = isMobile
+        ? (isConstrainedDevice ? 20 : (isMobileWarm ? 40 : 28))
+        : 100;
+    const nbStars = isMobile
+        ? (isConstrainedDevice ? 120 : (isMobileWarm ? 200 : 130))
+        : 1000;
     const padding = isMobile ? 10 : 50;
 
     const wrapperRef = useRef(null);
@@ -47,9 +53,22 @@ function SuperNova() {
     });
 
     useEffect(() => {
-        setIsMobile(typeof window !== 'undefined'
-            && window.matchMedia('(max-width: 767px)').matches);
+        if (typeof window === 'undefined') return;
+
+        const mobile = window.matchMedia('(max-width: 767px)').matches;
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const lowCpu = (window.navigator.hardwareConcurrency || 4) <= 4;
+
+        setIsMobile(mobile);
+        setIsConstrainedDevice(reducedMotion || lowCpu);
     }, []);
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || !isMobile || isConstrainedDevice) return undefined;
+
+        const timeoutId = window.setTimeout(() => setIsMobileWarm(true), 4000);
+        return () => window.clearTimeout(timeoutId);
+    }, [isMobile, isConstrainedDevice]);
 
     const resize = useCallback(() => {
         const wrapper = wrapperRef.current;
@@ -91,7 +110,7 @@ function SuperNova() {
             bluePlanet,
             orangePlanet,
         }));
-    }, []);
+    }, [isMobile]);
 
     useEffect(() => {
         resize();

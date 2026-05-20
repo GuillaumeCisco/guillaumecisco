@@ -227,7 +227,7 @@ const buildAssetTags = ({nonce}) => {
 
     const preloadTags = [
         criticalJs &&
-        `<link rel="modulepreload" href="${publicPath}${criticalJs}">`,
+        `<link rel="preload" href="${publicPath}${criticalJs}" as="script">`,
 
         criticalCss &&
         `<link rel="preload" href="${publicPath}${criticalCss}" as="style">`,
@@ -297,13 +297,6 @@ Guillaume Cisco — Senior Lead FullStack Engineer
 
 ${isProd
     ? `
-<link
-    rel="preload"
-    href="/manifest.json"
-    as="fetch"
-    crossorigin="anonymous"
-/>
-
 <link rel="manifest" href="/manifest.json" />
 `
     : ''}
@@ -461,6 +454,7 @@ app.use(async (ctx, next) => {
 app.use(
     koaHelmet({
         contentSecurityPolicy: false,
+        permissionsPolicy: false,
     }),
 );
 
