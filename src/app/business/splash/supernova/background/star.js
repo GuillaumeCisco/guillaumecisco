@@ -1,10 +1,6 @@
 import random from 'lodash-es/random';
 
-const isMobile =
-    typeof window !== 'undefined' &&
-    window.innerWidth < 768;
-
-const Star = function Star(w, h) {
+const Star = function Star(w, h, isMobile) {
     const padding = 10;
 
     this.originW = w;

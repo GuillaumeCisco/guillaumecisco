@@ -12,6 +12,7 @@ import Core from './core';
 import Ellipse from './ellipse/index';
 import SpaceShip from './spaceship';
 import Planet from './planet';
+import {useIsMobile} from '../mobileContext';
 
 import mars from './planet/mars.png';
 import blue from './planet/blue.png';
@@ -21,7 +22,7 @@ function SuperNova() {
     // redux hooks
     const dispatch = useDispatch();
     const intro = useSelector((state) => state.general.intro);
-    const [isMobile, setIsMobile] = useState(false);
+    const isMobile = useIsMobile();
     const [isConstrainedDevice, setIsConstrainedDevice] = useState(false);
     const [isMobileWarm, setIsMobileWarm] = useState(false);
 
@@ -55,11 +56,9 @@ function SuperNova() {
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
-        const mobile = window.matchMedia('(max-width: 767px)').matches;
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const lowCpu = (window.navigator.hardwareConcurrency || 4) <= 4;
 
-        setIsMobile(mobile);
         setIsConstrainedDevice(reducedMotion || lowCpu);
     }, []);
 
@@ -115,13 +114,12 @@ function SuperNova() {
     useEffect(() => {
         resize();
 
-        const onResize = () => resize();
-        window.addEventListener('resize', onResize);
-        window.addEventListener('orientationchange', onResize);
+        window.addEventListener('resize', resize);
+        window.addEventListener('orientationchange', resize);
 
         return () => {
-            window.removeEventListener('resize', onResize);
-            window.removeEventListener('orientationchange', onResize);
+            window.removeEventListener('resize', resize);
+            window.removeEventListener('orientationchange', resize);
         };
     }, [resize]);
 

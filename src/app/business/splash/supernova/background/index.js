@@ -4,11 +4,13 @@ import range from 'lodash-es/range';
 
 import Canvas from '../canvas';
 import Star from './star';
+import {useIsMobile} from '../../mobileContext';
 
 function Background({w, h, size}) {
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
   const starsRef = useRef([]);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -21,11 +23,11 @@ function Background({w, h, size}) {
 
     starsRef.current = [];
     range(0, size).forEach(() => {
-      const star = new Star(w, h);
+      const star = new Star(w, h, isMobile);
       star.draw(ctx);
       starsRef.current.push(star);
     });
-  }, [w, h, size]);
+  }, [isMobile, w, h, size]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

@@ -4,24 +4,18 @@ import {useSelector} from "react-redux";
 
 import StaticIntro from './staticIntro';
 import style from './style';
+import {MobileProvider, useIsMobile} from './mobileContext';
 
 
 const TypedIntro = loadable(() => import(/* webpackChunkName: "typedIntro" */  './typedIntro'));
 const Supernova = loadable(() => import(/* webpackChunkName: "supernova" */ './supernova'));
 const AsyncModal = loadable(() => import(/* webpackChunkName: "asyncModal" */ './asyncModal'));
 
-const Splash = () => {
+const SplashContent = () => {
     const intro = useSelector((state) => state.general.intro);
     const [ready, setReady] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+    const isMobile = useIsMobile();
     const [showTyped, setShowTyped] = useState(false);
-
-    useEffect(() => {
-        setIsMobile(
-            typeof window !== 'undefined'
-            && window.matchMedia('(max-width: 767px)').matches,
-        );
-    }, []);
 
     useEffect(() => {
         if (typeof window === 'undefined') return undefined;
@@ -68,5 +62,11 @@ const Splash = () => {
         </div>
     );
 };
+
+const Splash = () => (
+    <MobileProvider>
+        <SplashContent/>
+    </MobileProvider>
+);
 
 export default Splash;

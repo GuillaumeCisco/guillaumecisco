@@ -2,13 +2,13 @@ import {memo, useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 
 import Canvas from './canvas';
+import {useIsMobile} from '../mobileContext';
 
-const isMobile =
-    typeof window !== 'undefined' &&
-    window.innerWidth < 768;
+
 
 function Core({w, h, radius}) {
     const canvasRef = useRef(null);
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -58,7 +58,7 @@ function Core({w, h, radius}) {
         }
 
         ctx.fill();
-    }, [w, h, radius]);
+    }, [isMobile, w, h, radius]);
 
     return <Canvas ref={canvasRef}/>;
 }
