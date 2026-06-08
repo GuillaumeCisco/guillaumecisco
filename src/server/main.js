@@ -14,7 +14,7 @@ import serve from 'koa-static';
 import koaHelmet from 'koa-helmet';
 import compress from 'koa-compress';
 import {createLifecycleServer} from '@guillaumecisco/terminus-lifecycle';
-import {renderToPipeableStream} from 'react-dom/server';
+import {renderToPipeableStream} from 'react-dom/server.node';
 import {CacheProvider} from '@emotion/react';
 import {ChunkExtractor} from '@loadable/server';
 import {Provider} from 'react-redux';
