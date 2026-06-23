@@ -2,10 +2,10 @@
     "name": "babel-package",
     "version": "0.0.1",
     "devDependencies": {
-        "@babel/core": "7.29.0",
-        "@babel/preset-env": "7.29.5",
-        "@babel/preset-react": "7.28.5",
-        "@babel/register": "7.29.3",
+        "@babel/core": "7.29.7",
+        "@babel/preset-env": "7.29.7",
+        "@babel/preset-react": "7.29.7",
+        "@babel/register": "7.29.7",
         "@emotion/babel-plugin": "11.13.5",
         "@loadable/babel-plugin": "5.16.1",
         "babel-loader": "9.2.1"
