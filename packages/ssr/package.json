@@ -53,7 +53,7 @@
         "redis": "5.11.0",
         "redux": "5.0.1",
         "typed.js": "3.0.0",
-        "undici": "8.2.0",
+        "undici": "8.5.0",
         "workbox-core": "7.4.0",
         "workbox-precaching": "7.4.0",
         "workbox-routing": "7.4.0",
