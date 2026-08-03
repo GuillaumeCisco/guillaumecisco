@@ -70,8 +70,8 @@ const SplashContent = () => {
                 <div css={style.heroCopy}>
                     <h1 id="hero-title">Agentic<br/>Engineer<span>.</span></h1>
                     <p>
-                        I design and ship AI agents that reason, use tools, and work reliably in production — backed by
-                        15 years of full-stack engineering.
+                        I solve complex business problems with AI — building tailored agents, tools and full-stack
+                        systems around each company&apos;s real workflows, backed by 15 years of engineering.
                     </p>
 
                     <div css={style.actions}>

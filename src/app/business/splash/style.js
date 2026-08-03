@@ -294,7 +294,7 @@ export default {
 
         @media (max-width: 760px) {
             width: calc(100% + 16px);
-            height: 272px;
+            height: 248px;
             margin: 12px -8px 0;
         }
     `,
