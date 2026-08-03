@@ -1,25 +1,35 @@
 import style from '../../style';
 
 const Spaceship = () => (
-    <div css={style.container}>
-        <h1>
-            Nice catch!
+    <div css={style.content}>
+        <span css={style.label}>Secret orbit / Source</span>
+
+        <h1 id="panel-title" css={style.title}>
+            Nice catch<span>.</span>
         </h1>
-        <p>
-            For rewarding you, you can now access to an old and mystic knowledge only reserved to the braves!
+
+        <p css={style.lead}>
+            You found the original easter egg. This universe is not a video or a static background: the stars,
+            trajectories and orbiting objects are rendered and animated in code.
         </p>
-        <br />
-        <p>
-            <a css={style.a} href="https://github.com/GuillaumeCisco/guillaumecisco" target="_blank" rel="noopener noreferrer">
-                Here
+
+        <h2 css={style.sectionHeading}>See how it works</h2>
+        <p css={style.note}>
+            The project combines React, server-side rendering, streamed Emotion styles, code-split interactions, a PWA
+            service worker and a Tauri desktop target.
+        </p>
+
+        <div css={style.actions}>
+            <a
+                css={style.action}
+                href="https://github.com/GuillaumeCisco/guillaumecisco"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                Explore the source
+                <span aria-hidden="true">→</span>
             </a>
-            {' '}
-            you can find the code for making this website!
-        </p>
-        <p>
-            And guess what? If you love so much this website, a desktop version thanks to electron is available, clone
-            the repo and launch the npm scripts for creating os packages, you can either install them!
-        </p>
+        </div>
     </div>
 );
 

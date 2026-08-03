@@ -2,62 +2,71 @@ import styleParent from '../../style';
 
 import Github from '../../../../../common/ui/svgs/github';
 import LinkedIn from '../../../../../common/ui/svgs/linkedin';
-import style from './style';
+import {AgentsIcon, ProductIcon, SystemsIcon} from '../../../supernova/orbitIcons';
 
 const Core = () => (
     <div css={styleParent.content}>
-        <h1>Hey there!</h1>
+        <span css={styleParent.label}>01 / About</span>
 
-        <h3 css={styleParent.h3}>My name is Guillaume Cisco</h3>
+        <h1 id="panel-title" css={styleParent.title}>
+            Engineering intelligence into products<span>.</span>
+        </h1>
 
-        <p css={styleParent.p}>
-            If you are here, there is a high probability you want to know more about me.
-            <br />
-            <br />
-            I created this little interactive website for showing you my skills in the funniest way possible.
-            <br />
-            When you will close this window, several planets will appear!!!
-            <br />
-            Each planet will tell you more about my professional experience, hobbies and skills.
-            <br />
-            Do not hesitate to click on them!
+        <p css={styleParent.lead}>
+            I&apos;m Guillaume, an Agentic Engineer with 15 years of full-stack experience. I turn ambitious AI ideas
+            into reliable products — from orchestration and tool use to the interfaces, APIs and infrastructure around
+            them.
         </p>
 
-        <p>If you'd like a more conventional version, you can check:</p>
+        <h2 css={styleParent.sectionHeading}>What I do now</h2>
 
-        <ul css={styleParent.ul}>
-            <li>
-                <a
-                    css={styleParent.a}
-                    href="https://www.linkedin.com/in/guillaumecisco/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Guillaume Cisco on LinkedIn"
-                >
-                    <LinkedIn width={48} height={48} aria-hidden="true" focusable="false" />
-                    <span css={style.span}>linkedIn</span>
-                </a>
-            </li>
-            <li>
-                <a
-                    css={styleParent.a}
-                    href="https://github.com/GuillaumeCisco"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Guillaume Cisco on GitHub"
-                >
-                    <Github width={48} height={48} aria-hidden="true" focusable="false" />
-                    <span css={style.span}>github</span>
-                </a>
-            </li>
-        </ul>
+        <div css={styleParent.rows}>
+            <div css={styleParent.row}>
+                <AgentsIcon/>
+                <div>
+                    <strong>Agent systems</strong>
+                    <p>Tool use, orchestration and context</p>
+                </div>
+                <span aria-hidden="true">→</span>
+            </div>
+            <div css={styleParent.row}>
+                <SystemsIcon/>
+                <div>
+                    <strong>Production foundations</strong>
+                    <p>Evals, observability and guardrails</p>
+                </div>
+                <span aria-hidden="true">→</span>
+            </div>
+            <div css={styleParent.row}>
+                <ProductIcon/>
+                <div>
+                    <strong>Full-stack delivery</strong>
+                    <p>Product, platform and infrastructure</p>
+                </div>
+                <span aria-hidden="true">→</span>
+            </div>
+        </div>
 
-        <p css={styleParent.p}>
-            I also give computer science lessons. If you'd like to understand how the matrix works, feel free to contact
-            me via linkedin.
-            <br />
-            I promise you a lot of fun and I will make you one of the most skilled developer in this universe ;)
-        </p>
+        <div css={styleParent.actions}>
+            <a
+                css={styleParent.action}
+                href="https://www.linkedin.com/in/guillaumecisco/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                <LinkedIn width={26} height={26}/>
+                View LinkedIn
+            </a>
+            <a
+                css={styleParent.action}
+                href="https://github.com/GuillaumeCisco"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                <Github width={26} height={26} color="currentColor"/>
+                View GitHub
+            </a>
+        </div>
     </div>
 );
 

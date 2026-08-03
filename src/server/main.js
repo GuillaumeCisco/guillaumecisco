@@ -265,12 +265,12 @@ const buildHead = ({
 />
 
 <title>
-Guillaume Cisco — Senior Lead FullStack Engineer
+Guillaume Cisco — Agentic Engineer
 </title>
 
 <meta
     name="description"
-    content="Portfolio of Guillaume Cisco, Senior Lead FullStack Engineer specializing in React, Node.js, Python and cloud architectures."
+    content="Portfolio of Guillaume Cisco, Agentic Engineer with 15 years of full-stack experience building reliable AI agents and production systems."
 >
 
 <meta
@@ -280,12 +280,12 @@ Guillaume Cisco — Senior Lead FullStack Engineer
 
 <meta
     property="og:title"
-    content="Guillaume Cisco — Senior Lead FullStack Engineer"
+    content="Guillaume Cisco — Agentic Engineer"
 >
 
 <meta
     property="og:description"
-    content="Interactive portfolio of Guillaume Cisco."
+    content="Interactive portfolio of an Agentic Engineer backed by 15 years of full-stack engineering."
 >
 
 <meta property="og:type" content="website">
