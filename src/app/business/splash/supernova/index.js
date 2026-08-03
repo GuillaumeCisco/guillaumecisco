@@ -22,12 +22,12 @@ function SuperNova() {
 
     // constants (old: this.nbBackgroundStars / this.nbStars / this.padding)
     const nbBackgroundStars = isMobile
-        ? (isConstrainedDevice ? 20 : (isMobileWarm ? 40 : 28))
-        : 100;
+        ? (isConstrainedDevice ? 10 : (isMobileWarm ? 18 : 14))
+        : 72;
     const nbStars = isMobile
-        ? (isConstrainedDevice ? 120 : (isMobileWarm ? 200 : 130))
-        : 1000;
-    const padding = isMobile ? 10 : 50;
+        ? (isConstrainedDevice ? 54 : (isMobileWarm ? 84 : 64))
+        : 360;
+    const padding = isMobile ? 7 : 16;
 
     const wrapperRef = useRef(null);
     const [state, setState] = useState({
@@ -64,27 +64,33 @@ function SuperNova() {
 
         const w = wrapper.offsetWidth;
         const h = wrapper.offsetHeight;
-        const a = w / (isMobile ? 3.8 : 2.5);
+        const a = isMobile
+            ? Math.min(w * 0.29, h * 0.38)
+            : w / 2.5;
         const b = a / (isMobile ? 3 : 2.3);
         const coreRadius = (a - b) / (isMobile ? 3.2 : 5);
-        const nodeRadius = isMobile ? 38 : 48;
+        const nodeRadius = isMobile ? 25 : 48;
+        const mobileOrbit = {
+            a: a * 1.28,
+            b: b * 1.45,
+        };
 
         const redPlanet = {
             radius: nodeRadius,
-            a: (3 * a) / (isMobile ? 5 : 8),
-            b: ((3 * a) / 8) / 2,
+            a: isMobile ? mobileOrbit.a : (3 * a) / 8,
+            b: isMobile ? mobileOrbit.b : ((3 * a) / 8) / 2,
         };
 
         const bluePlanet = {
             radius: nodeRadius,
-            a: isMobile ? (9 * a) / 6 : (8.4 * a) / 8,
-            b: ((9 * a) / 8) / 2,
+            a: isMobile ? mobileOrbit.a : (8.4 * a) / 8,
+            b: isMobile ? mobileOrbit.b : ((9 * a) / 8) / 2,
         };
 
         const orangePlanet = {
             radius: nodeRadius,
-            a: (4 * a) / (isMobile ? 6 : 8),
-            b: ((4 * a) / 8) / 2,
+            a: isMobile ? mobileOrbit.a : (4 * a) / 8,
+            b: isMobile ? mobileOrbit.b : ((4 * a) / 8) / 2,
         };
 
         setState((prev) => ({
@@ -150,8 +156,8 @@ function SuperNova() {
                                 radius={redPlanet.radius}
                                 a={redPlanet.a}
                                 b={redPlanet.b}
-                                intervals={4000}
-                                teta={Math.PI / 2}
+                                intervals={isMobile ? 6200 : 4000}
+                                teta={isMobile ? 0 : Math.PI / 2}
                                 label="Agents"
                                 icon={<AgentsIcon/>}
                                 onSelect={() => openPanel('skills')}
@@ -162,8 +168,8 @@ function SuperNova() {
                                 radius={bluePlanet.radius}
                                 a={bluePlanet.a}
                                 b={bluePlanet.b}
-                                intervals={3500}
-                                teta={-Math.PI / 2}
+                                intervals={isMobile ? 6200 : 3500}
+                                teta={isMobile ? (2 * Math.PI) / 3 : -Math.PI / 2}
                                 label="Systems"
                                 icon={<SystemsIcon/>}
                                 onSelect={() => openPanel('experience')}
@@ -174,8 +180,8 @@ function SuperNova() {
                                 radius={orangePlanet.radius}
                                 a={orangePlanet.a}
                                 b={orangePlanet.b}
-                                intervals={2000}
-                                teta={0}
+                                intervals={isMobile ? 6200 : 2000}
+                                teta={isMobile ? (4 * Math.PI) / 3 : 0}
                                 label="Product"
                                 icon={<ProductIcon/>}
                                 onSelect={() => openPanel('awards')}

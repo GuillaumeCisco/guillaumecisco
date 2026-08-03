@@ -57,5 +57,17 @@ export default {
                 0 0 34px rgba(120, 200, 255, 0.16),
                 0 18px 42px rgba(0, 0, 0, 0.42);
         }
+
+        @media (max-width: 960px) {
+            gap: 2px;
+            box-shadow:
+                0 0 0 4px rgba(7, 9, 10, 0.68),
+                0 10px 24px rgba(0, 0, 0, 0.36);
+
+            &::after {
+                width: 8px;
+                height: 8px;
+            }
+        }
     `,
 };

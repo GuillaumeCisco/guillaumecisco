@@ -175,6 +175,11 @@ export default {
         gap: 14px;
         margin-top: 34px;
 
+        @media (max-width: 480px) {
+            flex-wrap: nowrap;
+            gap: 10px;
+        }
+
         @media (min-width: 961px) and (max-height: 780px) {
             margin-top: 25px;
         }
@@ -199,6 +204,14 @@ export default {
             transform: translateY(-2px);
             background: #a8ddff;
         }
+
+        @media (max-width: 480px) {
+            min-width: 0;
+            flex: 1.35;
+            gap: 10px;
+            padding: 0 12px;
+            font-size: 14px;
+        }
     `,
     secondaryAction: css`
         min-height: 58px;
@@ -217,6 +230,13 @@ export default {
         &:hover {
             border-color: ${accent};
             color: ${accent};
+        }
+
+        @media (max-width: 480px) {
+            min-width: 0;
+            flex: 1;
+            padding: 0 10px;
+            font-size: 14px;
         }
     `,
     hint: css`
@@ -273,8 +293,9 @@ export default {
         }
 
         @media (max-width: 760px) {
-            height: 440px;
-            margin-top: 18px;
+            width: calc(100% + 16px);
+            height: 272px;
+            margin: 12px -8px 0;
         }
     `,
     bottomRail: css`

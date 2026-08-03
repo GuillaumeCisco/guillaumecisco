@@ -56,6 +56,16 @@ const Experience = () => (
         <div css={styleParent.actions}>
             <a
                 css={styleParent.action}
+                href="https://drive.google.com/file/d/1OeDkwv4dsVopfftQWAJXnr-Yp0InunFZ"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open Guillaume Cisco's resume in a new tab"
+            >
+                View résumé
+                <span aria-hidden="true">↗</span>
+            </a>
+            <a
+                css={styleParent.action}
                 href="https://www.linkedin.com/in/guillaumecisco/"
                 target="_blank"
                 rel="noopener noreferrer"
