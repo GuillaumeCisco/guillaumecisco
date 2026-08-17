@@ -8,22 +8,52 @@ import {interpolate} from 'd3-interpolate';
 
 import style from './style';
 
+const ORBIT_ROTATION = -Math.PI / 20;
+
+const getCoordinates = (angle, a, b) => ({
+    x: Math.cos(angle) * a,
+    y: Math.sin(angle) * b,
+});
+
+const getTransform = (x, y, w, h) => {
+    const screenX = (y * Math.sin(-ORBIT_ROTATION)) +
+        (x * Math.cos(-ORBIT_ROTATION)) +
+        (w / 2);
+    const screenY = (y * Math.cos(-ORBIT_ROTATION)) -
+        (x * Math.sin(-ORBIT_ROTATION)) +
+        (h / 2);
+
+    return `translate3d(${screenX}px, ${screenY}px, 0) translate(-50%, -50%)`;
+};
+
 function Planet({
     w, h, a, b, intervals, teta, radius, label, icon, onSelect,
 }) {
     const nodeRef = useRef(null);
     const timerRef = useRef(null);
 
+    const initialAngleRef = useRef((teta || 0) % (2 * Math.PI));
+    const initialCoordinatesRef = useRef(
+        getCoordinates(initialAngleRef.current, a, b),
+    );
+    const initialStyleRef = useRef({
+        transform: getTransform(
+            initialCoordinatesRef.current.x,
+            initialCoordinatesRef.current.y,
+            w,
+            h,
+        ),
+    });
+
     const orbitARef = useRef(a);
     const orbitBRef = useRef(b);
     const intervalsRef = useRef(intervals);
-    const tetaRef = useRef((teta || 0) % (2 * Math.PI));
+    const tetaRef = useRef(initialAngleRef.current);
     const radiansRef = useRef(interpolate(0, Math.PI * 2));
 
-    const xRef = useRef(0);
-    const yRef = useRef(0);
+    const xRef = useRef(initialCoordinatesRef.current.x);
+    const yRef = useRef(initialCoordinatesRef.current.y);
 
-    const canvasRotationRef = useRef(-Math.PI / 20);
     const originWRef = useRef(w);
     const originHRef = useRef(h);
 
@@ -31,13 +61,15 @@ function Planet({
         const node = nodeRef.current;
         if (!node) return;
 
-        const rotation = canvasRotationRef.current;
         const x = xRef.current;
         const y = yRef.current;
-        const screenX = (y * Math.sin(-rotation)) + (x * Math.cos(-rotation)) + (originWRef.current / 2);
-        const screenY = (y * Math.cos(-rotation)) - (x * Math.sin(-rotation)) + (originHRef.current / 2);
 
-        node.style.transform = `translate3d(${screenX}px, ${screenY}px, 0) translate(-50%, -50%)`;
+        node.style.transform = getTransform(
+            x,
+            y,
+            originWRef.current,
+            originHRef.current,
+        );
     };
 
     useEffect(() => {
@@ -80,6 +112,7 @@ function Planet({
             ref={nodeRef}
             type="button"
             css={style.node(radius * 2)}
+            style={initialStyleRef.current}
             onClick={(event) => {
                 event.stopPropagation();
                 onSelect();
