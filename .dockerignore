@@ -1,0 +1,10 @@
+.git
+.github
+.idea
+.vscode
+certs
+node_modules
+public
+src-tauri
+test
+*.log

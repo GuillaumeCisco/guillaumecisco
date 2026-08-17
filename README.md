@@ -11,9 +11,9 @@ Interactive SSR website built with React, Webpack, Redis caching, HTTPS local de
 * Node.js SSR
 * Redis
 * Docker
-* AWS EC2
-* Nginx
-* Let's Encrypt
+* Synology NAS
+* Traefik
+* Cloudflare
 * Tauri v2
 * Yarn Berry (v4)
 
@@ -167,6 +167,10 @@ Run production locally:
 ```shell
 yarn start
 ```
+
+The production website runs in Docker on the NAS behind Traefik and
+Cloudflare. See [NAS_DEPLOYMENT.md](NAS_DEPLOYMENT.md) for the deployment,
+network and rollback details.
 
 ---
 
