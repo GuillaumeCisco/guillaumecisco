@@ -225,12 +225,19 @@ const buildAssetTags = ({nonce}) => {
         cssFiles.find((f) => f.includes('main')) ||
         cssFiles[0];
 
+    const criticalFont = manifest.files?.[
+        'static/media/nunito-light-webfont.woff2'
+    ];
+
     const preloadTags = [
         criticalJs &&
         `<link rel="preload" href="${publicPath}${criticalJs}" as="script">`,
 
         criticalCss &&
         `<link rel="preload" href="${publicPath}${criticalCss}" as="style">`,
+
+        criticalFont &&
+        `<link rel="preload" href="${criticalFont}" as="font" type="font/woff2" crossorigin="anonymous">`,
     ]
         .filter(Boolean)
         .join('\n');

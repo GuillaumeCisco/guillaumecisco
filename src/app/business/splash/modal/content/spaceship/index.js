@@ -1,5 +1,4 @@
 import style from '../../style';
-import Arrow from '../../../../../common/ui/svgs/arrow';
 
 const Spaceship = () => (
     <div css={style.content}>
@@ -27,7 +26,6 @@ const Spaceship = () => (
                 rel="noopener noreferrer"
             >
                 Explore the source
-                <Arrow external/>
             </a>
         </div>
     </div>

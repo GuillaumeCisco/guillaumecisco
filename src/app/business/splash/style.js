@@ -189,8 +189,7 @@ export default {
         min-width: 230px;
         display: inline-flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 24px;
+        justify-content: center;
         border: 1px solid ${accent};
         padding: 0 22px;
         background: ${accent};
@@ -199,10 +198,6 @@ export default {
         font-weight: 700;
         cursor: pointer;
         transition: transform 180ms ease, background 180ms ease;
-
-        svg {
-            flex: 0 0 auto;
-        }
 
         &:hover {
             transform: translateY(-2px);

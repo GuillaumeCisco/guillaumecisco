@@ -6,7 +6,6 @@ import style from './style';
 import {MobileProvider, useIsMobile} from './mobileContext';
 import {set as setModalComponent} from './modal/reducer';
 import Github from '../../common/ui/svgs/github';
-import Arrow from '../../common/ui/svgs/arrow';
 
 
 const Supernova = loadable(() => import(/* webpackChunkName: "supernova" */ './supernova'));
@@ -81,7 +80,6 @@ const SplashContent = () => {
                     <div css={style.actions}>
                         <button type="button" css={style.primaryAction} onClick={() => openPanel('skills')}>
                             Explore my work
-                            <Arrow/>
                         </button>
                         <a
                             css={style.secondaryAction}
