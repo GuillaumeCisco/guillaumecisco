@@ -13,7 +13,6 @@ const Spaceship = () => (
             trajectories and orbiting objects are rendered and animated in code.
         </p>
 
-        <h2 css={style.sectionHeading}>See how it works</h2>
         <p css={style.note}>
             The project combines React, server-side rendering, streamed Emotion styles, code-split interactions, a PWA
             service worker and a Tauri desktop target.
