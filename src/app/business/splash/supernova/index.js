@@ -74,23 +74,25 @@ function SuperNova() {
             a: a * 1.28,
             b: b * 1.45,
         };
+        const desktopOrbit = {
+            a: a * 1.02,
+            b: b * 1.12,
+        };
+        const planetOrbit = isMobile ? mobileOrbit : desktopOrbit;
 
         const redPlanet = {
             radius: nodeRadius,
-            a: isMobile ? mobileOrbit.a : (3 * a) / 8,
-            b: isMobile ? mobileOrbit.b : ((3 * a) / 8) / 2,
+            ...planetOrbit,
         };
 
         const bluePlanet = {
             radius: nodeRadius,
-            a: isMobile ? mobileOrbit.a : (8.4 * a) / 8,
-            b: isMobile ? mobileOrbit.b : ((9 * a) / 8) / 2,
+            ...planetOrbit,
         };
 
         const orangePlanet = {
             radius: nodeRadius,
-            a: isMobile ? mobileOrbit.a : (4 * a) / 8,
-            b: isMobile ? mobileOrbit.b : ((4 * a) / 8) / 2,
+            ...planetOrbit,
         };
 
         setState((prev) => ({
@@ -156,8 +158,8 @@ function SuperNova() {
                                 radius={redPlanet.radius}
                                 a={redPlanet.a}
                                 b={redPlanet.b}
-                                intervals={isMobile ? 6200 : 4000}
-                                teta={isMobile ? 0 : Math.PI / 2}
+                                intervals={6200}
+                                teta={0}
                                 label="Agents"
                                 icon={<AgentsIcon/>}
                                 onSelect={() => openPanel('skills')}
@@ -168,8 +170,8 @@ function SuperNova() {
                                 radius={bluePlanet.radius}
                                 a={bluePlanet.a}
                                 b={bluePlanet.b}
-                                intervals={isMobile ? 6200 : 3500}
-                                teta={isMobile ? (2 * Math.PI) / 3 : -Math.PI / 2}
+                                intervals={6200}
+                                teta={(2 * Math.PI) / 3}
                                 label="Systems"
                                 icon={<SystemsIcon/>}
                                 onSelect={() => openPanel('experience')}
@@ -180,8 +182,8 @@ function SuperNova() {
                                 radius={orangePlanet.radius}
                                 a={orangePlanet.a}
                                 b={orangePlanet.b}
-                                intervals={isMobile ? 6200 : 2000}
-                                teta={isMobile ? (4 * Math.PI) / 3 : 0}
+                                intervals={6200}
+                                teta={(4 * Math.PI) / 3}
                                 label="Product"
                                 icon={<ProductIcon/>}
                                 onSelect={() => openPanel('awards')}
