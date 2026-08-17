@@ -28,13 +28,17 @@ export default {
         &::after {
             content: '';
             position: absolute;
-            right: 7%;
-            bottom: 9%;
-            width: 11px;
-            height: 11px;
-            border: 2px solid #07090a;
+            right: -5px;
+            bottom: 8px;
+            width: 18px;
+            height: 18px;
+            border: 1px solid transparent;
+            border-top-color: rgba(120, 200, 255, 0.85);
+            border-right-color: rgba(120, 200, 255, 0.45);
             border-radius: 50%;
-            background: #78c8ff;
+            transform: rotate(24deg);
+            filter: drop-shadow(0 0 4px rgba(120, 200, 255, 0.28));
+            pointer-events: none;
         }
 
         svg {
@@ -65,8 +69,10 @@ export default {
                 0 10px 24px rgba(0, 0, 0, 0.36);
 
             &::after {
-                width: 8px;
-                height: 8px;
+                right: -3px;
+                bottom: 5px;
+                width: 14px;
+                height: 14px;
             }
         }
     `,
