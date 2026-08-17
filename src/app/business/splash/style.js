@@ -200,6 +200,10 @@ export default {
         cursor: pointer;
         transition: transform 180ms ease, background 180ms ease;
 
+        svg {
+            flex: 0 0 auto;
+        }
+
         &:hover {
             transform: translateY(-2px);
             background: #a8ddff;

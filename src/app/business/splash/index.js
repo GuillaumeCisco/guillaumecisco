@@ -6,10 +6,13 @@ import style from './style';
 import {MobileProvider, useIsMobile} from './mobileContext';
 import {set as setModalComponent} from './modal/reducer';
 import Github from '../../common/ui/svgs/github';
+import Arrow from '../../common/ui/svgs/arrow';
 
 
 const Supernova = loadable(() => import(/* webpackChunkName: "supernova" */ './supernova'));
-const AsyncModal = loadable(() => import(/* webpackChunkName: "asyncModal" */ './asyncModal'));
+const AsyncModal = loadable(() => import(/* webpackChunkName: "modal" */ './modal'), {
+    fallback: null,
+});
 
 const SplashContent = () => {
     const dispatch = useDispatch();
@@ -78,7 +81,7 @@ const SplashContent = () => {
                     <div css={style.actions}>
                         <button type="button" css={style.primaryAction} onClick={() => openPanel('skills')}>
                             Explore my work
-                            <span aria-hidden="true">→</span>
+                            <Arrow/>
                         </button>
                         <a
                             css={style.secondaryAction}

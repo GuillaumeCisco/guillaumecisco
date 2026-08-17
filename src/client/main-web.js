@@ -40,8 +40,6 @@ const store = configureAppStore(window.__PRELOADED_STATE__);
 // Allow the passed state to be garbage-collected
 delete window.__PRELOADED_STATE__;
 
-import './../app/common/ui/fonts.css';
-
 const cache = createCache({key: 'css'});
 
 const captureException = (error) => {

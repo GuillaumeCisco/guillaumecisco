@@ -1,4 +1,5 @@
 import styleParent from '../../../style';
+import Arrow from '../../../../../../common/ui/svgs/arrow';
 
 const experience = [
     {
@@ -62,7 +63,7 @@ const Experience = () => (
                 aria-label="Open Guillaume Cisco's resume in a new tab"
             >
                 View résumé
-                <span aria-hidden="true">↗</span>
+                <Arrow external/>
             </a>
             <a
                 css={styleParent.action}
@@ -71,7 +72,7 @@ const Experience = () => (
                 rel="noopener noreferrer"
             >
                 Full journey on LinkedIn
-                <span aria-hidden="true">→</span>
+                <Arrow external/>
             </a>
         </div>
     </div>

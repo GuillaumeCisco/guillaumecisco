@@ -245,6 +245,10 @@ export default {
         font-weight: 600;
         transition: color 180ms ease, border-color 180ms ease;
 
+        svg {
+            flex: 0 0 auto;
+        }
+
         &:hover {
             color: ${accent};
             border-color: ${accent};

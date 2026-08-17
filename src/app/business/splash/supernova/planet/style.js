@@ -25,22 +25,6 @@ export default {
         will-change: transform;
         transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 
-        &::after {
-            content: '';
-            position: absolute;
-            right: -5px;
-            bottom: 8px;
-            width: 18px;
-            height: 18px;
-            border: 1px solid transparent;
-            border-top-color: rgba(120, 200, 255, 0.85);
-            border-right-color: rgba(120, 200, 255, 0.45);
-            border-radius: 50%;
-            transform: rotate(24deg);
-            filter: drop-shadow(0 0 4px rgba(120, 200, 255, 0.28));
-            pointer-events: none;
-        }
-
         svg {
             width: ${Math.max(24, size * 0.3)}px;
             height: ${Math.max(24, size * 0.3)}px;
@@ -68,12 +52,6 @@ export default {
                 0 0 0 4px rgba(7, 9, 10, 0.68),
                 0 10px 24px rgba(0, 0, 0, 0.36);
 
-            &::after {
-                right: -3px;
-                bottom: 5px;
-                width: 14px;
-                height: 14px;
-            }
         }
     `,
 };
