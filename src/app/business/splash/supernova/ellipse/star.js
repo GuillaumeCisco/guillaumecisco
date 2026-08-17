@@ -8,9 +8,9 @@ const Star = function Star(w, h, size, orbitA, orbitB, teta, padding) {
     this.orbitB = orbitB;
 
     // set own radius
-    const radius = random(1, 3);
+    const radius = random(1, 2);
     // set own alpha
-    const alpha = random(0.5, 0.9);
+    const alpha = random(0.42, 0.78);
     // set speed
     const speed = random(0.5, 0.8) * -1;
     // get real carthesian coordonate

@@ -1,26 +1,55 @@
 import styleParent from '../../../style';
-import style from './style';
 
-const Awards = () => (
-    <div css={style.container}>
-        <div css={styleParent.content}>
-            <h1>Awards</h1>
-            <ul>
-                <li>+2000 reputation on stackoverflow</li>
-                <li>Member of the Django French translation team 2012-2014</li>
-                <li>Member of Mensa Association (High Intellectual Potential People)</li>
-            </ul>
-            <h1>Hobbies</h1>
-            <ul>
-                <li>French gastronomy</li>
-                <li>Oenology and bierology</li>
-                <li>Musculation and swimming</li>
-                <li>Sportive gun shooting</li>
-                <li>Technical books</li>
-                <li>Politic, Geopolitic, Economy</li>
-            </ul>
-        </div>
+const principles = [
+    {
+        title: 'Start with the real job',
+        description: 'The agent is not the product. The useful outcome, and the person responsible for it, come first.',
+    },
+    {
+        title: 'Design for failure',
+        description: 'Good autonomous systems expose uncertainty, recover cleanly and know when to hand control back.',
+    },
+    {
+        title: 'Build the whole system',
+        description: 'Models need strong tools, APIs, data, interfaces and infrastructure before they create durable value.',
+    },
+    {
+        title: 'Improve through evidence',
+        description: 'Evals, production signals and user feedback turn a clever prototype into dependable software.',
+    },
+];
+
+const Product = () => (
+    <div css={styleParent.content}>
+        <span css={styleParent.label}>04 / Product</span>
+
+        <h1 id="panel-title" css={styleParent.title}>
+            Autonomy needs product judgement<span>.</span>
+        </h1>
+
+        <p css={styleParent.lead}>
+            I like difficult technical problems, but I care most about what the system changes for its users. My work
+            sits where AI capability, software quality and product clarity meet.
+        </p>
+
+        <h2 css={styleParent.sectionHeading}>How I approach the work</h2>
+        <ol css={styleParent.principles}>
+            {principles.map(({title, description}) => (
+                <li key={title}>
+                    <div>
+                        <strong>{title}</strong>
+                        <p>{description}</p>
+                    </div>
+                </li>
+            ))}
+        </ol>
+
+        <h2 css={styleParent.sectionHeading}>Outside the terminal</h2>
+        <p css={styleParent.note}>
+            French gastronomy, wine and beer culture, strength training, swimming, technical books, politics,
+            geopolitics and economics. Still curious, still learning.
+        </p>
     </div>
 );
 
-export default Awards;
+export default Product;

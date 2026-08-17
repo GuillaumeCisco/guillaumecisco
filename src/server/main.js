@@ -187,6 +187,7 @@ const buildAssetTags = ({nonce}) => {
             scriptTags: '',
             linkTags: '',
             preloadTags: '',
+            fontFaceTag: '',
         };
     }
 
@@ -199,9 +200,9 @@ const buildAssetTags = ({nonce}) => {
             isProd || !f.includes('runtime')
         ));
 
-    const cssFiles = files.filter((f) => (
-        f.endsWith('.css')
-    ));
+    const cssFiles = isProd
+        ? files.filter((f) => f.endsWith('.css'))
+        : [];
 
     const publicPath = getPublicPath();
 
@@ -225,12 +226,31 @@ const buildAssetTags = ({nonce}) => {
         cssFiles.find((f) => f.includes('main')) ||
         cssFiles[0];
 
+    const criticalFont = manifest.files?.[
+        'static/media/nunito-light-webfont.woff2'
+    ];
+
+    const fontFaceTag = criticalFont
+        ? `<style nonce="${nonce}">
+@font-face {
+    font-family: 'nunitolight';
+    src: url('${criticalFont}') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: optional;
+}
+</style>`
+        : '';
+
     const preloadTags = [
         criticalJs &&
         `<link rel="preload" href="${publicPath}${criticalJs}" as="script">`,
 
         criticalCss &&
         `<link rel="preload" href="${publicPath}${criticalCss}" as="style">`,
+
+        criticalFont &&
+        `<link rel="preload" href="${criticalFont}" as="font" type="font/woff2" crossorigin="anonymous">`,
     ]
         .filter(Boolean)
         .join('\n');
@@ -239,6 +259,7 @@ const buildAssetTags = ({nonce}) => {
         scriptTags,
         linkTags,
         preloadTags,
+        fontFaceTag,
     };
 };
 
@@ -247,6 +268,7 @@ const buildAssetTags = ({nonce}) => {
  */
 
 const buildHead = ({
+                       fontFaceTag,
                        linkTags,
                        preloadTags,
                    }) => `<!DOCTYPE html>
@@ -265,12 +287,12 @@ const buildHead = ({
 />
 
 <title>
-Guillaume Cisco — Senior Lead FullStack Engineer
+Guillaume Cisco | Agentic Engineer
 </title>
 
 <meta
     name="description"
-    content="Portfolio of Guillaume Cisco, Senior Lead FullStack Engineer specializing in React, Node.js, Python and cloud architectures."
+    content="Portfolio of Guillaume Cisco, Agentic Engineer with 15 years of full-stack experience building reliable AI agents and production systems."
 >
 
 <meta
@@ -280,12 +302,12 @@ Guillaume Cisco — Senior Lead FullStack Engineer
 
 <meta
     property="og:title"
-    content="Guillaume Cisco — Senior Lead FullStack Engineer"
+    content="Guillaume Cisco | Agentic Engineer"
 >
 
 <meta
     property="og:description"
-    content="Interactive portfolio of Guillaume Cisco."
+    content="Interactive portfolio of an Agentic Engineer backed by 15 years of full-stack engineering."
 >
 
 <meta property="og:type" content="website">
@@ -302,6 +324,8 @@ ${isProd
     : ''}
 
 ${preloadTags}
+
+${fontFaceTag}
 
 ${linkTags}
 </head>
@@ -537,6 +561,7 @@ app.use(async (ctx, next) => {
         scriptTags,
         linkTags,
         preloadTags,
+        fontFaceTag,
     } = buildAssetTags({nonce});
 
     const {
@@ -625,6 +650,7 @@ app.use(async (ctx, next) => {
     );
 
     const head = buildHead({
+        fontFaceTag,
         linkTags,
         preloadTags,
     });
