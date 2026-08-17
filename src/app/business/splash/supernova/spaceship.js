@@ -22,7 +22,11 @@ function Spaceship({
   const xRef = useRef(random(width, w - width));
   const yRef = useRef(h - height);
 
-  const [style, setStyle] = useState({zIndex: 1, position: 'absolute'});
+  const [style, setStyle] = useState({
+    zIndex: 1,
+    position: 'absolute',
+    cursor: 'pointer',
+  });
   const [isSpaceShift, setIsSpaceShift] = useState(false);
 
   const draw = useCallback(() => {
