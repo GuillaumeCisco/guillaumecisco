@@ -187,6 +187,7 @@ const buildAssetTags = ({nonce}) => {
             scriptTags: '',
             linkTags: '',
             preloadTags: '',
+            fontFaceTag: '',
         };
     }
 
@@ -229,6 +230,18 @@ const buildAssetTags = ({nonce}) => {
         'static/media/nunito-light-webfont.woff2'
     ];
 
+    const fontFaceTag = criticalFont
+        ? `<style nonce="${nonce}">
+@font-face {
+    font-family: 'nunitolight';
+    src: url('${criticalFont}') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: optional;
+}
+</style>`
+        : '';
+
     const preloadTags = [
         criticalJs &&
         `<link rel="preload" href="${publicPath}${criticalJs}" as="script">`,
@@ -246,6 +259,7 @@ const buildAssetTags = ({nonce}) => {
         scriptTags,
         linkTags,
         preloadTags,
+        fontFaceTag,
     };
 };
 
@@ -254,6 +268,7 @@ const buildAssetTags = ({nonce}) => {
  */
 
 const buildHead = ({
+                       fontFaceTag,
                        linkTags,
                        preloadTags,
                    }) => `<!DOCTYPE html>
@@ -309,6 +324,8 @@ ${isProd
     : ''}
 
 ${preloadTags}
+
+${fontFaceTag}
 
 ${linkTags}
 </head>
@@ -544,6 +561,7 @@ app.use(async (ctx, next) => {
         scriptTags,
         linkTags,
         preloadTags,
+        fontFaceTag,
     } = buildAssetTags({nonce});
 
     const {
@@ -632,6 +650,7 @@ app.use(async (ctx, next) => {
     );
 
     const head = buildHead({
+        fontFaceTag,
         linkTags,
         preloadTags,
     });
