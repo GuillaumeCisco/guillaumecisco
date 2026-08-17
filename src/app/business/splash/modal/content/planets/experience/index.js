@@ -8,19 +8,19 @@ const experience = [
         summary: 'Engineering agents, their tools and the production systems that make them reliable and useful.',
     },
     {
-        dates: '2021 — today',
+        dates: '2021 to today',
         role: 'Senior Lead Full-Stack Engineer',
         company: 'Yubo',
         summary: 'Technical leadership for moderation tooling: live systems, product delivery, data-science integration and team execution.',
     },
     {
-        dates: '2018 — 2021',
+        dates: '2018 to 2021',
         role: 'Lead / Senior Full-Stack Engineer',
         company: 'Forest Admin · Owkin',
         summary: 'Product engineering, deep debugging and migration work across web platforms, distributed data and privacy-focused infrastructure.',
     },
     {
-        dates: '2011 — 2018',
+        dates: '2011 to 2018',
         role: 'Full-Stack & Engineering Lead',
         company: 'Dreem · Tawenda · Buzzcar · TF1 · SII',
         summary: 'Built and led web products from frontend to backend and operations, across media, health, mobility and consumer platforms.',
@@ -46,7 +46,7 @@ const Experience = () => (
                 <article css={styleParent.timelineItem} key={`${dates}-${company}`}>
                     <time>{dates}</time>
                     <div>
-                        <h3>{role} <span>— {company}</span></h3>
+                        <h3>{role} <span>at {company}</span></h3>
                         <p>{summary}</p>
                     </div>
                 </article>

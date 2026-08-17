@@ -45,15 +45,15 @@ const SplashContent = () => {
     return (
         <main css={style.container}>
             <header css={style.header}>
-                <a css={style.brand} href="/" aria-label="Guillaume Cisco — home">
+                <a css={style.brand} href="/" aria-label="Guillaume Cisco home">
                     <span css={style.brandMark} aria-hidden="true">GC</span>
                     <span css={style.brandName}>Guillaume Cisco</span>
                 </a>
 
                 <nav css={style.nav} aria-label="Main navigation">
-                    <button type="button" onClick={() => openPanel('core')}>About</button>
-                    <button type="button" onClick={() => openPanel('skills')}>Expertise</button>
-                    <button type="button" onClick={() => openPanel('experience')}>Journey</button>
+                    <button type="button" onClick={() => openPanel('skills')}>Agents</button>
+                    <button type="button" onClick={() => openPanel('experience')}>Systems</button>
+                    <button type="button" onClick={() => openPanel('awards')}>Product</button>
                 </nav>
 
                 <a
@@ -101,12 +101,6 @@ const SplashContent = () => {
                     {ready && <Supernova/>}
                 </div>
             </section>
-
-            <button type="button" css={style.bottomRail} onClick={() => openPanel('core')}>
-                <span>01</span>
-                <strong>I build at the intersection of AI, systems, and product.</strong>
-                <span aria-hidden="true">→</span>
-            </button>
 
             {modalVisible && <AsyncModal/>}
         </main>

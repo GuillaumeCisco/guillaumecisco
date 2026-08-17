@@ -189,7 +189,7 @@ export default {
     `,
     row: css`
         display: grid;
-        grid-template-columns: 46px 1fr auto;
+        grid-template-columns: 46px 1fr;
         align-items: center;
         gap: 22px;
         min-height: 102px;
@@ -219,17 +219,10 @@ export default {
             line-height: 1.45;
         }
 
-        & > span:last-child {
-            color: ${accent};
-            font-size: 22px;
-        }
-
         @media (max-width: 480px) {
             grid-template-columns: 36px 1fr;
             gap: 14px;
             padding: 18px 0;
-
-            & > span:last-child { display: none; }
         }
     `,
     actions: css`

@@ -225,12 +225,24 @@ const buildAssetTags = ({nonce}) => {
         cssFiles.find((f) => f.includes('main')) ||
         cssFiles[0];
 
+    const criticalFonts = [
+        'static/media/nunito-regular-webfont.woff2',
+        'static/media/nunito-semibold-webfont.woff2',
+        'static/media/nunito-bold-webfont.woff2',
+    ]
+        .map((font) => manifest.files?.[font])
+        .filter(Boolean);
+
     const preloadTags = [
         criticalJs &&
         `<link rel="preload" href="${publicPath}${criticalJs}" as="script">`,
 
         criticalCss &&
         `<link rel="preload" href="${publicPath}${criticalCss}" as="style">`,
+
+        ...criticalFonts.map((font) => (
+            `<link rel="preload" href="${font}" as="font" type="font/woff2" crossorigin="anonymous">`
+        )),
     ]
         .filter(Boolean)
         .join('\n');
@@ -265,7 +277,7 @@ const buildHead = ({
 />
 
 <title>
-Guillaume Cisco — Agentic Engineer
+Guillaume Cisco | Agentic Engineer
 </title>
 
 <meta
@@ -280,7 +292,7 @@ Guillaume Cisco — Agentic Engineer
 
 <meta
     property="og:title"
-    content="Guillaume Cisco — Agentic Engineer"
+    content="Guillaume Cisco | Agentic Engineer"
 >
 
 <meta

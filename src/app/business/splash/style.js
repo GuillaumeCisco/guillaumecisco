@@ -100,13 +100,13 @@ export default {
     hero: css`
         position: relative;
         min-height: calc(100svh - 88px);
-        padding: clamp(64px, 10vh, 122px) clamp(24px, 5.5vw, 84px) 152px;
+        padding: clamp(64px, 10vh, 122px) clamp(24px, 5.5vw, 84px) clamp(56px, 7vh, 88px);
 
         @media (max-width: 960px) {
             display: flex;
             flex-direction: column;
             min-height: auto;
-            padding-bottom: 96px;
+            padding-bottom: 60px;
         }
 
         @media (max-width: 760px) {
@@ -115,7 +115,7 @@ export default {
 
         @media (min-width: 961px) and (max-height: 780px) {
             padding-top: 44px;
-            padding-bottom: 118px;
+            padding-bottom: 44px;
         }
     `,
     heroCopy: css`
@@ -277,7 +277,7 @@ export default {
         z-index: 1;
         top: 0;
         right: -2vw;
-        bottom: 70px;
+        bottom: 0;
         width: 52vw;
         min-width: 560px;
 
@@ -296,51 +296,6 @@ export default {
             width: calc(100% + 16px);
             height: 248px;
             margin: 12px -8px 0;
-        }
-    `,
-    bottomRail: css`
-        position: absolute;
-        z-index: 4;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        min-height: 112px;
-        display: grid;
-        grid-template-columns: 70px minmax(0, 560px) 1fr;
-        align-items: center;
-        gap: 28px;
-        width: 100%;
-        padding: 22px clamp(24px, 5.5vw, 84px);
-        border: 0;
-        border-top: 1px solid ${border};
-        background: rgba(7, 9, 10, 0.92);
-        color: ${text};
-        text-align: left;
-        cursor: pointer;
-
-        & > span:first-of-type {
-            color: ${accent};
-            font-size: 14px;
-        }
-
-        strong {
-            font-size: clamp(20px, 2vw, 30px);
-            line-height: 1.2;
-            font-weight: 600;
-        }
-
-        & > span:last-of-type {
-            justify-self: end;
-            color: ${accent};
-            font-size: 32px;
-        }
-
-        @media (max-width: 960px) {
-            position: relative;
-        }
-
-        @media (max-width: 760px) {
-            display: none;
         }
     `,
 };

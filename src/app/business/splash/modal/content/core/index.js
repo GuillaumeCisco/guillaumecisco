@@ -13,9 +13,9 @@ const Core = () => (
         </h1>
 
         <p css={styleParent.lead}>
-            I&apos;m Guillaume, an Agentic Engineer with 15 years of full-stack experience. I turn ambitious AI ideas
-            into reliable products — from orchestration and tool use to the interfaces, APIs and infrastructure around
-            them.
+            I&apos;m Guillaume, an Agentic Engineer with 15 years of full-stack experience. I use AI to solve business
+            problems and turn ideas into tools people can actually use. I work across orchestration, interfaces, APIs
+            and infrastructure to make the whole thing reliable.
         </p>
 
         <h2 css={styleParent.sectionHeading}>What I do now</h2>
@@ -27,7 +27,6 @@ const Core = () => (
                     <strong>Agent systems</strong>
                     <p>Tool use, orchestration and context</p>
                 </div>
-                <span aria-hidden="true">→</span>
             </div>
             <div css={styleParent.row}>
                 <SystemsIcon/>
@@ -35,7 +34,6 @@ const Core = () => (
                     <strong>Production foundations</strong>
                     <p>Evals, observability and guardrails</p>
                 </div>
-                <span aria-hidden="true">→</span>
             </div>
             <div css={styleParent.row}>
                 <ProductIcon/>
@@ -43,7 +41,6 @@ const Core = () => (
                     <strong>Full-stack delivery</strong>
                     <p>Product, platform and infrastructure</p>
                 </div>
-                <span aria-hidden="true">→</span>
             </div>
         </div>
 

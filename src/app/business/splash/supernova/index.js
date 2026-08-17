@@ -69,7 +69,7 @@ function SuperNova() {
             : w / 2.5;
         const b = a / (isMobile ? 3 : 2.3);
         const coreRadius = (a - b) / (isMobile ? 3.2 : 5);
-        const nodeRadius = isMobile ? 25 : 48;
+        const nodeRadius = isMobile ? 22 : 38;
         const mobileOrbit = {
             a: a * 1.28,
             b: b * 1.45,

@@ -3,7 +3,7 @@ import styleParent from '../../../style';
 const agentCapabilities = [
     {
         title: 'Orchestration & tool use',
-        description: 'Multi-step workflows, reliable tool contracts and systems that can act — not just answer.',
+        description: 'Multi-step workflows, reliable tool contracts and systems that do useful work, not just answer questions.',
     },
     {
         title: 'Context & memory',
@@ -50,7 +50,6 @@ const Skills = () => (
                         <strong>{title}</strong>
                         <p>{description}</p>
                     </div>
-                    <span aria-hidden="true">→</span>
                 </div>
             ))}
         </div>
