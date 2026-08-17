@@ -200,9 +200,9 @@ const buildAssetTags = ({nonce}) => {
             isProd || !f.includes('runtime')
         ));
 
-    const cssFiles = files.filter((f) => (
-        f.endsWith('.css')
-    ));
+    const cssFiles = isProd
+        ? files.filter((f) => f.endsWith('.css'))
+        : [];
 
     const publicPath = getPublicPath();
 
