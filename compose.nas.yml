@@ -1,0 +1,101 @@
+name: guillaumecisco
+
+services:
+  app:
+    image: guillaumecisco:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DASHBOARD_PORT: "3000"
+      LIFECYCLE_PORT: "9000"
+      NODE_ENV: production
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      SHELL_CACHE_TTL: "3600"
+      TLS_TERMINATED_BY_PROXY: "true"
+      TRUST_PROXY: "true"
+    depends_on:
+      redis:
+        condition: service_healthy
+    expose:
+      - "3000"
+    networks:
+      - internal
+      - proxy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.services.guillaumecisco.loadbalancer.server.port=3000"
+
+      - "traefik.http.routers.guillaumecisco-http.rule=Host(`guillaumecisco.com`) || Host(`www.guillaumecisco.com`)"
+      - "traefik.http.routers.guillaumecisco-http.entrypoints=web"
+      - "traefik.http.routers.guillaumecisco-http.middlewares=guillaumecisco-https"
+      - "traefik.http.middlewares.guillaumecisco-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.guillaumecisco-https.redirectscheme.permanent=true"
+
+      - "traefik.http.routers.guillaumecisco.rule=Host(`guillaumecisco.com`)"
+      - "traefik.http.routers.guillaumecisco.entrypoints=websecure"
+      - "traefik.http.routers.guillaumecisco.tls=true"
+      - "traefik.http.routers.guillaumecisco.tls.certresolver=cloudflare"
+      - "traefik.http.routers.guillaumecisco.middlewares=guillaumecisco-security"
+
+      - "traefik.http.routers.guillaumecisco-www.rule=Host(`www.guillaumecisco.com`)"
+      - "traefik.http.routers.guillaumecisco-www.entrypoints=websecure"
+      - "traefik.http.routers.guillaumecisco-www.tls=true"
+      - "traefik.http.routers.guillaumecisco-www.tls.certresolver=cloudflare"
+      - "traefik.http.routers.guillaumecisco-www.middlewares=guillaumecisco-www-redirect"
+      - "traefik.http.middlewares.guillaumecisco-www-redirect.redirectregex.regex=^https?://www[.]guillaumecisco[.]com/(.*)"
+      - "traefik.http.middlewares.guillaumecisco-www-redirect.redirectregex.replacement=https://guillaumecisco.com/$${1}"
+      - "traefik.http.middlewares.guillaumecisco-www-redirect.redirectregex.permanent=true"
+
+      - "traefik.http.middlewares.guillaumecisco-security.headers.contenttypenosniff=true"
+      - "traefik.http.middlewares.guillaumecisco-security.headers.referrerpolicy=strict-origin-when-cross-origin"
+      - "traefik.http.middlewares.guillaumecisco-security.headers.stsseconds=31536000"
+      - "traefik.http.middlewares.guillaumecisco-security.headers.stsincludesubdomains=true"
+    security_opt:
+      - no-new-privileges:true
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --maxmemory
+      - 128mb
+      - --maxmemory-policy
+      - allkeys-lru
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  internal:
+    internal: true
+  proxy:
+    external: true
+    name: proxy
+
+volumes:
+  redis_data:

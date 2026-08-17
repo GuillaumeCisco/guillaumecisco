@@ -2,6 +2,7 @@ import './sentry';
 import {captureException} from '@sentry/node';
 
 import path from 'path';
+import http from 'http';
 import http2 from 'http2';
 import https from 'https';
 import fs from 'fs';
@@ -56,10 +57,13 @@ const {
     REDIS_HOST = '127.0.0.1',
     REDIS_PORT = 6379,
     SHELL_CACHE_TTL = 3600,
+    TLS_TERMINATED_BY_PROXY = 'false',
+    TRUST_PROXY = 'false',
 } = process.env;
 
 const isProd = process.env.NODE_ENV === 'production';
 const isDev = !isProd;
+const isHttpsEnabled = TLS_TERMINATED_BY_PROXY !== 'true';
 
 const DEV_ORIGIN = 'https://localhost:8080';
 const DEV_PROXY_PATHS = ['/_rspack', '/dist/web'];
@@ -323,6 +327,8 @@ ${isProd
 `
     : ''}
 
+<link rel="icon" href="/favicon.ico" sizes="any" />
+
 ${preloadTags}
 
 ${fontFaceTag}
@@ -398,6 +404,7 @@ const setCSP = (res, nonce) => {
  */
 
 const app = new Koa();
+app.proxy = TRUST_PROXY === 'true';
 let devProxy = null;
 
 /**
@@ -499,6 +506,11 @@ app.use(
  */
 
 const pwaRootFiles = {
+    '/favicon.ico': {
+        type: 'image/x-icon',
+        file: 'favicon.ico',
+    },
+
     '/service-worker.js': {
         type: 'application/javascript',
         file: 'service-worker.js',
@@ -827,23 +839,29 @@ const main = async () => {
         },
     });
 
-    const serverOptions = {
-        key: fs.readFileSync(PATHS.sslKey),
+    let server;
 
-        cert: fs.readFileSync(PATHS.sslCert),
+    if (!isHttpsEnabled) {
+        server = http.createServer(app.callback());
+    } else {
+        const serverOptions = {
+            key: fs.readFileSync(PATHS.sslKey),
 
-        allowHTTP1: true,
-    };
+            cert: fs.readFileSync(PATHS.sslCert),
 
-    const server = isProd
-        ? http2.createSecureServer(
-            serverOptions,
-            app.callback(),
-        )
-        : https.createServer(
-            serverOptions,
-            app.callback(),
-        );
+            allowHTTP1: true,
+        };
+
+        server = isProd
+            ? http2.createSecureServer(
+                serverOptions,
+                app.callback(),
+            )
+            : https.createServer(
+                serverOptions,
+                app.callback(),
+            );
+    }
 
     if (isDev) {
         server.on('upgrade', (req, socket, head) => {
@@ -864,7 +882,14 @@ const main = async () => {
 
     server.listen(Number(DASHBOARD_PORT), async () => {
         await lifecycle.setReady(true);
-        console.log(`Server started https://localhost:${DASHBOARD_PORT} (HTTP/2)`);
+        const protocol = isHttpsEnabled ? 'https' : 'http';
+        const transport = isHttpsEnabled && isProd
+            ? ' (HTTP/2)'
+            : '';
+
+        console.log(
+            `Server started ${protocol}://localhost:${DASHBOARD_PORT}${transport}`,
+        );
     });
 };
 
