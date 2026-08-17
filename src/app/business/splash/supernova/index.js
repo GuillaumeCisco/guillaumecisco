@@ -70,29 +70,30 @@ function SuperNova() {
         const b = a / (isMobile ? 3 : 2.3);
         const coreRadius = (a - b) / (isMobile ? 3.2 : 5);
         const nodeRadius = isMobile ? 20 : 34;
-        const mobileOrbit = {
-            a: a * 1.28,
-            b: b * 1.45,
-        };
-        const desktopOrbit = {
-            a: a * 1.02,
-            b: b * 1.12,
-        };
-        const planetOrbit = isMobile ? mobileOrbit : desktopOrbit;
+        const baseOrbit = isMobile
+            ? { a: a * 1.28, b: b * 1.45 }
+            : { a, b };
+        const orbitScales = isMobile
+            ? { red: 0.72, blue: 1.14, orange: 0.93 }
+            : { red: 0.52, blue: 1.06, orange: 0.78 };
+        const createOrbit = (scale) => ({
+            a: baseOrbit.a * scale,
+            b: baseOrbit.b * scale,
+        });
 
         const redPlanet = {
             radius: nodeRadius,
-            ...planetOrbit,
+            ...createOrbit(orbitScales.red),
         };
 
         const bluePlanet = {
             radius: nodeRadius,
-            ...planetOrbit,
+            ...createOrbit(orbitScales.blue),
         };
 
         const orangePlanet = {
             radius: nodeRadius,
-            ...planetOrbit,
+            ...createOrbit(orbitScales.orange),
         };
 
         setState((prev) => ({
