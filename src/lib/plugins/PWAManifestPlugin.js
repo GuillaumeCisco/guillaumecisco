@@ -7,7 +7,7 @@ class PWAManifestPlugin {
         this.options = {
             filename: 'manifest.json',
             iconsPath: __dirname,
-            extension: '.png',
+            extensions: ['.png', '.ico'],
             ...options,
         };
         this.json = JSON.stringify(json, null, 2);
@@ -24,7 +24,8 @@ class PWAManifestPlugin {
                     try {
                         const iconsPath = this.options.iconsPath;
                         const files = fs.readdirSync(iconsPath)
-                            .filter(f => f.endsWith(this.options.extension));
+                            .filter(file => this.options.extensions
+                                .some(extension => file.endsWith(extension)));
 
                         for (const file of files) {
                             const content = fs.readFileSync(path.join(iconsPath, file));

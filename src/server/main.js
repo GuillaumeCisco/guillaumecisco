@@ -327,6 +327,8 @@ ${isProd
 `
     : ''}
 
+<link rel="icon" href="/favicon.ico" sizes="any" />
+
 ${preloadTags}
 
 ${fontFaceTag}
@@ -504,6 +506,11 @@ app.use(
  */
 
 const pwaRootFiles = {
+    '/favicon.ico': {
+        type: 'image/x-icon',
+        file: 'favicon.ico',
+    },
+
     '/service-worker.js': {
         type: 'application/javascript',
         file: 'service-worker.js',
