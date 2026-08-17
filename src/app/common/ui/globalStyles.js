@@ -10,7 +10,7 @@ export default () => css`
         padding: 0;
         background: #07090a;
         color: #f4f5ef;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-family: 'nunitolight', sans-serif;
         font-size: 16px;
         letter-spacing: -0.01em;
         -webkit-font-smoothing: antialiased;

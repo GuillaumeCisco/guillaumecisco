@@ -11,6 +11,8 @@ import configureAppStore from '../app/store';
 import reportWebVitals from './reportWebVitals';
 import App from '../app';
 
+import './../app/common/ui/fonts.css';
+
 if (!window.requestIdleCallback) {
     window.requestIdleCallback = (callback) => {
         return setTimeout(() => {
