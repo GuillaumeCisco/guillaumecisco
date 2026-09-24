@@ -21,7 +21,7 @@
     "devDependencies": {
         "@aaroon/workbox-rspack-plugin": "0.3.3",
         "@loadable/webpack-plugin": "5.15.2",
-        "@rsdoctor/rspack-plugin": "1.5.10",
+        "@rsdoctor/rspack-plugin": "1.5.16",
         "@rspack/cli": "2.0.2",
         "@rspack/core": "2.0.2",
         "@rspack/dev-client": "0.4.1",
