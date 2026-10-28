@@ -7305,10 +7305,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:^4.2.2, deepmerge@npm:^4.3.1":
+"deepmerge@npm:4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 10c0/e53481aaf1aa2c4082b5342be6b6d8ad9dfe387bc92ce197a66dea08bd4265904a087e75e464f14d1347cf2ac8afe1e4c16b266e0561cc5df29382d3c5f80044
+  languageName: node
+  linkType: hard
+
+"deepmerge@patch:deepmerge@npm%3A4.3.1#~/.yarn/patches/deepmerge-npm-4.3.1-4f751a0844.patch":
+  version: 4.3.1
+  resolution: "deepmerge@patch:deepmerge@npm%3A4.3.1#~/.yarn/patches/deepmerge-npm-4.3.1-4f751a0844.patch::version=4.3.1&hash=5d7a5d"
+  checksum: 10c0/8aae090c39b190101775409c96f3f05baf46767807350bb16038ffa6960dd2a33ec3bbfa351902d7139cffd915a9732e657f8d830f53b14705ab4a6202fac782
   languageName: node
   linkType: hard
 

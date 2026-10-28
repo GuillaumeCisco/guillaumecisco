@@ -28,11 +28,18 @@ The application is installed in:
 
 ## Deploy an update from Bento
 
+The Yarn patch in `.yarn/patches` fixes CVE-2026-93753 in deepmerge 4.3.1.
+Keep the patch in the build context until an upstream fixed release is available;
+version-based security scanners may continue to report the original version.
+
 The NAS SFTP subsystem cannot write to `/volume1`, so use legacy SCP with
 `-O`:
 
 ```bash
 cd ~/Projects/guillaumecisco
+
+ssh nas 'mkdir -p /volume1/docker/guillaumecisco/.yarn'
+scp -O -r .yarn/patches nas:/volume1/docker/guillaumecisco/.yarn/
 
 scp -O -r \
   Dockerfile package.json yarn.lock .yarnrc.yml .dockerignore \

@@ -8,6 +8,7 @@ COPY --link ./packages/ssr ./packages/ssr
 COPY --link packages/webpack ./packages/webpack
 COPY --link packages/babel ./packages/babel
 COPY --link .yarnrc.yml ./.yarnrc.yml
+COPY --link .yarn/patches ./.yarn/patches
 COPY --link yarn.lock ./yarn.lock
 RUN rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg \
  && npm install -g corepack \
@@ -46,6 +47,7 @@ COPY --link package.json ./package.json
 COPY --link packages/ssr/ ./packages/ssr
 COPY --link yarn.lock ./yarn.lock
 COPY --link .yarnrc.yml ./.yarnrc.yml
+COPY --link .yarn/patches ./.yarn/patches
 
 RUN rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg \
  && npm install -g corepack \
