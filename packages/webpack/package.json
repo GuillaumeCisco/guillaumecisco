@@ -21,7 +21,7 @@
     "devDependencies": {
         "@aaroon/workbox-rspack-plugin": "0.3.3",
         "@loadable/webpack-plugin": "5.15.2",
-        "@rsdoctor/rspack-plugin": "1.5.10",
+        "@rsdoctor/rspack-plugin": "1.5.16",
         "@rspack/cli": "2.0.2",
         "@rspack/core": "2.0.2",
         "@rspack/dev-client": "0.4.1",
@@ -38,7 +38,7 @@
         "eslint-webpack-plugin": "6.0.0",
         "fork-ts-checker-webpack-plugin": "9.1.0",
         "lodash-webpack-plugin": "0.11.6",
-        "postcss": "8.5.14",
+        "postcss": "8.5.23",
         "postcss-flexbugs-fixes": "5.0.2",
         "postcss-loader": "8.2.1",
         "postcss-normalize": "13.0.1",
